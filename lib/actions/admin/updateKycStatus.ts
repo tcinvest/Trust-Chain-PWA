@@ -1,7 +1,11 @@
 // lib/actions/admin/updateKycStatus.ts
 'use server';
+import prisma from '@/lib/prisma';
 
-import  prisma  from '@/lib/prisma';
+interface KycData {
+  [key: string]: string | number | boolean | null | undefined;
+  "Action Message"?: string;
+}
 
 export async function updateKycStatus(clerkId: string, newStatus: number, reason: string) {
   const user = await prisma.users.findUnique({
@@ -10,14 +14,14 @@ export async function updateKycStatus(clerkId: string, newStatus: number, reason
 
   if (!user) return;
 
-  let kycData: Record<string, any> = {};
+  let kycData: KycData = {};
 
   try {
     kycData = JSON.parse(user.kyc_credential || '{}');
-  } catch {}
-  
+  } catch {
+  }
+
   kycData["Action Message"] = newStatus === 3 ? reason : "";
-  
 
   await prisma.users.update({
     where: { clerk_id: clerkId },

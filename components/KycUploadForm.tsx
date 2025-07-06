@@ -10,7 +10,7 @@ interface FormState {
 
 interface KycUploadFormProps {
   userId: string;
-  formAction: (prevState: any, formData: FormData) => Promise<FormState>;
+  formAction: (prevState: FormState | null, formData: FormData) => Promise<FormState>;
   kycStatus: number | null | undefined;
 }
 

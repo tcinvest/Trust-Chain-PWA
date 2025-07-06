@@ -5,8 +5,24 @@ import React, { useEffect, useState } from 'react';
 import { updateKycStatus } from '@/lib/actions/admin/updateKycStatus';
 import { getPendingKycs } from '@/lib/actions/admin/getPendingKycs';
 
+interface KycUser {
+  id: number;
+  clerk_id: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  kyc_credential: string | null;
+}
+
+interface KycData {
+  kyc_type_of_name: string;
+  [key: string]: {
+    front: string;
+    back: string;
+  } | string;
+}
+
 export default function AdminKycReviewPage() {
-  const [kycUsers, setKycUsers] = useState<any[]>([]);
+  const [kycUsers, setKycUsers] = useState<KycUser[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,22 +49,23 @@ export default function AdminKycReviewPage() {
       <h1 className="text-2xl font-bold mb-4">KYC Review</h1>
       <div className="space-y-6">
       {kycUsers.map((user) => {
-        let kyc: any = {};
+        let kyc: KycData = { kyc_type_of_name: '' };
         try {
           kyc = JSON.parse(user.kyc_credential || '{}');
-        } catch (err) {
+        } catch {
           console.warn('Invalid JSON in kyc_credential for user', user.id);
           return null; // Skip rendering this user
         }
 
         const docType = kyc.kyc_type_of_name;
-        const front = kyc[docType]?.front;
-        const back = kyc[docType]?.back;
+        const docData = kyc[docType] as { front: string; back: string } | undefined;
+        const front = docData?.front;
+        const back = docData?.back;
 
         return (
           <div key={user.id} className="border rounded-xl p-4">
             <p className="font-semibold mb-2">
-              {user.first_name} {user.last_name} — {docType}
+              {user.first_name || 'N/A'} {user.last_name || 'N/A'} — {docType}
             </p>
             <div className="flex gap-4">
               <img src={front} alt="front" className="w-48 rounded border" />
@@ -56,7 +73,7 @@ export default function AdminKycReviewPage() {
             </div>
             <div className="flex mt-4 gap-2">
               <button
-                onClick={() => handleAction(user.clerk_id, 2, '')}
+                onClick={() => user.clerk_id && handleAction(user.clerk_id, 2, '')}
                 className="bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded text-sm"
               >
                 Approve
@@ -64,7 +81,7 @@ export default function AdminKycReviewPage() {
               <button
                 onClick={() => {
                   const reason = prompt("Enter rejection reason:");
-                  if (reason) handleAction(user.clerk_id, 3, reason);
+                  if (reason && user.clerk_id) handleAction(user.clerk_id, 3, reason);
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm"
               >

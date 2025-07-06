@@ -1,9 +1,14 @@
 'use server';
 
-import  prisma  from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
 
-export async function uploadKyc(prevState: any, formData: FormData) {
+interface FormState {
+  success?: boolean;
+  error?: string[];
+}
+
+export async function uploadKyc(prevState: FormState | null, formData: FormData): Promise<FormState> {
   try {
     const clerkId = formData.get('clerkId') as string;
     const docType = formData.get('kyc_type_of_name') as string;

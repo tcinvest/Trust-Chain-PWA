@@ -105,7 +105,7 @@ export default function PortfolioScreen() {
                 {userData?.kyc === 1 && showKycNotice && (
                   <div className="fixed top-6 right-6 z-50 max-w-sm bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 p-4 rounded-xl shadow-lg flex items-start justify-between space-x-4">
                     <div className="text-sm">
-                      If you haven't uploaded your KYC document yet, please submit both the front and back of your ID.
+                      If you haven&#39;t uploaded your KYC document yet, please submit both the front and back of your ID.
                       If you have already submitted, kindly ignore this message and wait for approval.
                     </div>
                     <button
