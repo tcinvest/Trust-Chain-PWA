@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Token {
+  id              Int    @id @default(autoincrement())
+  name            String
+  symbol          String
+  price           Float
+  priceChange24h  Float
+  marketCap       Int
+  volume24h       Int
+  holders         Int
+  transactions24h Int
+}
+
+model invests {
+  id                    Int      @id @default(autoincrement())
+  user_id               Int?
+  schema_id             Int?
+  transaction_id        Int?
+  invest_amount         Decimal? @db.Decimal
+  already_return_profit Int?
+  total_profit_amount   Decimal? @db.Decimal
+  last_profit_time      String?
+  next_profit_time      String?
+  capital_back          Int?
+  interest              Int?
+  interest_type         String?
+  return_type           String?
+  number_of_period      Int?
+  period_hours          Int?
+  wallet                String?
+  status                String?
+  created_at            String?
+  updated_at            String?
+}
+
+model referral_relationships {
+  id               Int     @id
+  referral_link_id Int?
+  user_id          Int?
+  created_at       String?
+  updated_at       String?
+}
+
+model referrals {
+  id                 Int      @id @default(autoincrement())
+  referral_target_id Int?
+  type               String?
+  bounty             Decimal? @db.Decimal
+  target_amount      Decimal? @db.Decimal
+  description        String?
+  status             Int?
+  created_at         String?
+  updated_at         String?
+}
+
+model transactions {
+  id                Int      @id @default(autoincrement())
+  user_id           Int?
+  from_user_id      String?
+  from_model        String?
+  target_id         String?
+  target_type       String?
+  is_level          Int?
+  tnx               String?
+  description       String?
+  amount            Decimal? @db.Decimal
+  type              String?
+  charge            String?
+  final_amount      Decimal? @db.Decimal
+  method            String?
+  pay_currency      String?
+  pay_amount        String?
+  manual_field_data String?
+  approval_cause    String?
+  status            String?
+  created_at        String?
+  updated_at        String?
+}
+
+model users {
+  id              Int      @id @default(autoincrement())
+  ranking_id      Int?
+  rankings        String?
+  avatar          String?
+  first_name      String?
+  last_name       String?
+  country         String?
+  phone           String?
+  username        String?
+  email           String?
+  gender          String?
+  date_of_birth   String?
+  city            String?
+  zip_code        String?
+  address         String?
+  balance         Decimal? @default(0.00) @db.Decimal
+  profit_balance  Decimal? @db.Decimal
+  recovery_fund   Decimal? @db.Decimal
+  status          Int?
+  kyc             Int?
+  kyc_credential  String?
+  deposit_status  Int?
+  withdraw_status Int?
+  transfer_status Int?
+  ref_id          String?
+  created_at      String?
+  updated_at      String?
+  clerk_id        String?  @unique(map: "users_clerkId_key")
+}
+
+model referral_links {
+  id                  Int     @id @db.SmallInt
+  user_id             Int?    @db.SmallInt
+  referral_program_id Int?    @db.SmallInt
+  code                String? @db.VarChar(36)
+  created_at          String? @db.VarChar(19)
+  updated_at          String? @db.VarChar(19)
+}
