@@ -55,10 +55,10 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
           disabled={isVerified}
           className="w-full bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-2 rounded-xl disabled:opacity-60"
         >
-          <option value="Driver's license">Driver's license</option>
+          <option value="Driver's license">Driver&apos;s license</option>
           <option value="National ID">National ID</option>
           <option value="Passport">Passport</option>
-          <option value="Voter's card">Voter's card</option>
+          <option value="Voter's card">Voter&apos;s card</option>
         </select>
 
         {/* Front Image Upload */}
