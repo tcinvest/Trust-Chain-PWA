@@ -1,43 +1,13 @@
+// components/dashboard/InvestScreen.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Bot, ChevronDown, ChevronUp } from 'lucide-react';
+import { InvestmentBot } from '@/types/type';
 import Link from 'next/link';
 
-interface InvestmentBot {
-  id: number;
-  name: string;
-  description: string;
-  investment_range: string;
-  capital_back: string;
-  return_type: string;
-  number_of_periods: string;
-  profit_withdraw: string;
-  holiday_note: string;
-  is_active: boolean;
-}
-
-export default function InvestBotsPage() {
-  const [bots, setBots] = useState<InvestmentBot[]>([]);
+export default function InvestScreen({ bots }: { bots: InvestmentBot[] }) {
   const [selectedBot, setSelectedBot] = useState<InvestmentBot | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/bots')
-      .then(res => res.json())
-      .then(data => {
-        setBots(data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
-        Loading bots...
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -82,25 +52,25 @@ export default function InvestBotsPage() {
                     <div className="border-t border-gray-700 p-6 space-y-3">
                       <p className="text-gray-400 text-sm">
                         <span className="font-semibold text-white block">Investment</span>
-                        {bot.investment_range}
+                        {bot.investmentRange}
                       </p>
                       <p className="text-gray-400 text-sm">
                         <span className="font-semibold text-white block">Capital Back</span>
-                        {bot.capital_back}
+                        {bot.capitalBack}
                       </p>
                       <p className="text-gray-400 text-sm">
                         <span className="font-semibold text-white block">Return Type</span>
-                        {bot.return_type}
+                        {bot.returnType}
                       </p>
                       <p className="text-gray-400 text-sm">
-                        <span className="font-semibold text-white block">Number of Periods</span>
-                        {bot.number_of_periods}
+                        <span className="font-semibold text-white block">Number of Period</span>
+                        {bot.numberOfPeriods}
                       </p>
                       <p className="text-gray-400 text-sm">
                         <span className="font-semibold text-white block">Profit Withdraw</span>
-                        {bot.profit_withdraw}
+                        {bot.profitWithdraw}
                       </p>
-                      <p className="text-yellow-400 text-sm italic">{bot.holiday_note}</p>
+                      <p className="text-yellow-400 text-sm italic">{bot.holidayNote}</p>
 
                       <Link
                         href={`/dashboard/invest/${bot.id}`}

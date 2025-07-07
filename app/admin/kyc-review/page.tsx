@@ -46,7 +46,7 @@ export default function AdminKycReviewPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">KYC Review</h1>
+      <h1 className="text-2xl text-gray-800 font-bold mb-4">KYC Review</h1>
       <div className="space-y-6">
       {kycUsers.map((user) => {
         let kyc: KycData = { kyc_type_of_name: '' };
@@ -63,7 +63,7 @@ export default function AdminKycReviewPage() {
         const back = docData?.back;
 
         return (
-          <div key={user.id} className="border rounded-xl p-4">
+          <div key={user.id} className="border text-gray-700 rounded-xl p-4">
             <p className="font-semibold mb-2">
               {user.first_name || 'N/A'} {user.last_name || 'N/A'} — {docType}
             </p>

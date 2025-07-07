@@ -1,327 +1,150 @@
-// app/admin/users/page.tsx
-'use client';
+// app/admin/page.tsx
+import Link from 'next/link';
+import { getInvestmentStats } from '@/lib/actions/admin/getInvestmentsData';
+import { getPendingKycs } from '@/lib/actions/admin/getPendingKycs';
+import prisma from '@/lib/prisma';
 
-import { useEffect, useState, useCallback } from 'react';
-import { Loader, Edit2, Save, X, Check, AlertCircle } from 'lucide-react';
+export default async function AdminDashboard() {
+    // Get quick stats
+    const [investmentStats, userCount, pendingKycUsers] = await Promise.all([
+        getInvestmentStats(),
+        prisma.users.count(),
+        getPendingKycs()
+    ]);
 
-interface User {
-  id: number;
-  email: string;
-  balance: string;
-  profit_balance: string;
-  recovery_fund: string;
-}
+    const quickStats = [
+        {
+            title: 'Total Investments',
+            value: investmentStats.total,
+            color: 'bg-blue-500',
+            href: '/admin/investments'
+        },
+        {
+            title: 'Total Users',
+            value: userCount,
+            color: 'bg-green-500',
+            href: '/admin/users'
+        },
+        {
+            title: 'Pending KYC',
+            value: pendingKycUsers.length,
+            color: 'bg-yellow-500',
+            href: '/admin/kyc'
+        },
+        {
+            title: 'Total Investment Amount',
+            value: new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(Number(investmentStats.totalAmount)),
+            color: 'bg-purple-500',
+            href: '/admin/investments'
+        }
+    ];
 
-interface EditingUser extends User {
-  originalBalance: string;
-  originalProfitBalance: string;
-  originalRecoveryFund: string;
-}
+    const adminActions = [
+        {
+            title: 'Manage Investments',
+            description: 'View and manage all user investments',
+            href: '/admin/investments',
+            icon: '💰',
+            color: 'bg-blue-50 hover:bg-blue-100 border-blue-200'
+        },
+        {
+            title: 'KYC Review',
+            description: 'Review and approve KYC documents',
+            href: '/admin/kyc',
+            icon: '🔍',
+            color: 'bg-yellow-50 hover:bg-yellow-100 border-yellow-200'
+        },
+        {
+            title: 'User Management',
+            description: 'Manage user accounts and permissions',
+            href: '/admin/users',
+            icon: '👥',
+            color: 'bg-green-50 hover:bg-green-100 border-green-200'
+        }
+    ];
 
-type LoadingState = 'idle' | 'loading' | 'success' | 'error';
-
-export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [total, setTotal] = useState(0);
-  const [editingUserId, setEditingUserId] = useState<number | null>(null);
-  const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
-  const [updateLoading, setUpdateLoading] = useState<LoadingState>('idle');
-  const [searchDebounce, setSearchDebounce] = useState('');
-
-  const limit = 50;
-
-  // Debounce search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(searchDebounce);
-      setPage(1); // Reset to first page on new search
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchDebounce]);
-
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/users?page=${page}&search=${search}`);
-      const data = await res.json();
-      setUsers(data.users);
-      setTotal(data.total);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  const startEdit = (user: User) => {
-    setEditingUserId(user.id);
-    setEditingUser({
-      ...user,
-      originalBalance: user.balance,
-      originalProfitBalance: user.profit_balance,
-      originalRecoveryFund: user.recovery_fund,
-    });
-    setUpdateLoading('idle');
-  };
-
-  const cancelEdit = () => {
-    setEditingUserId(null);
-    setEditingUser(null);
-    setUpdateLoading('idle');
-  };
-
-  const hasChanges = (user: EditingUser) => {
     return (
-      user.balance !== user.originalBalance ||
-      user.profit_balance !== user.originalProfitBalance ||
-      user.recovery_fund !== user.originalRecoveryFund
-    );
-  };
+        <div className="space-y-6">
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+                <p className="text-gray-600">Welcome to your admin dashboard</p>
+            </div>
 
-  const updateUser = async () => {
-    if (!editingUser) return;
-
-    setUpdateLoading('loading');
-    try {
-      const res = await fetch(`/api/admin/users/${editingUser.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          balance: editingUser.balance,
-          profit_balance: editingUser.profit_balance,
-          recovery_fund: editingUser.recovery_fund,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to update user');
-      }
-
-      const updatedUser = await res.json();
-      
-      setUsers((prev) =>
-        prev.map((user) => 
-          user.id === editingUser.id 
-            ? { ...user, ...updatedUser }
-            : user
-        )
-      );
-
-      setUpdateLoading('success');
-      
-      // Auto-close edit mode after success
-      setTimeout(() => {
-        cancelEdit();
-      }, 1500);
-
-    } catch (error) {
-      console.error('Failed to update user:', error);
-      setUpdateLoading('error');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && editingUser && hasChanges(editingUser)) {
-      updateUser();
-    } else if (e.key === 'Escape') {
-      cancelEdit();
-    }
-  };
-
-  const LoadingSpinner = () => (
-    <Loader className="animate-spin w-4 h-4" />
-  );
-
-  const getStatusIcon = () => {
-    switch (updateLoading) {
-      case 'loading':
-        return <LoadingSpinner />;
-      case 'success':
-        return <Check className="w-4 h-4 text-green-600" />;
-      case 'error':
-        return <AlertCircle className="w-4 h-4 text-red-600" />;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="p-4 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-gray-800">Admin - Users</h1>
-
-      {/* Search Input */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by email..."
-          value={searchDebounce}
-          onChange={(e) => setSearchDebounce(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center py-10">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="p-3 text-left font-semibold text-gray-700 border-r">Email</th>
-                <th className="p-3 text-left font-semibold text-gray-700 border-r">Balance</th>
-                <th className="p-3 text-left font-semibold text-gray-700 border-r">Profit</th>
-                <th className="p-3 text-left font-semibold text-gray-700 border-r">Recovery</th>
-                <th className="p-3 text-left font-semibold text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => {
-                const isEditing = editingUserId === user.id;
-                const currentUser = isEditing ? editingUser! : user;
-                
-                return (
-                  <tr key={user.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3 border-r font-medium text-gray-900">
-                      {user.email}
-                    </td>
-                    
-                    <td className="p-3 border-r">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={currentUser.balance}
-                          onChange={(e) => setEditingUser({
-                            ...editingUser!,
-                            balance: e.target.value
-                          })}
-                          onKeyDown={handleKeyPress}
-                          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          autoFocus
-                        />
-                      ) : (
-                        <span className="text-gray-700">${user.balance}</span>
-                      )}
-                    </td>
-                    
-                    <td className="p-3 border-r">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={currentUser.profit_balance}
-                          onChange={(e) => setEditingUser({
-                            ...editingUser!,
-                            profit_balance: e.target.value
-                          })}
-                          onKeyDown={handleKeyPress}
-                          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      ) : (
-                        <span className="text-gray-700">${user.profit_balance}</span>
-                      )}
-                    </td>
-                    
-                    <td className="p-3 border-r">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={currentUser.recovery_fund}
-                          onChange={(e) => setEditingUser({
-                            ...editingUser!,
-                            recovery_fund: e.target.value
-                          })}
-                          onKeyDown={handleKeyPress}
-                          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      ) : (
-                        <span className="text-gray-700">${user.recovery_fund}</span>
-                      )}
-                    </td>
-                    
-                    <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        {isEditing ? (
-                          <>
-                            <button
-                              onClick={updateUser}
-                              disabled={!hasChanges(editingUser!) || updateLoading === 'loading'}
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                            >
-                              <Save className="w-4 h-4" />
-                              Save
-                            </button>
-                            <button
-                              onClick={cancelEdit}
-                              disabled={updateLoading === 'loading'}
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                            >
-                              <X className="w-4 h-4" />
-                              Cancel
-                            </button>
-                            <div className="flex items-center gap-1">
-                              {getStatusIcon()}
-                              {hasChanges(editingUser!) && updateLoading === 'idle' && (
-                                <span className="text-xs text-orange-600">Unsaved changes</span>
-                              )}
-                              {updateLoading === 'success' && (
-                                <span className="text-xs text-green-600">Saved!</span>
-                              )}
-                              {updateLoading === 'error' && (
-                                <span className="text-xs text-red-600">Error</span>
-                              )}
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {quickStats.map((stat, index) => (
+                    <Link
+                        key={index}
+                        href={stat.href}
+                        className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow"
+                    >
+                        <div className="flex items-center">
+                            <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
+                                <div className="w-6 h-6 bg-white rounded opacity-30"></div>
                             </div>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => startEdit(user)}
-                            className="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                            Edit
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                            <div className="ml-4">
+                                <h3 className="text-sm font-medium text-gray-600">{stat.title}</h3>
+                                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
+            </div>
 
-          {/* Pagination */}
-          <div className="flex justify-between items-center p-4 bg-gray-50 border-t">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <span className="text-gray-700">
-              Page {page} of {Math.ceil(total / limit)} ({total} total users)
-            </span>
-            <button
-              disabled={page >= Math.ceil(total / limit)}
-              onClick={() => setPage(page + 1)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
+            {/* Quick Actions */}
+            <div>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {adminActions.map((action, index) => (
+                        <Link
+                            key={index}
+                            href={action.href}
+                            className={`p-6 rounded-lg border-2 transition-colors ${action.color}`}
+                        >
+                            <div className="flex items-center mb-4">
+                                <span className="text-2xl mr-3">{action.icon}</span>
+                                <h3 className="text-lg font-semibold text-gray-900">{action.title}</h3>
+                            </div>
+                            <p className="text-gray-600">{action.description}</p>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="bg-white rounded-lg shadow">
+                <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+                </div>
+                <div className="p-6">
+                    <div className="space-y-4">
+                        <div className="flex items-center space-x-4">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <div>
+                                <p className="text-sm font-medium text-gray-900">New investment created</p>
+                                <p className="text-xs text-gray-500">2 minutes ago</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div>
+                                <p className="text-sm font-medium text-gray-900">KYC document submitted</p>
+                                <p className="text-xs text-gray-500">15 minutes ago</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <div>
+                                <p className="text-sm font-medium text-gray-900">New user registered</p>
+                                <p className="text-xs text-gray-500">1 hour ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      )}
-    </div>
-  );
+    );
 }

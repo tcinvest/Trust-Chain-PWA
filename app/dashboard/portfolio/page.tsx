@@ -2,7 +2,7 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs'
 import React, { useState, useEffect } from 'react';
-import { Bell, HelpCircle, FileText, ChevronRight, Wallet, TrendingUp, Users, PencilIcon,  } from 'lucide-react';
+import { HelpCircle, FileText, ChevronRight, Wallet, TrendingUp, Users, PencilIcon,  } from 'lucide-react';
 
 import { getUserData } from '@/lib/actions/GetUserData';
 import { UserData } from '@/types/type';
@@ -12,7 +12,6 @@ import { formatCurrency, getKycStatus } from '@/lib/utils';
 import Link from 'next/link';
 import KycUploadForm from '@/components/KycUploadForm';
 import { uploadKyc } from '@/lib/actions/uploadKyc';
-
 
 export default function PortfolioScreen() {
   const { isLoaded, user } = useUser();
@@ -217,12 +216,10 @@ export default function PortfolioScreen() {
               </div>
             </div>
           </div>
-
           {/* Quick Actions */}
           <div className="space-y-3">
             {[
               { icon: Users, label: 'My Referrals', href: '/dashboard/referrals' },
-              { icon: Bell, label: 'Notifications', href: '/dashboard/notifications' },
               { icon: FileText, label: 'Terms & Conditions', href: '/terms' },
               { icon: HelpCircle, label: 'Help & Support', href: '/support' },
             ].map((item, index) => (

@@ -7,18 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Token {
-  id              Int    @id @default(autoincrement())
-  name            String
-  symbol          String
-  price           Float
-  priceChange24h  Float
-  marketCap       Int
-  volume24h       Int
-  holders         Int
-  transactions24h Int
-}
-
 model invests {
   id                    Int      @id @default(autoincrement())
   user_id               Int?
@@ -123,4 +111,36 @@ model referral_links {
   code                String? @db.VarChar(36)
   created_at          String? @db.VarChar(19)
   updated_at          String? @db.VarChar(19)
+}
+
+model bots {
+  id                Int      @id
+  name              String   @db.VarChar(100)
+  description       String?  @db.VarChar(100)
+  investment_range  String?  @db.VarChar(50)
+  capital_back      String?  @db.VarChar(10)
+  return_type       String?  @db.VarChar(20)
+  number_of_periods String?  @db.VarChar(20)
+  profit_withdraw   String?  @db.VarChar(20)
+  holiday_note      String?
+  is_active         Boolean? @default(true)
+  days              Int?
+  return_percentage Int?
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payment_proofs {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  proof_url    String    @db.VarChar(500)
+  type         String    @db.VarChar(10)
+  reference_id Int?
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+  status       String?
+  amount       String?
+
+  @@index([reference_id], map: "idx_reference_id")
+  @@index([type], map: "idx_type")
+  @@index([user_id], map: "idx_user_id")
 }

@@ -48,3 +48,24 @@ export interface MarketProps {
     isActive: boolean;
   }
   
+export type Investment = {
+  id: number;
+  user_id: number | null;
+  schema_id: number | null;
+  transaction_id: number | null;
+  invest_amount: any;
+  already_return_profit: number | null;
+  total_profit_amount: any;
+  last_profit_time: string | null;
+  next_profit_time: string | null;
+  capital_back: number | null;
+  interest: number | null;
+  interest_type: string | null;
+  return_type: string | null;
+  number_of_period: number | null;
+  period_hours: number | null;
+  wallet: string | null;
+  status: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};

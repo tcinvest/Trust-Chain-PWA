@@ -5,6 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import { getUserData } from '@/lib/actions/GetUserData';
 import { getUserInvestments } from '@/lib/actions/getUserInvestments';
 import { getUserTransactions } from '@/lib/actions/getUserTransactions';
+import { getBotById } from '@/lib/actions/getBotById';
 
 import BalanceDisplay from '@/components/dashboard/DisplayBalance';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -21,9 +22,9 @@ type DashboardData = {
   activeInvestment: {
     amount: number;
     bot: string;
-    progress: number;
-    dailyReturn: number;
-    daysRemaining: number;
+    createdAt: string;
+    botDays: number;
+    botReturnPercentage: number;
   } | null;
   recentEarnings: {
     date: string;
@@ -55,15 +56,13 @@ export default function Home() {
         getUserTransactions(userData.id),
       ]);
 
-      const activeInvestment = investments.find(inv => inv.status === 'active' || inv.status === 'running');
+      const activeInvestment = investments.find(
+        inv => inv.status === 'active' || inv.status === 'running'
+      );
 
-      let progress = 0;
-      let daysRemaining = 0;
-      if (activeInvestment) {
-        const totalPeriods = activeInvestment.number_of_period || 1;
-        const completedPeriods = activeInvestment.already_return_profit || 0;
-        progress = Math.round((completedPeriods / totalPeriods) * 100);
-        daysRemaining = Math.max(0, totalPeriods - completedPeriods);
+      let botConfig = null;
+      if (activeInvestment?.schema_id) {
+        botConfig = await getBotById(activeInvestment.schema_id);
       }
 
       const recentEarnings = transactions.slice(0, 5).map(transaction => ({
@@ -93,10 +92,10 @@ export default function Home() {
         activeInvestment: activeInvestment
           ? {
               amount: activeInvestment.invest_amount,
-              bot: 'AI Trading Bot Pro',
-              progress,
-              dailyReturn: activeInvestment.total_profit_amount / (activeInvestment.number_of_period || 1),
-              daysRemaining,
+              bot: botConfig?.name || 'AI Trading Bot Pro',
+              createdAt: activeInvestment.created_at || new Date().toISOString(),
+              botDays: botConfig?.days || 0,
+              botReturnPercentage: botConfig?.return_percentage || 0,
             }
           : null,
         recentEarnings,
@@ -154,9 +153,14 @@ export default function Home() {
           <QuickActionButtons />
           <ProfitSummaryCard profit={dashboardData.profitBalance} />
 
-          {dashboardData.activeInvestment && (
-            <ActiveInvestmentCard {...dashboardData.activeInvestment} />
-          )}
+          <ActiveInvestmentCard 
+            bot={dashboardData.activeInvestment?.bot}
+            amount={dashboardData.activeInvestment?.amount}
+            createdAt={dashboardData.activeInvestment?.createdAt}
+            botDays={dashboardData.activeInvestment?.botDays}
+            botReturnPercentage={dashboardData.activeInvestment?.botReturnPercentage}
+            hasActiveInvestment={!!dashboardData.activeInvestment}
+          />
 
           {dashboardData.recentEarnings.length > 0 && (
             <RecentEarningsList earnings={dashboardData.recentEarnings} />

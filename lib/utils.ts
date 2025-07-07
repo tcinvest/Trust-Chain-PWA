@@ -1,4 +1,3 @@
-import prisma from './prisma';
 
 export const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -26,7 +25,3 @@ export const formatCurrency = (amount: number) => {
     }
   };
 
-  export const getToken = async () => {
-    const token = await prisma.token.findFirst();
-    return token;
-  };
