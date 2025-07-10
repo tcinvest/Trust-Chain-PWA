@@ -19,8 +19,8 @@ export default function DisplayBalance({
   return (
     <div className="relative flex flex-col w-full max-w-md mx-auto aspect-[1.6/1] p-6 bg-gradient-to-br from-white via-slate-50 to-cyan-100 rounded-2xl shadow-2xl transform transition-all duration-300">
       {/* Credit card floating shadow effects */}
-      <div className="absolute -inset-1 bg-gradient-to-br from-cyan-400/50 via-blue-500/50 to-white/50 rounded-2xl blur-xl opacity-75 animate-pulse"></div>
-      <div className="absolute -inset-2 bg-gradient-to-br from-cyan-500/30 via-blue-600/30 to-white/30 rounded-2xl blur-2xl opacity-50 animate-pulse delay-1000"></div>
+      <div className="absolute -inset-1 bg-gradient-to-br from-cyan-400/50 via-blue-500/50 to-white/50 rounded-2xl blur-xl opacity-75"></div>
+      <div className="absolute -inset-2 bg-gradient-to-br from-cyan-500/30 via-blue-600/30 to-white/30 rounded-2xl blur-2xl opacity-50 "></div>
       
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
