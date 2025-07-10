@@ -321,10 +321,12 @@ export default function TrustChainLanding() {
             <p className="text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8">
               Join 50,000+ investors • No hidden fees • Start from $99 • Fund recovery available
             </p>
-            <button className="group relative bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-blue-500/50 flex items-center justify-center space-x-2 mx-auto">
-              <span>Start Your AI Investment Journey</span>
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <Link href="/sign-up">
+              <button className="group relative bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-blue-500/50 flex items-center justify-center space-x-2 mx-auto">
+                <span>Start Your AI Investment Journey</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
           </div>
         </div>
       </div>
