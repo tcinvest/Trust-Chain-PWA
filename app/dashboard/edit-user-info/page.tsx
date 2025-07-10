@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 import { getUserData } from '@/lib/actions/GetUserData';
 import { updateUserData } from './updateUserData'; 
 import { UserData } from '@/types/type';
-import { Link } from 'lucide-react';
+import KycUploadForm from '@/components/KycUploadForm';
+import { uploadKyc } from '@/lib/actions/uploadKyc';
+
 export default function EditUserInfo() {
-  const { user: clerkUser } = useUser();
+  const { user, isLoaded } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
+  
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -27,10 +31,10 @@ export default function EditUserInfo() {
 
   useEffect(() => {
     async function loadUserData() {
-      if (!clerkUser?.id) return;
+      if (!user?.id) return;
       
       try {
-        const data = await getUserData(clerkUser.id);
+        const data = await getUserData(user.id);
         if (!data) {
           console.error('User not found');
           return;
@@ -57,8 +61,10 @@ export default function EditUserInfo() {
       }
     }
 
-    loadUserData();
-  }, [clerkUser]);
+    if (isLoaded) {
+      loadUserData();
+    }
+  }, [user, isLoaded]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -67,12 +73,12 @@ export default function EditUserInfo() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clerkUser?.id || !userData) return;
+    if (!user?.id || !userData) return;
     
     setSaving(true);
     
     try {
-      const result = await updateUserData(clerkUser.id, formData);
+      const result = await updateUserData(user.id, formData);
       
       if (result.success) {
         setSaving(false);
@@ -87,7 +93,7 @@ export default function EditUserInfo() {
     }
   };
 
-  if (loading || !clerkUser) {
+  if (loading || !isLoaded || !user) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="text-slate-600 dark:text-slate-400">Loading...</div>
@@ -101,10 +107,10 @@ export default function EditUserInfo() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Edit Profile
+            KYC
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Update your personal information
+            Submit Your KYC
           </p>
         </div>
 
@@ -125,6 +131,18 @@ export default function EditUserInfo() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* KYC Upload Section */}
+        <div className="mt-6 mb-8">
+          <h4 className="text-black dark:text-white text-md font-semibold mb-2">
+            KYC Document Upload
+          </h4>
+          <KycUploadForm
+            userId={user.id}
+            formAction={uploadKyc}
+            kycStatus={userData?.kyc}
+          />
         </div>
 
         {/* Form */}
@@ -175,18 +193,18 @@ export default function EditUserInfo() {
               </div>
 
               <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                disabled
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                placeholder="Your email"
-              />
-            </div>
+                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  disabled
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  placeholder="Your email"
+                />
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
@@ -293,12 +311,12 @@ export default function EditUserInfo() {
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <Link href="/dashboard/portfolio">
-            <button
-              type="button"
-              className="px-6 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            >
-              Cancel
-            </button>
+              <button
+                type="button"
+                className="px-6 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
             </Link>
             <button
               type="submit"

@@ -52,13 +52,12 @@ export default function TransactionsPage() {
           <p className="text-center text-gray-600 dark:text-gray-400 py-8">No transactions found.</p>
         ) : (
           transactions.map((txn, index) => {
-            const isCredit = ['interest', 'signup_bonus', 'bonus', 'manual_deposit', 'refund'].includes(txn.type);
             const typeLabel =
               txn.type === 'interest' ? 'Daily Return' :
               txn.type === 'signup_bonus' ? 'Signup Bonus' :
               txn.type === 'bonus' ? 'Bonus' :
               txn.type === 'manual_deposit' ? 'Deposit' :
-              txn.type === 'withdraw' ? 'Withdrawal' :
+              txn.type === 'withdraw' || txn.type === 'withdrawal' ? 'Withdrawal' :
               txn.type === 'investment' ? 'Investment' :
               txn.type === 'refund' ? 'Refund' :
               'Transaction';
@@ -69,8 +68,8 @@ export default function TransactionsPage() {
                 className="flex justify-between items-center px-4 py-4 border-b border-gray-200 dark:border-gray-700"
               >
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 ${isCredit ? 'bg-green-500' : 'bg-red-500'} rounded-full flex items-center justify-center mr-3`}>
-                    {isCredit ? <TrendingUp size={16} className="text-white" /> : <TrendingDown size={16} className="text-white" />}
+                  <div className={`w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3`}>
+                     <TrendingUp size={16} className="text-white" /> : <TrendingDown size={16} className="text-white" />
                   </div>
                   <div>
                     <p className="text-black dark:text-white font-medium">{typeLabel}</p>
@@ -79,8 +78,8 @@ export default function TransactionsPage() {
                     </p>
                   </div>
                 </div>
-                <p className={`${isCredit ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-semibold text-lg`}>
-                  {isCredit ? '+' : '-'}{formatCurrency(txn.amount)}
+                <p className="text-green-600 dark:text-green-400 font-semibold text-lg">
+                  {formatCurrency(txn.amount)}
                 </p>
               </div>
             );

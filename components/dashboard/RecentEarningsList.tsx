@@ -10,7 +10,7 @@ export default function RecentEarningsList({ earnings }: { earnings: any[] }) {
       <div className="bg-gray-100 dark:bg-gray-800 rounded-3xl overflow-hidden">
         <div className="p-6 pb-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-black dark:text-white text-lg font-semibold">Recent Earnings</h3>
+            <h3 className="text-black dark:text-white text-lg font-semibold">Recent Earnings / Transactions</h3>
             <Link href="/dashboard/transactions">
               <button className="hover:opacity-80 transition-opacity">
                 <span className="text-blue-600 dark:text-blue-400 font-medium">See all</span>
@@ -34,7 +34,7 @@ export default function RecentEarningsList({ earnings }: { earnings: any[] }) {
               </div>
             </div>
             <p className="text-green-600 dark:text-green-400 font-semibold text-lg">
-              +{formatCurrency(earning.amount)}
+              {formatCurrency(earning.amount)}
             </p>
           </div>
         ))}

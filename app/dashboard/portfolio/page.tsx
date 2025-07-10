@@ -2,7 +2,7 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs'
 import React, { useState, useEffect } from 'react';
-import { HelpCircle, FileText, ChevronRight, Wallet, TrendingUp, Users, PencilIcon,  } from 'lucide-react';
+import { HelpCircle, ChevronRight, Wallet, TrendingUp, Users, PencilIcon,  } from 'lucide-react';
 
 import { getUserData } from '@/lib/actions/GetUserData';
 import { UserData } from '@/types/type';
@@ -10,8 +10,6 @@ import { updateUserAvatar } from '@/lib/actions/UpdateAvatar';
 import AvatarUploadForm from '@/components/AvatarUploadForm'; 
 import { formatCurrency, getKycStatus } from '@/lib/utils';
 import Link from 'next/link';
-import KycUploadForm from '@/components/KycUploadForm';
-import { uploadKyc } from '@/lib/actions/uploadKyc';
 
 export default function PortfolioScreen() {
   const { isLoaded, user } = useUser();
@@ -124,8 +122,9 @@ export default function PortfolioScreen() {
                 </div>
               </div>
             </div>
-            <Link href="/dashboard/edit-user-info">
-              <PencilIcon size={20} className="mb-4 mr-2" />
+            <Link href="/dashboard/edit-user-info" className="flex items-center text-sm text-blue-500 transition-colors border mb-2">
+              <PencilIcon size={18} className="mr-2" />
+              Upload KYC Document
             </Link>
             <AvatarUploadForm 
               userId={user.id}
@@ -136,11 +135,6 @@ export default function PortfolioScreen() {
             <h4 className="text-black dark:text-white text-md font-semibold mb-2">
               KYC Document Upload
             </h4>
-            <KycUploadForm
-              userId={user.id}
-              formAction={uploadKyc}
-              kycStatus={userData?.kyc}
-            />
           </div>
 
           </div>
@@ -220,8 +214,7 @@ export default function PortfolioScreen() {
           <div className="space-y-3">
             {[
               { icon: Users, label: 'My Referrals', href: '/dashboard/referrals' },
-              { icon: FileText, label: 'Terms & Conditions', href: '/terms' },
-              { icon: HelpCircle, label: 'Help & Support', href: '/support' },
+              { icon: HelpCircle, label: 'Help & Support', href: '/dashboard/support' },
             ].map((item, index) => (
               <a
                 key={index}

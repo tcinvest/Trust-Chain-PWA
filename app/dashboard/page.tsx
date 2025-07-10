@@ -15,6 +15,7 @@ import RecentEarningsList from '@/components/dashboard/RecentEarningsList';
 import QuickActionButtons from '@/components/dashboard/QuickActionButtons';
 import LoadingScreen from '@/components/dashboard/LoadingScreen';
 import ErrorScreen from '@/components/dashboard/ErrorScreen';
+import BotListSection from '@/components/BotListSection';
 
 type DashboardData = {
   totalBalance: number;
@@ -152,6 +153,8 @@ export default function Home() {
 
           <QuickActionButtons />
           <ProfitSummaryCard profit={dashboardData.profitBalance} />
+
+          <BotListSection />
 
           <ActiveInvestmentCard 
             bot={dashboardData.activeInvestment?.bot}

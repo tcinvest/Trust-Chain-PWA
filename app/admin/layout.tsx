@@ -1,6 +1,7 @@
 // app/admin/layout.tsx
 'use client';
 
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -37,9 +38,19 @@ const adminRoutes = [
     icon: '👥'
   },
   {
+    name: 'Withdrawal Requests',
+    href: '/admin/withdrawals',
+    icon: '💸'
+  },
+  {
     name: 'Bots',
     href: '/admin/bots',
     icon: '🤖'
+  },
+  {
+    name: 'Complaints',
+    href: '/admin/complaints',
+    icon: '📨'
   }
 ];
 

@@ -40,7 +40,7 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
     <>
       {isVerified && (
         <div className="mb-4 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 p-4 rounded-xl">
-          Your KYC is already verified. No further action is required.
+          Your KYC has been verified.
         </div>
       )}
 
@@ -109,7 +109,7 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
           ) : (
             <>
               <Upload size={16} />
-              Submit KYC
+              Upload Document
             </>
           )}
         </button>
