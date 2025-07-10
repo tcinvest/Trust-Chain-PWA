@@ -122,19 +122,17 @@ export default function PortfolioScreen() {
                 </div>
               </div>
             </div>
-            <Link href="/dashboard/edit-user-info" className="flex items-center text-sm text-blue-500 transition-colors border mb-2">
-              <PencilIcon size={18} className="mr-2" />
-              Upload KYC Document
-            </Link>
+            
             <AvatarUploadForm 
               userId={user.id}
               formAction={updateUserAvatar}
             />
 
           <div className="mt-6">
-            <h4 className="text-black dark:text-white text-md font-semibold mb-2">
-              KYC Document Upload
-            </h4>
+          <Link href="/dashboard/edit-user-info" className="flex items-center text-sm text-blue-500 transition-colors border mb-2">
+              <PencilIcon size={18} className="mr-2" />
+              Upload KYC Document
+            </Link>
           </div>
 
           </div>
