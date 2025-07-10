@@ -43,7 +43,7 @@ const bots = [
 ];
 
 export default function BotListSection() {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   return (
     <div className="px-6 pt-4 pb-2">

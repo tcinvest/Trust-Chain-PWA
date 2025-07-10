@@ -52,7 +52,7 @@ export default function TrustChainLanding() {
       description: 'Next-generation AI-powered investment solution backed by TRM Labs, designed to deliver outstanding returns with built-in fund recovery program.',
       features: [
         '40% ROI in 90 Days guaranteed',
-        'Fund Recovery Program – Recover up to 30% of past losses',
+        'Fund Recovery Program – Recover up to 100% of past losses',
         'Backed by TRM Labs for top-tier security',
         'Up to 70% Total ROI in 90 Days'
       ]
@@ -139,7 +139,7 @@ export default function TrustChainLanding() {
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg mx-auto mb-1 sm:mb-2 flex items-center justify-center">
                       <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
-                    <p className="text-xs sm:text-sm text-purple-300 font-medium">ChainMaster</p>
+                    <p className="text-xs sm:text-sm text-purple-300 font-medium">GeniusInvestAI</p>
                     <p className="text-xs text-gray-400">$99 Start</p>
                   </div>
                 </div>

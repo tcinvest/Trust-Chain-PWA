@@ -9,7 +9,7 @@ export default async function DashboardLayout({
   await checkUser()
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-slate-900">
-      <main className="flex-1 overflow-y-auto bg-white dark:bg-slate-900 pb-20 relative z-10">
+      <main className="flex-1 overflow-y-auto bg-white dark:bg-slate-900 pb-20 relative z-10 px-2">
         {children}
       </main>
       <Nav />
