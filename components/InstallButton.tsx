@@ -36,14 +36,10 @@ const InstallButton = () => {
     };
   
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
-      const hasSeenInstallPrompt = localStorage.getItem('hasSeenInstallPrompt');
-      if (hasSeenInstallPrompt) return; // 👈 skip if already seen
-  
       console.log('beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);
-      localStorage.setItem('hasSeenInstallPrompt', 'true'); // 👈 save flag
     };
   
     const handleAppInstalled = () => {
@@ -85,14 +81,12 @@ const InstallButton = () => {
         console.log('User accepted the install prompt');
       } else {
         console.log('User dismissed the install prompt');
+        // Don't clear the prompt - let it be available again
       }
     } catch (error) {
       console.error('Error showing install prompt:', error);
-    } finally {
-      // Clear the deferred prompt
-      setDeferredPrompt(null);
-      setIsInstallable(false);
     }
+    // Remove the finally block that was clearing the deferred prompt
   };
 
   const handleIOSInstallClick = () => {
@@ -101,17 +95,10 @@ const InstallButton = () => {
 
   // Don't show button if app is already installed
   if (isInstalled) {
-    return (
-      <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-lg">
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
-        <span className="font-medium">App Installed!</span>
-      </div>
-    );
+    return null; // Don't show anything when installed
   }
 
-  // iOS Install Instructions
+  // iOS Install Instructions - always show for iOS when not installed
   if (isIOS) {
     return (
       <div className="space-y-3">
@@ -164,27 +151,23 @@ const InstallButton = () => {
     );
   }
 
-  // Don't show button if not installable (Android/Desktop)
-  if (!isInstallable) {
+  // Android/Desktop Install Button - show if installable OR if we have a deferred prompt
+  if (isInstallable || deferredPrompt) {
     return (
-      <div className="text-gray-500 text-sm">
-        Install option not available
-      </div>
+      <button
+        onClick={handleInstallClick}
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Install App
+      </button>
     );
   }
 
-  // Android/Desktop Install Button
-  return (
-    <button
-      onClick={handleInstallClick}
-      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
-    >
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-      </svg>
-      Install App
-    </button>
-  );
+  // Don't show anything if not installable (instead of showing "Install option not available")
+  return null;
 };
 
 export default InstallButton;

@@ -105,9 +105,9 @@ export default function TrustChainLanding() {
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12">
             Choose your AI investment strategy. From accessible wealth building to elite trading and fund recovery—powered by cutting-edge artificial intelligence.
           </p>
-          <InstallButton />
           {/* Hero Image Section */}
           <div className="relative max-w-5xl mx-auto mb-12 sm:mb-16">
+            <InstallButton />
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-cyan-500/20 shadow-2xl shadow-cyan-500/20">
               <Image 
                 src="/Trustchain.png"
