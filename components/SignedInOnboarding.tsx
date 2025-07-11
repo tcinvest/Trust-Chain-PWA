@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Brain, TrendingUp, ArrowRight, Bot, DollarSign, Zap, Shield, Target, Clock } from 'lucide-react';
+import InstallButton from './InstallButton';
 
 export default function SignedInOnboarding() {
   return (
@@ -29,6 +30,7 @@ export default function SignedInOnboarding() {
             <Brain className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
           </div>
           <div className="text-left">
+            <InstallButton />
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Welcome Back!</h1>
             <p className="text-cyan-300 text-xs sm:text-sm lg:text-base font-medium">Ready to grow your wealth?</p>
           </div>
