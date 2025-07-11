@@ -1,8 +1,23 @@
+// Updated Home component (app/page.tsx)
+'use client'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
-import SignedInOnboarding from '@/components/SignedInOnboarding';
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { usePWADetection } from '@/hooks/usePWADetection'
+import SignedInOnboarding from '@/components/SignedInOnboarding'
 import SignedOutOnboarding from '@/components/SignedOutOnboarding'
 
 export default function Home() {
+  const router = useRouter()
+  const isPWA = usePWADetection()
+
+  useEffect(() => {
+    // If PWA is installed and user is not authenticated, redirect to sign-in
+    if (isPWA) {
+      // We'll handle the redirect in the SignedOut component to avoid auth state conflicts
+    }
+  }, [isPWA, router])
+
   return (
     <div className="min-h-screen bg-black relative overflow-hidden pt-4">
       {/* Animated background elements */}
@@ -13,12 +28,31 @@ export default function Home() {
       </div>
 
       <SignedOut>
-       <SignedOutOnboarding />
+        <PWASignedOutHandler isPWA={isPWA} />
       </SignedOut>
 
       <SignedIn>
-       <SignedInOnboarding />
+        <SignedInOnboarding />
       </SignedIn>
     </div>
   )
+}
+
+// Component to handle PWA redirect for signed out users
+function PWASignedOutHandler({ isPWA }: { isPWA: boolean }) {
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isPWA) {
+      router.push('/sign-in')
+    }
+  }, [isPWA, router])
+
+  // If PWA, don't render anything (redirect is happening)
+  if (isPWA) {
+    return null
+  }
+
+  // If not PWA, show the normal signed out onboarding
+  return <SignedOutOnboarding />
 }
