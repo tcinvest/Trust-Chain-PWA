@@ -148,11 +148,11 @@ const InstallButton = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="font-semibold min-w-[16px]">2.</span>
-                <span>Scroll down and tap "Add to Home Screen"</span>
+                <span>Scroll down and tap &quot;Add to Home Screen&quot;</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="font-semibold min-w-[16px]">3.</span>
-                <span>Tap "Add" to confirm</span>
+                <span>Tap &quot;Add&quot; to confirm</span>
               </li>
             </ol>
             <p className="text-xs text-blue-700 mt-3 italic">
