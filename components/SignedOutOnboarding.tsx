@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, TrendingUp, Shield, ArrowRight, DollarSign, Bot, Download, Play, CheckCircle, Clock, Lock, Lightbulb } from 'lucide-react';
+import { Brain, TrendingUp, Shield, ArrowRight, DollarSign, Bot, Download, Play, CheckCircle, Lock, Lightbulb } from 'lucide-react';
+import ReferralRecoverySection from './ReferralRecoverySection';
 
 export default function TrustChainLanding() {
   const [activeBot, setActiveBot] = useState('genius');
@@ -15,7 +16,6 @@ export default function TrustChainLanding() {
       minInvestment: '$99',
       returns: '10% Monthly',
       period: 'Monthly',
-      totalReturn: '120% Annually',
       color: 'from-cyan-400 to-blue-500',
       description: 'An advanced AI-powered investment solution designed to generate steady, reliable returns. Built on cutting-edge financial algorithms and real-time data analysis.',
       features: [
@@ -31,7 +31,6 @@ export default function TrustChainLanding() {
       minInvestment: '$9,999',
       returns: '30% in 60 Days',
       period: '60 Days',
-      totalReturn: '180% Annually',
       color: 'from-blue-400 to-indigo-500',
       description: 'Operates at lightspeed, executing high-frequency strategies across dynamic markets with split-second precision. Built on next-generation AI architecture.',
       features: [
@@ -47,7 +46,6 @@ export default function TrustChainLanding() {
       minInvestment: '$999',
       returns: '40% in 90 Days',
       period: '90 Days',
-      totalReturn: 'Up to 70% Total',
       color: 'from-blue-500 to-purple-500',
       description: 'Next-generation AI-powered investment solution backed by TRM Labs, designed to deliver outstanding returns with built-in fund recovery program.',
       features: [
@@ -125,7 +123,7 @@ export default function TrustChainLanding() {
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg mx-auto mb-1 sm:mb-2 flex items-center justify-center">
                       <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
-                    <p className="text-xs sm:text-sm text-cyan-300 font-medium">alphaInvestAI</p>
+                    <p className="text-xs sm:text-sm text-cyan-300 font-medium">AlphaInvestAI</p>
                     <p className="text-xs text-gray-400">$9,999 Elite</p>
                   </div>
                   <div className="text-center p-2 sm:p-3 bg-black/50 backdrop-blur-lg rounded-lg border border-blue-500/30">
@@ -210,11 +208,6 @@ export default function TrustChainLanding() {
                     <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentBot.returns}</div>
                     <div className="text-xs sm:text-sm text-gray-400">Expected Returns</div>
                   </div>
-                  <div className="text-center p-4 bg-gray-800/50 rounded-xl sm:rounded-2xl border border-gray-700">
-                    <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-400 mx-auto mb-2" />
-                    <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentBot.totalReturn}</div>
-                    <div className="text-xs sm:text-sm text-gray-400">Total Potential</div>
-                  </div>
                 </div>
 
                 {/* Features */}
@@ -251,15 +244,53 @@ export default function TrustChainLanding() {
               <p className="text-gray-300 text-sm sm:text-base lg:text-lg">Learn how to maximize your AI investment strategy with our comprehensive guide</p>
             </div>
             
-            <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black border border-gray-700">
-            <iframe 
-              width="560" 
-              height="315" 
-              src="https://www.youtube.com/embed/fFKcpmBDKVM?si=D3WTS6Ol8upAVQlZ" 
-              title="YouTube video player" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              ></iframe>
+            <div className="space-y-6">
+            {/* Large Featured Video */}
+            <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-gray-700">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/fFKcpmBDKVM?controls=1&modestbranding=1&rel=0"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </div>
+
+            {/* Small Thumbnails Grid */}
+            <div className="grid grid-cols-3 gap-2">
+              <iframe
+                className="w-full aspect-[4/3] rounded-md border border-gray-700"
+                src="https://www.youtube.com/embed/OHP86kxF3xY?controls=1&modestbranding=1&rel=0"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+              <iframe
+                className="w-full aspect-[4/3] rounded-md border border-gray-700"
+                src="https://www.youtube.com/embed/JbcfSXZ8H3Q?controls=1&modestbranding=1&rel=0"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+              <iframe
+                className="w-full aspect-[4/3] rounded-md border border-gray-700"
+                src="https://www.youtube.com/embed/XRK4CvRVIcs?controls=1&modestbranding=1&rel=0"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          </div>
+
+
+
+
           </div>
         </div>
 
@@ -291,6 +322,9 @@ export default function TrustChainLanding() {
             </div>
           </div>
         </div>
+
+        {/* Section: Referral Recovery */}
+        <ReferralRecoverySection />
 
         {/* Trust Indicators */}
         <div className="max-w-6xl mx-auto">
