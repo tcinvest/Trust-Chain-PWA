@@ -245,49 +245,48 @@ export default function TrustChainLanding() {
             </div>
             
             <div className="space-y-6">
-            {/* Large Featured Video */}
-            <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-gray-700">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/fFKcpmBDKVM?controls=1&modestbranding=1&rel=0"
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            </div>
+              {/* Main Large Video */}
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-gray-700">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/fFKcpmBDKVM?controls=1&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
 
-            {/* Small Thumbnails Grid */}
-            <div className="grid grid-cols-3 gap-2">
-              <iframe
-                className="w-full aspect-[4/3] rounded-md border border-gray-700"
-                src="https://www.youtube.com/embed/OHP86kxF3xY?controls=1&modestbranding=1&rel=0"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
-              <iframe
-                className="w-full aspect-[4/3] rounded-md border border-gray-700"
-                src="https://www.youtube.com/embed/JbcfSXZ8H3Q?controls=1&modestbranding=1&rel=0"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
-              <iframe
-                className="w-full aspect-[4/3] rounded-md border border-gray-700"
-                src="https://www.youtube.com/embed/XRK4CvRVIcs?controls=1&modestbranding=1&rel=0"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
+              {/* Smaller Video Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <iframe
+                  className="w-full aspect-video rounded-lg border border-gray-700"
+                  src="https://www.youtube.com/embed/OHP86kxF3xY?controls=1&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+                <iframe
+                  className="w-full aspect-video rounded-lg border border-gray-700"
+                  src="https://www.youtube.com/embed/JbcfSXZ8H3Q?controls=1&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+                <iframe
+                  className="w-full aspect-video rounded-lg border border-gray-700"
+                  src="https://www.youtube.com/embed/XRK4CvRVIcs?controls=1&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
             </div>
-          </div>
-
 
 
 
