@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TCIAI",
+  title: "TCI",
   description: "Trust Chain Invest AI app",
+  manifest: '/manifest.json'
 };
 
 export default function RootLayout({
