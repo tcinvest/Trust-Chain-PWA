@@ -18,6 +18,7 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
   const [formState, formActionDispatch, isPending] = useActionState(formAction, null);
   const [selectedFront, setSelectedFront] = useState<File | null>(null);
   const [selectedBack, setSelectedBack] = useState<File | null>(null);
+  const [selectedSelfie, setSelectedSelfie] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState("Driver's license");
 
   const isVerified = kycStatus === 2;
@@ -28,6 +29,10 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
 
   const handleBackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) setSelectedBack(e.target.files[0]);
+  };
+
+  const handleSelfieChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) setSelectedSelfie(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -95,10 +100,27 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
           />
         </label>
 
+        {/* Selfie Upload */}
+        <label className={`cursor-pointer ${isVerified ? 'opacity-50 cursor-not-allowed' : ''} bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl p-3 transition-colors flex items-center justify-center`}>
+          <ImagePlus size={20} className="text-black dark:text-white" />
+          <span className="ml-2 text-black dark:text-white">
+            {selectedSelfie ? selectedSelfie.name : "Upload Selfie of You Holding Your ID"}
+          </span>
+          <input
+            type="file"
+            name="kyc_file_selfie"
+            accept="image/*"
+            className="hidden"
+            required
+            disabled={isVerified}
+            onChange={handleSelfieChange}
+          />
+        </label>
+
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isPending || !selectedFront || !selectedBack || isVerified}
+          disabled={isPending || !selectedFront || !selectedBack || !selectedSelfie || isVerified}
           className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
         >
           {isPending ? (
