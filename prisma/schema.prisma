@@ -8,33 +8,33 @@ datasource db {
 }
 
 model invests {
-  id                    Int      @id @default(autoincrement())
+  id                    Int      @id(map: "_invests_pkey") @default(autoincrement())
   user_id               Int?
   schema_id             Int?
   transaction_id        Int?
   invest_amount         Decimal? @db.Decimal
   already_return_profit Int?
   total_profit_amount   Decimal? @db.Decimal
-  last_profit_time      String?
-  next_profit_time      String?
+  last_profit_time      String?  @db.VarChar(19)
+  next_profit_time      String?  @db.VarChar(19)
   capital_back          Int?
   interest              Int?
-  interest_type         String?
-  return_type           String?
+  interest_type         String?  @db.VarChar(10)
+  return_type           String?  @db.VarChar(6)
   number_of_period      Int?
   period_hours          Int?
-  wallet                String?
-  status                String?
-  created_at            String?
-  updated_at            String?
+  wallet                String?  @db.VarChar(7)
+  status                String?  @db.VarChar(9)
+  created_at            String?  @db.VarChar(19)
+  updated_at            String?  @db.VarChar(19)
 }
 
 model referral_relationships {
-  id               Int     @id
+  id               Int     @id(map: "_referral_relationships_pkey") @default(autoincrement())
   referral_link_id Int?
   user_id          Int?
-  created_at       String?
-  updated_at       String?
+  created_at       String? @db.VarChar(19)
+  updated_at       String? @db.VarChar(19)
 }
 
 model referrals {
@@ -50,27 +50,27 @@ model referrals {
 }
 
 model transactions {
-  id                Int      @id @default(autoincrement())
+  id                Int      @id(map: "_transactions_pkey") @default(autoincrement())
   user_id           Int?
-  from_user_id      String?
-  from_model        String?
-  target_id         String?
-  target_type       String?
+  from_user_id      String?  @db.VarChar(4)
+  from_model        String?  @db.VarChar(5)
+  target_id         String?  @db.VarChar(1)
+  target_type       String?  @db.VarChar(10)
   is_level          Int?
-  tnx               String?
-  description       String?
+  tnx               String?  @db.VarChar(13)
+  description       String?  @db.VarChar(65)
   amount            Decimal? @db.Decimal
-  type              String?
-  charge            String?
+  type              String?  @db.VarChar(14)
+  charge            String?  @db.VarChar(9)
   final_amount      Decimal? @db.Decimal
-  method            String?
-  pay_currency      String?
-  pay_amount        String?
-  manual_field_data String?
-  approval_cause    String?
-  status            String?
-  created_at        String?
-  updated_at        String?
+  method            String?  @db.VarChar(15)
+  pay_currency      String?  @db.VarChar(6)
+  pay_amount        String?  @db.VarChar(13)
+  manual_field_data String?  @db.VarChar(135)
+  approval_cause    String?  @db.VarChar(510)
+  status            String?  @db.VarChar(7)
+  created_at        String?  @db.VarChar(19)
+  updated_at        String?  @db.VarChar(19)
 }
 
 model users {
@@ -101,13 +101,13 @@ model users {
   ref_id          String?
   created_at      String?
   updated_at      String?
-  clerk_id        String?  @unique(map: "users_clerkId_key")
+  clerk_id        String?  @unique(map: "users_clerkid_key")
 }
 
 model referral_links {
-  id                  Int     @id @db.SmallInt
-  user_id             Int?    @db.SmallInt
-  referral_program_id Int?    @db.SmallInt
+  id                  Int     @id(map: "_referral_links_pkey") @default(autoincrement())
+  user_id             Int?
+  referral_program_id Int?
   code                String? @db.VarChar(36)
   created_at          String? @db.VarChar(19)
   updated_at          String? @db.VarChar(19)
