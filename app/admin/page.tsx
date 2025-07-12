@@ -53,7 +53,7 @@ export default async function AdminDashboard() {
         {
             title: 'KYC Review',
             description: 'Review and approve KYC documents',
-            href: '/admin/kyc',
+            href: '/admin/kyc-review',
             icon: '🔍',
             color: 'bg-yellow-50 hover:bg-yellow-100 border-yellow-200'
         },
