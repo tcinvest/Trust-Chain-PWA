@@ -8,7 +8,7 @@ const bots = [
     id: 1,
     name: 'Geniusinvestai',
     description: '30 Days 10%',
-    investmentRange: '$9 - $9000',
+    investmentRange: '$99 - $9000',
     capitalBack: 'Yes',
     returnType: 'Period',
     numberOfPeriods: '1 Time',
