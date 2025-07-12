@@ -1,6 +1,6 @@
 import React from 'react';
-import { Users, Shield, CheckCircle, Bot, ArrowRight, Lock, Eye, Zap } from 'lucide-react';
-import Link from 'next/link';
+import { Users, Shield, CheckCircle, Bot, Lock, Eye, Zap } from 'lucide-react';
+
 
 export default function ReferralRecoverySection() {
   return (
@@ -167,12 +167,6 @@ export default function ReferralRecoverySection() {
             <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed mb-6">
               If you&apos;ve lost access to your funds or made an unproductive investment, we&apos;re here to help. Our ChainMasterBot recovery system is already helping hundreds of users recover what&apos;s rightfully theirs — 10% at a time, every month, until full restitution is made.
             </p>
-            <Link href="/sign-up">
-                <button className="group relative bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-green-500/50 flex items-center justify-center space-x-2 mx-auto">
-                <span>👉 Get Started Now</span>
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-            </Link>
           </div>
         </div>
       </div>

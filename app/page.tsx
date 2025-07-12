@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { usePWADetection } from '@/hooks/usePWADetection'
 import SignedInOnboarding from '@/components/SignedInOnboarding'
 import SignedOutOnboarding from '@/components/SignedOutOnboarding'
+import PWAOnboarding from '@/components/PWAOnboarding'
 
 export default function Home() {
   const router = useRouter()
@@ -32,25 +33,25 @@ export default function Home() {
       </SignedOut>
 
       <SignedIn>
-        <SignedInOnboarding />
+        {isPWA ? <PWAOnboarding /> : <SignedInOnboarding />}
       </SignedIn>
     </div>
   )
 }
 
-// Component to handle PWA redirect for signed out users
 function PWASignedOutHandler({ isPWA }: { isPWA: boolean }) {
   const router = useRouter()
 
   useEffect(() => {
     if (isPWA) {
-      router.push('/sign-in')
+      // Don't redirect anymore - show onboarding instead
+      return
     }
   }, [isPWA, router])
 
-  // If PWA, don't render anything (redirect is happening)
+  // If PWA, show onboarding screen
   if (isPWA) {
-    return null
+    return <PWAOnboarding />
   }
 
   // If not PWA, show the normal signed out onboarding

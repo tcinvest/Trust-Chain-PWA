@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, TrendingUp, Shield, ArrowRight, DollarSign, Bot, Download, Play, CheckCircle, Lock, Lightbulb } from 'lucide-react';
+import { Brain, TrendingUp, Shield, DollarSign, Bot, Download, Play, CheckCircle, Lock, Lightbulb } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
 
@@ -220,14 +219,6 @@ export default function TrustChainLanding() {
                     </div>
                   ))}
                 </div>
-
-                {/* CTA */}
-                <Link href='/sign-up'>
-                    <button className="w-full group relative bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-blue-500/50 flex items-center justify-center space-x-2">
-                    <span>Start with {currentBot.name}</span>
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                </Link>
                
               </div>
             </div>
@@ -349,18 +340,6 @@ export default function TrustChainLanding() {
               <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1 sm:mb-2">AI Innovation</h4>
               <p className="text-xs sm:text-sm text-gray-400">Cutting-edge investment technology</p>
             </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8">
-              Join 50,000+ investors • No hidden fees • Start from $99 • Fund recovery available
-            </p>
-            <Link href="/sign-up">
-              <button className="group relative bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-blue-500/50 flex items-center justify-center space-x-2 mx-auto">
-                <span>Start Your AI Investment Journey</span>
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
           </div>
         </div>
       </div>
