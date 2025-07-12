@@ -21,7 +21,7 @@ export default function WithdrawMoneyPage() {
 
   // Calculate withdrawal details
   const withdrawalAmount = parseFloat(amount) || 0;
-  const charges = withdrawalAmount * 0.05; // 5% charges
+  const charges = withdrawalAmount * 0.005; // 5% charges
   const youWillReceive = withdrawalAmount - charges;
   const selectedBalance = balanceType === 'balance' ? balance : profitBalance;
 
@@ -258,7 +258,7 @@ export default function WithdrawMoneyPage() {
           <h3 className="text-sm font-semibold mb-2">Important Notes:</h3>
           <ul className="text-xs text-gray-400 space-y-1">
             <li>• KYC verification is required to withdraw funds</li>
-            <li>• A 5% charge applies to all withdrawals</li>
+            <li>• A 0.5% charge applies to all withdrawals</li>
             <li>• Double-check your wallet address and network before submitting</li>
             <li>• Admin approval is required before funds are processed</li>
             <li>• Processing time: 1-24 hours</li>

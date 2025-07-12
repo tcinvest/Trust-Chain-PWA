@@ -34,7 +34,8 @@ export default function HelpSupport() {
     'Account Problem',
     'Investment Concern',
     'General Support',
-    'Feature Request'
+    'Feature Request',
+    'Recovery Case'
   ];
 
   const priorities = ['Low', 'Medium', 'High'];

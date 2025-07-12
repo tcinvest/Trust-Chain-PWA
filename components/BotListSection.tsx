@@ -7,7 +7,7 @@ const bots = [
   {
     id: 1,
     name: 'Geniusinvestai',
-    description: '30 Days 20%',
+    description: '30 Days 10%',
     investmentRange: '$9 - $9000',
     capitalBack: 'Yes',
     returnType: 'Period',
@@ -32,7 +32,7 @@ const bots = [
     id: 3,
     name: 'ChainMaster (Affiliate)',
     description: '90 Days 40%',
-    investmentRange: '$99 - $9999999',
+    investmentRange: '$999 - $9999999',
     capitalBack: 'Yes',
     returnType: 'Period',
     numberOfPeriods: '1 Time',
