@@ -15,18 +15,18 @@ model invests {
   invest_amount         Decimal? @db.Decimal
   already_return_profit Int?
   total_profit_amount   Decimal? @db.Decimal
-  last_profit_time      String?  @db.VarChar(19)
-  next_profit_time      String?  @db.VarChar(19)
+  last_profit_time      String?
+  next_profit_time      String?
   capital_back          Int?
   interest              Int?
-  interest_type         String?  @db.VarChar(10)
-  return_type           String?  @db.VarChar(6)
+  interest_type         String?
+  return_type           String?
   number_of_period      Int?
   period_hours          Int?
-  wallet                String?  @db.VarChar(7)
-  status                String?  @db.VarChar(9)
-  created_at            String?  @db.VarChar(19)
-  updated_at            String?  @db.VarChar(19)
+  wallet                String?
+  status                String?
+  created_at            String?
+  updated_at            String?
 }
 
 model referral_relationships {
@@ -52,25 +52,25 @@ model referrals {
 model transactions {
   id                Int      @id @default(autoincrement())
   user_id           Int?
-  from_user_id      String?  @db.VarChar(4)
-  from_model        String?  @db.VarChar(5)
-  target_id         String?  @db.VarChar(1)
-  target_type       String?  @db.VarChar(10)
+  from_user_id      String?
+  from_model        String?
+  target_id         String?
+  target_type       String?
   is_level          Int?
-  tnx               String?  @db.VarChar(13)
-  description       String?  @db.VarChar(65)
+  tnx               String?
+  description       String?
   amount            Decimal? @db.Decimal
-  type              String?  @db.VarChar(14)
-  charge            String?  @db.VarChar(9)
+  type              String?
+  charge            String?
   final_amount      Decimal? @db.Decimal
-  method            String?  @db.VarChar(15)
-  pay_currency      String?  @db.VarChar(6)
-  pay_amount        String?  @db.VarChar(13)
-  manual_field_data String?  @db.VarChar(135)
-  approval_cause    String?  @db.VarChar(510)
-  status            String?  @db.VarChar(7)
-  created_at        String?  @db.VarChar(19)
-  updated_at        String?  @db.VarChar(19)
+  method            String?
+  pay_currency      String?
+  pay_amount        String?
+  manual_field_data String?
+  approval_cause    String?
+  status            String?
+  created_at        String?
+  updated_at        String?
 }
 
 model users {
