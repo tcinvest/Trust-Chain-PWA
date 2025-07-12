@@ -8,7 +8,7 @@ datasource db {
 }
 
 model invests {
-  id                    Int      @id(map: "_invests_pkey") @default(autoincrement())
+  id                    Int      @id @default(autoincrement())
   user_id               Int?
   schema_id             Int?
   transaction_id        Int?
@@ -30,7 +30,7 @@ model invests {
 }
 
 model referral_relationships {
-  id               Int     @id(map: "_referral_relationships_pkey") @default(autoincrement())
+  id               Int     @id @default(autoincrement())
   referral_link_id Int?
   user_id          Int?
   created_at       String? @db.VarChar(19)
@@ -50,7 +50,7 @@ model referrals {
 }
 
 model transactions {
-  id                Int      @id(map: "_transactions_pkey") @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   user_id           Int?
   from_user_id      String?  @db.VarChar(4)
   from_model        String?  @db.VarChar(5)
@@ -105,7 +105,7 @@ model users {
 }
 
 model referral_links {
-  id                  Int     @id(map: "_referral_links_pkey") @default(autoincrement())
+  id                  Int     @id @default(autoincrement())
   user_id             Int?
   referral_program_id Int?
   code                String? @db.VarChar(36)
