@@ -58,7 +58,7 @@ export default function Home() {
       ]);
 
       const activeInvestment = investments.find(
-        inv => inv.status === 'ongoing' || inv.status === 'running'
+        inv => inv.status === 'ongoing'
       );
 
       let botConfig = null;
