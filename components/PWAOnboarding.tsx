@@ -8,7 +8,7 @@ export default function PWAOnboarding() {
   const router = useRouter()
 
   const handleGetStarted = () => {
-    router.push('/sign-in')
+    router.push('/sign-up')
   }
 
   const handleDashboard = () => {
