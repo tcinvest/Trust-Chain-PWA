@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
             title: 'Pending KYC',
             value: pendingKycUsers.length,
             color: 'bg-yellow-500',
-            href: '/admin/kyc'
+            href: '/admin/kyc-review'
         },
         {
             title: 'Total Investment Amount',
