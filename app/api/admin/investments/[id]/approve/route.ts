@@ -24,7 +24,7 @@ export async function PATCH(
     await prisma.invests.update({
       where: { id: parseInt(resolvedParams.id) },
       data: {
-        status: "active",
+        status: "ongoing",
         updated_at: new Date().toISOString()
       }
     });

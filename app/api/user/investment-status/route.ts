@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const activeInvestment = await prisma.invests.findFirst({
       where: {
         user_id: user.id,
-        status: { in: ["pending", "active"] }
+        status: { in: ["pending", "ongoing"] }
       }
     });
 

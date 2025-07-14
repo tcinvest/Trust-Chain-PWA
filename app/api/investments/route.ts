@@ -42,12 +42,12 @@ export async function POST(req: NextRequest) {
     const existingInvestment = await prisma.invests.findFirst({
       where: {
         user_id: user.id,
-        status: { in: ["pending", "active"] }
+        status: { in: ["pending", "ongoing"] }
       }
     });
 
     if (existingInvestment) {
-      return Response.json({ error: "You already have an active or pending investment" }, { status: 400 });
+      return Response.json({ error: "You already have an active investment" }, { status: 400 });
     }
 
     // Get bot details from database
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Determine status and period hours
-    const status = wallet === "main" ? "active" : "pending";
+    const status = wallet === "main" ? "ongoing" : "pending";
     const periodHours = bot.id === 1 ? 720 : bot.id === 2 ? 1440 : 2160; // 30/60/90 days
 
     // Create transaction
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
         description: `Investment in ${bot.name}`,
         amount: investAmount,
         type: "investment",
-        status: status === "active" ? "completed" : "pending",
+        status: status === "ongoing" ? "completed" : "pending",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       }
