@@ -149,6 +149,8 @@ export async function uploadKyc(prevState: FormState | null, formData: FormData)
             }
           } catch (extractError) {
             console.warn('Data extraction failed:', extractError);
+            existingCredential = {};
+            console.log(existingCredential);
           }
         }
       }
