@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Script from 'next/script';
 import { Brain, TrendingUp, Shield, DollarSign, Bot, Download, Play, CheckCircle, Lock, Lightbulb } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
@@ -61,6 +62,25 @@ export default function TrustChainLanding() {
 
   return (
     <div className="relative min-h-screen bg-black">
+      {/* Smartsupp Live Chat Script */}
+      <Script
+        id="smartsupp-chat"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            var _smartsupp = _smartsupp || {};
+            _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
+            window.smartsupp = function(d) {
+              var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+              s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+              c.type='text/javascript';c.charset='utf-8';c.async=true;
+              c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+            };
+            window.smartsupp(document);
+          `
+        }}
+      />
+
       {/* Animated Background */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-10 left-4 w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -343,6 +363,13 @@ export default function TrustChainLanding() {
           </div>
         </div>
       </div>
+
+      {/* Fallback for users with JavaScript disabled */}
+      <noscript>
+        <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
+          Powered by <a href="https://www.smartsupp.com" target="_blank" rel="noopener noreferrer">Smartsupp</a>
+        </div>
+      </noscript>
     </div>
   );
 }

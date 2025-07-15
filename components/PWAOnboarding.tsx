@@ -3,6 +3,7 @@
 
 import { useRouter } from 'next/navigation'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
+import Script from 'next/script'
 
 export default function PWAOnboarding() {
   const router = useRouter()
@@ -17,6 +18,25 @@ export default function PWAOnboarding() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-6">
+      {/* Smartsupp Live Chat Script */}
+      <Script
+        id="smartsupp-chat"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            var _smartsupp = _smartsupp || {};
+            _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
+            window.smartsupp = function(d) {
+              var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+              s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+              c.type='text/javascript';c.charset='utf-8';c.async=true;
+              c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+            };
+            window.smartsupp(document);
+          `
+        }}
+      />
+
       {/* Animated background elements with neon blue */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
@@ -32,7 +52,7 @@ export default function PWAOnboarding() {
             Trust Chain
             <span className="block text-cyan-400 neon-glow">Invest AI</span>
           </h1>
-          
+
           {/* Subtitle */}
           <p className="text-gray-300 text-lg leading-relaxed">
             Empowering your financial future with intelligent blockchain investments and AI-driven insights.
@@ -48,12 +68,12 @@ export default function PWAOnboarding() {
                 AI
               </span>
             </div>
-            
+
             {/* Geometric shapes */}
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-cyan-400 rounded opacity-80 animate-pulse"></div>
             <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-400 rounded opacity-60 animate-pulse delay-300"></div>
             <div className="absolute top-1/2 -right-4 w-3 h-3 bg-cyan-300 rounded-full opacity-70 animate-pulse delay-700"></div>
-            
+
             {/* Connecting lines */}
             <div className="absolute top-4 left-4 w-16 h-px bg-gradient-to-r from-cyan-400 to-transparent opacity-50"></div>
             <div className="absolute bottom-4 right-4 w-12 h-px bg-gradient-to-l from-blue-400 to-transparent opacity-50"></div>
@@ -113,6 +133,13 @@ export default function PWAOnboarding() {
           transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
         }
       `}</style>
+
+      {/* Fallback for users with JavaScript disabled */}
+      <noscript>
+        <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
+          Powered by <a href="https://www.smartsupp.com" target="_blank" rel="noopener noreferrer">Smartsupp</a>
+        </div>
+      </noscript>
     </div>
   )
 }
