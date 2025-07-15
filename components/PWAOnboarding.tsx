@@ -8,7 +8,9 @@ import { useEffect } from 'react'
 // TypeScript declarations for Smartsupp
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     smartsupp?: any;
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _smartsupp?: any;
   }
 }
