@@ -39,24 +39,9 @@ export const checkUser = async () => {
           username: `${user.username}`,
           avatar: user.imageUrl,
           email: user.emailAddresses[0].emailAddress,
-          balance: 10.00, // Add signup bonus to balance
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
       });
-
-      // Create signup bonus transaction
-      await prisma.transactions.create({
-        data: {
-          user_id: newUser.id,
-          description: 'Signup bonus',
-          amount: 10.00,
-          type: 'signup_bonus',
-          status: 'completed',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      });
-
       return newUser;
 };
