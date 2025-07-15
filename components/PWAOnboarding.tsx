@@ -132,11 +132,24 @@ export default function PWAOnboarding() {
         .perspective-3d {
           transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
         }
+
+        /* Smartsupp positioning override */
+        :global(#smartsupp-widget-container) {
+          bottom: auto !important;
+          top: 20px !important;
+          right: 20px !important;
+        }
+        
+        :global(.smartsupp_widget) {
+          bottom: auto !important;
+          top: 20px !important;
+          right: 20px !important;
+        }
       `}</style>
 
       {/* Fallback for users with JavaScript disabled */}
       <noscript>
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
+        <div style={{position: 'fixed', top: '20px', right: '20px', zIndex: 9999}}>
           Powered by <a href="https://www.smartsupp.com" target="_blank" rel="noopener noreferrer">Smartsupp</a>
         </div>
       </noscript>
