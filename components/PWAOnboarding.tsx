@@ -3,10 +3,58 @@
 
 import { useRouter } from 'next/navigation'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
-import Script from 'next/script'
+import { useEffect } from 'react'
+
+// TypeScript declarations for Smartsupp
+declare global {
+  interface Window {
+    smartsupp?: any;
+    _smartsupp?: any;
+  }
+}
 
 export default function PWAOnboarding() {
   const router = useRouter()
+
+  useEffect(() => {
+    // Load Smartsupp script only when this component mounts
+    const script = document.createElement('script')
+    script.innerHTML = `
+      var _smartsupp = _smartsupp || {};
+      _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
+      window.smartsupp = function(d) {
+        var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+        s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+        c.type='text/javascript';c.charset='utf-8';c.async=true;
+        c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+      };
+      window.smartsupp(document);
+    `
+    document.head.appendChild(script)
+
+    // Cleanup function to remove the chat when component unmounts
+    return () => {
+      // Remove Smartsupp elements
+      const smartsuppElements = document.querySelectorAll('[id*="smartsupp"], [class*="smartsupp"]')
+      smartsuppElements.forEach(el => el.remove())
+      
+      // Remove the script
+      const scripts = document.querySelectorAll('script')
+      scripts.forEach(s => {
+        if (s.src && s.src.includes('smartsuppchat.com')) {
+          s.remove()
+        }
+      })
+      
+      // Clear global variables
+      if (typeof window !== 'undefined' && window.smartsupp) {
+        delete window.smartsupp
+      }
+      if (typeof window !== 'undefined' && window._smartsupp) {
+        delete window._smartsupp
+      }
+    }
+  }, [])
 
   const handleGetStarted = () => {
     router.push('/sign-up')
@@ -18,25 +66,6 @@ export default function PWAOnboarding() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-6">
-      {/* Smartsupp Live Chat Script */}
-      <Script
-        id="smartsupp-chat"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            var _smartsupp = _smartsupp || {};
-            _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
-            window.smartsupp = function(d) {
-              var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-              s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-              c.type='text/javascript';c.charset='utf-8';c.async=true;
-              c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-            };
-            window.smartsupp(document);
-          `
-        }}
-      />
-
       {/* Animated background elements with neon blue */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
