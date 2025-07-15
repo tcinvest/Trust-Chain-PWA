@@ -26,7 +26,7 @@ export default function PWAOnboarding() {
           __html: `
             var _smartsupp = _smartsupp || {};
             _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
-            _smartsupp.offsetY = -500; // Move up significantly from bottom
+            _smartsupp.hideWidget = true; // Hide the default widget
             window.smartsupp = function(d) {
               var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
               s=d.getElementsByTagName('script')[0];c=d.createElement('script');
@@ -37,6 +37,29 @@ export default function PWAOnboarding() {
           `
         }}
       />
+
+      {/* Custom floating chat button */}
+      <div 
+        className="fixed top-4 right-4 z-50 bg-cyan-500 hover:bg-cyan-600 text-white p-3 rounded-full cursor-pointer transition-all duration-300 shadow-lg hover:shadow-cyan-500/25"
+        onClick={() => {
+          if (window.smartsupp) {
+            window.smartsupp('chat:open');
+          }
+        }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
 
       {/* Animated background elements with neon blue */}
       <div className="absolute inset-0 overflow-hidden">
@@ -134,28 +157,7 @@ export default function PWAOnboarding() {
           transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
         }
 
-        /* Smartsupp positioning override - Multiple selectors to target different elements */
-        :global(.smartsupp_widget),
-        :global(#smartsupp-widget-container),
-        :global([id*="smartsupp"]) {
-          bottom: auto !important;
-          top: 20px !important;
-          right: 20px !important;
-        }
-        
-        /* Additional targeting for Smartsupp elements */
-        :global(.smartsupp_widget iframe),
-        :global(#smartsupp-widget-container iframe) {
-          bottom: auto !important;
-          top: 0 !important;
-        }
-        
-        /* Force positioning with more specific selectors */
-        :global(div[class*="smartsupp"]) {
-          bottom: auto !important;
-          top: 20px !important;
-          right: 20px !important;
-        }
+        /* Remove the Smartsupp positioning overrides since we're using custom button */
       `}</style>
 
       {/* Fallback for users with JavaScript disabled */}
