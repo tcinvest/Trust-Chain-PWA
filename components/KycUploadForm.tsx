@@ -207,6 +207,7 @@ export default function KycUploadForm({ userId, formAction, kycStatus }: KycUplo
         >
           <option value="Driver's license">Driver&apos;s license</option>
           <option value="National Identity card">National ID card</option>
+          <option value="Passport">Passport</option>
           <option value="Voter's card">Voter&apos;s card</option>
         </select>
 
