@@ -18,24 +18,54 @@ export default function PWAOnboarding() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-6">
-      {/* Smartsupp Live Chat Script */}
-      <Script
-        id="smartsupp-chat"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            var _smartsupp = _smartsupp || {};
-            _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
-            window.smartsupp = function(d) {
-              var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-              s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-              c.type='text/javascript';c.charset='utf-8';c.async=true;
-              c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-            };
-            window.smartsupp(document);
-          `
+      {/* Smartsupp Chat Container - Fixed Top Right */}
+      <div 
+        id="smartsupp-container" 
+        className="fixed top-4 right-4 z-[9999] w-16 h-16"
+        style={{
+          position: 'fixed',
+          top: '16px',
+          right: '16px',
+          zIndex: 9999,
+          width: '64px',
+          height: '64px',
+          pointerEvents: 'none'
         }}
-      />
+      >
+        {/* Smartsupp Live Chat Script */}
+        <Script
+          id="smartsupp-chat"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              var _smartsupp = _smartsupp || {};
+              _smartsupp.key = 'bc2353ae9bf12c5f80748245026c8f47818a0af4';
+              window.smartsupp = function(d) {
+                var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+                s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+                c.type='text/javascript';c.charset='utf-8';c.async=true;
+                c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+              };
+              window.smartsupp(document);
+              
+              // Force position the widget after load
+              setTimeout(function() {
+                var widget = document.querySelector('#smartsupp-widget-container') || 
+                           document.querySelector('.smartsupp-widget') || 
+                           document.querySelector('[id*="smartsupp"]');
+                if (widget) {
+                  widget.style.position = 'fixed';
+                  widget.style.top = '20px';
+                  widget.style.right = '20px';
+                  widget.style.bottom = 'auto';
+                  widget.style.left = 'auto';
+                  widget.style.zIndex = '9999';
+                }
+              }, 1000);
+            `
+          }}
+        />
+      </div>
 
       {/* Animated background elements with neon blue */}
       <div className="absolute inset-0 overflow-hidden">
@@ -133,13 +163,25 @@ export default function PWAOnboarding() {
           transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
         }
 
-        /* Smartsupp chat widget position override */
+        /* Enhanced Smartsupp chat widget positioning */
         :global(#smartsupp-widget-container),
         :global(.smartsupp-widget),
         :global([id*="smartsupp"]) {
+          position: fixed !important;
           top: 20px !important;
-          bottom: auto !important;
           right: 20px !important;
+          bottom: auto !important;
+          left: auto !important;
+          z-index: 9999 !important;
+        }
+        
+        /* Additional targeting for stubborn widgets */
+        :global(iframe[src*="smartsupp"]) {
+          position: fixed !important;
+          top: 20px !important;
+          right: 20px !important;
+          bottom: auto !important;
+          left: auto !important;
         }
       `}</style>
 
