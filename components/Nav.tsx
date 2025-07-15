@@ -56,7 +56,7 @@ export default function Nav() {
             visible ? 'translate-y-0' : 'translate-y-full'
           }`}
         >
-          <div className="max-w-lg mx-auto flex justify-around text-white dark:text-slate-400 items-center h-24">
+          <div className="max-w-lg mx-auto flex justify-around text-white dark:text-slate-400 items-center h-32">
             <button
               onClick={() => handleNavigation('/dashboard')}
               className={`flex-1 flex flex-col justify-center items-center h-full transition-colors text-slate-600 dark:text-slate-400 ${
