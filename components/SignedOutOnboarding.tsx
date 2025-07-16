@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Script from 'next/script';
+import Link from 'next/link';
 import { Brain, TrendingUp, Shield, DollarSign, Bot, Download, Play, CheckCircle, Lock, Lightbulb } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
@@ -124,6 +125,16 @@ export default function TrustChainLanding() {
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12">
             Choose your AI investment strategy. From accessible wealth building to elite trading and fund recovery—powered by cutting-edge artificial intelligence.
           </p>
+          
+          {/* Get Started Button */}
+          <div className="mb-8 sm:mb-12">
+            <Link href="/sign-up">
+              <button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg shadow-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/70 transform hover:scale-105 text-lg sm:text-xl">
+                Get Started Now
+              </button>
+            </Link>
+          </div>
+
           {/* Hero Image Section */}
           <div className="relative max-w-5xl mx-auto mb-12 sm:mb-16">
             <InstallButton />
@@ -238,6 +249,15 @@ export default function TrustChainLanding() {
                       <span className="text-gray-300 text-sm sm:text-base">{feature}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* Get Started Button for Selected Bot */}
+                <div className="text-center">
+                  <Link href="/sign-up">
+                    <button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/70 transform hover:scale-105">
+                      Start with {currentBot.name}
+                    </button>
+                  </Link>
                 </div>
                
               </div>
@@ -362,6 +382,15 @@ export default function TrustChainLanding() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Fixed Bottom Get Started Button */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <Link href="/sign-up">
+          <button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/70 transform hover:scale-105 flex items-center space-x-2">
+            <span>Get Started</span>
+          </button>
+        </Link>
       </div>
 
       {/* Fallback for users with JavaScript disabled */}

@@ -155,7 +155,7 @@ export default function SignedInOnboarding() {
         </div>
 
         {/* CTA Button - Mobile-optimized */}
-        <Link href="/dashboard/portfolio" className="w-full max-w-xs sm:max-w-none sm:w-auto">
+        <Link href="/dashboard" className="w-full max-w-xs sm:max-w-none sm:w-auto">
           <button className="group relative bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg sm:rounded-xl lg:rounded-2xl text-sm sm:text-base lg:text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-2xl shadow-blue-500/50 flex items-center justify-center space-x-2 w-full sm:w-auto">
             <span>Open Your Dashboard</span>
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
