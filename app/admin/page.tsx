@@ -5,7 +5,6 @@ import { getPendingKycs } from '@/lib/actions/admin/getPendingKycs';
 import prisma from '@/lib/prisma';
 
 export default async function AdminDashboard() {
-    // Get quick stats
     const [investmentStats, userCount, pendingKycUsers] = await Promise.all([
         getInvestmentStats(),
         prisma.users.count(),
@@ -61,6 +60,13 @@ export default async function AdminDashboard() {
             title: 'User Management',
             description: 'Manage user accounts and permissions',
             href: '/admin/users',
+            icon: '👥',
+            color: 'bg-green-50 hover:bg-green-100 border-green-200'
+        },
+        {
+            title: 'KYC History',
+            description: 'View KYC approval / rejection history',
+            href: '/admin/kyc-history',
             icon: '👥',
             color: 'bg-green-50 hover:bg-green-100 border-green-200'
         }

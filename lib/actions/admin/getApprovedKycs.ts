@@ -1,12 +1,11 @@
-// lib/actions/admin/getPendingKycs.ts
+// lib/actions/admin/getApprovedKycs.ts
 'use server';
+import prisma from '@/lib/prisma';
 
-import  prisma  from '@/lib/prisma';
-
-export async function getPendingKycs() {
+export async function getApprovedKycs() {
   const users = await prisma.users.findMany({
     where: {
-      kyc: 1,
+      kyc: 2,
       NOT: { kyc_credential: null },
     },
     select: {
@@ -16,6 +15,9 @@ export async function getPendingKycs() {
       clerk_id: true,
       kyc_credential: true,
       updated_at: true,
+    },
+    orderBy: {
+      updated_at: 'desc',
     },
   });
 

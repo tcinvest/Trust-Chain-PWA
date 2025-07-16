@@ -51,6 +51,11 @@ const adminRoutes = [
     name: 'Complaints',
     href: '/admin/complaints',
     icon: '📨'
+  },
+  {
+    name: 'KYC History',
+    href: '/admin/kyc-history',
+    icon: '📜'
   }
 ];
 

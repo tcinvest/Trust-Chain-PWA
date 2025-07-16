@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { updateKycStatus } from '@/lib/actions/admin/updateKycStatus';
 import { getPendingKycs } from '@/lib/actions/admin/getPendingKycs';
+import { RotateCcw } from 'lucide-react';
 
 interface KycUser {
   id: number;
@@ -39,6 +40,14 @@ export default function AdminKycReviewPage() {
   const handleAction = async (clerkId: string, status: number, reason: string) => {
     await updateKycStatus(clerkId, status, reason);
     setKycUsers((prev) => prev.filter((u) => u.clerk_id !== clerkId));
+  };
+
+  const handleReset = async (clerkId: string) => {
+    const confirmed = confirm("Are you sure you want to reset this KYC to not started?");
+    if (confirmed) {
+      await updateKycStatus(clerkId, 0, "Reset to not started");
+      setKycUsers((prev) => prev.filter((u) => u.clerk_id !== clerkId));
+    }
   };
 
   if (loading) return <p className="p-6">Loading...</p>;
@@ -109,6 +118,13 @@ export default function AdminKycReviewPage() {
                 className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm"
               >
                 Reject
+              </button>
+              <button
+                onClick={() => user.clerk_id && handleReset(user.clerk_id)}
+                className="bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded text-sm flex items-center justify-center"
+                title="Reset KYC Status"
+              >
+                <RotateCcw size={14} />
               </button>
             </div>
           </div>
