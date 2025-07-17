@@ -2,6 +2,7 @@ import Nav from '@/components/Nav'
 import { checkUser } from '@/lib/check-user'
 import { redirect } from 'next/navigation'
 import { AlertCircle, RefreshCw } from 'lucide-react'
+import Link from 'next/link'
 
 // Error component for authentication failures
 function AuthError() {
@@ -16,24 +17,24 @@ function AuthError() {
         </div>
         
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          We're having trouble verifying your account. Please try signing in again.
+          We&apos;re having trouble verifying your account. Please try signing in again.
         </p>
         
         <div className="space-y-3">
-          <a
+          <Link
             href="/sign-in"
             className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Sign In Again
-          </a>
+          </Link>
           
-          <a
+          <Link
             href="/"
             className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
           >
             Go to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>
