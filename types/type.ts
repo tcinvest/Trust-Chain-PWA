@@ -69,3 +69,19 @@ export type Investment = {
   created_at: string | null;
   updated_at: string | null;
 };
+
+export interface ReferralData {
+  totalEarned: number;
+  totalReferrals: number;
+  activeReferrals: number;
+  referralCode: string;
+  referralLink: string;
+  recentReferrals: Array<{
+    id: string;
+    name: string;
+    joinedAt: string;
+    earned: number;
+    status: 'active' | 'inactive';
+  }>;
+  pendingRewards: number;
+}

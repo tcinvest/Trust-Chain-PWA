@@ -3,43 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Users, DollarSign, Share2, Copy, Loader2 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatDateTime, copyToClipboard } from '@/lib/utils';
+import { ReferralData } from '@/types/type';
 
-const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch (err) {
-    console.error('Failed to copy text:', err);
-    return false;
-  }
-};
-
-interface ReferralData {
-  totalEarned: number;
-  totalReferrals: number;
-  activeReferrals: number;
-  referralCode: string;
-  referralLink: string;
-  recentReferrals: Array<{
-    id: string;
-    name: string;
-    joinedAt: string;
-    earned: number;
-    status: 'active' | 'inactive';
-  }>;
-  pendingRewards: number;
-}
 
 export default function ReferralsScreen() {
   const { user } = useUser();
@@ -47,7 +13,6 @@ export default function ReferralsScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Generate default referral data while loading
   const getDefaultReferralData = (): ReferralData => {
     const userId = user?.publicMetadata?.internalId as number;
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://yourapp.com';
