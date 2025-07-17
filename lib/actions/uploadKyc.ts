@@ -88,7 +88,7 @@ export async function uploadKyc(prevState: FormState | null, formData: FormData)
     if (user?.kyc_credential) {
       try {
         existingCredential = JSON.parse(user.kyc_credential);
-      } catch (err) {
+      } catch {
         console.warn('KYC credential malformed. Attempting to recover...');
         try {
           const fixed = user.kyc_credential
@@ -97,7 +97,7 @@ export async function uploadKyc(prevState: FormState | null, formData: FormData)
             .replace(/,\s*}/g, '}')
             .replace(/,\s*]/g, ']');
           existingCredential = JSON.parse(fixed);
-        } catch (parseFail) {
+        } catch {
           console.warn('Failed to recover malformed credential. Resetting.');
           existingCredential = {};
         }
@@ -143,6 +143,7 @@ export async function uploadKyc(prevState: FormState | null, formData: FormData)
     }
 
     return { success: true };
+    //eslint-disable-next-line
   } catch (err: any) {
     console.error('Unhandled KYC Upload Error:', err);
 
