@@ -7,7 +7,6 @@ import { getUserData } from '@/lib/actions/GetUserData';
 import { updateUserData } from './updateUserData'; 
 import { UserData } from '@/types/type';
 import KycUploadForm from '@/components/KycUploadForm';
-import { uploadKyc } from '@/lib/actions/uploadKyc';
 
 export default function EditUserInfo() {
   const { user, isLoaded } = useUser();
@@ -139,8 +138,6 @@ export default function EditUserInfo() {
             KYC Document Upload
           </h4>
           <KycUploadForm
-            userId={user.id}
-            formAction={uploadKyc}
             kycStatus={userData?.kyc}
           />
         </div>
