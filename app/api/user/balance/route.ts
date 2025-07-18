@@ -13,14 +13,20 @@ export async function GET(req: NextRequest) {
 
     const user = await prisma.users.findUnique({
       where: { clerk_id: clerkId },
-      select: { balance: true }
+      select: { 
+        balance: true,
+        profit_balance: true
+      }
     });
 
     if (!user) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    return Response.json({ balance: user.balance });
+    return Response.json({ 
+      balance: user.balance,
+      profit_balance: user.profit_balance
+    });
   } catch (err) {
     console.error("Get balance error:", err);
     return Response.json({ error: "Something went wrong" }, { status: 500 });
