@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         console.log(`Compressing ${type} file...`);
         
         // Aggressive compression for large files
-        buffer = await sharp(buffer)
+        buffer = Buffer.from(await sharp(buffer)
           .resize({ 
             width: 1920, 
             height: 1920, 
@@ -71,13 +71,13 @@ export async function POST(request: NextRequest) {
             progressive: true,
             mozjpeg: true
           })
-          .toBuffer();
+          .toBuffer());
           
         console.log(`${type} compressed to: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`);
         
         // If still too large, compress more aggressively
         if (buffer.length > MAX_SIZE) {
-          buffer = await sharp(buffer)
+          buffer = Buffer.from(await sharp(buffer)
             .resize({ 
               width: 1440, 
               height: 1440, 
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
               quality: 60,
               progressive: true
             })
-            .toBuffer();
+            .toBuffer());
             
           console.log(`${type} further compressed to: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`);
         }
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
         }
       } else {
         // Light optimization for files under 10MB
-        buffer = await sharp(buffer)
+        buffer = Buffer.from(await sharp(buffer)
           .resize({ 
             width: 2048, 
             height: 2048, 
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
             quality: 85,
             progressive: true
           })
-          .toBuffer();
+          .toBuffer());
       }
       
       // Upload to Cloudinary
