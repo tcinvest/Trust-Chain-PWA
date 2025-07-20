@@ -6,7 +6,6 @@ interface KycUploadFormProps {
   onUploadSuccess?: () => void;
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_RETRIES = 3;
 
@@ -48,13 +47,10 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     };
   }, [previewUrls]);
 
-  // Enhanced file validation
+  // Enhanced file validation (removed size restriction)
   const validateFile = (file: File): string | null => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       return 'File must be JPEG, PNG, or WebP';
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return 'File must be smaller than 10MB';
     }
     // Check for minimum size (avoid empty files)
     if (file.size < 1024) {
@@ -70,7 +66,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     } else if (xhr.status >= 500) {
       setError('Server error. Please try again later.');
     } else if (xhr.status === 413) {
-      setError('Files too large. Please reduce file sizes.');
+      setError('Request too large. The server is processing your files...');
     } else if (xhr.status === 401) {
       setError('Authentication failed. Please refresh the page and try again.');
     } else {
@@ -204,13 +200,13 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         setIsUploading(false);
       };
 
-      // Handle timeout
+      // Handle timeout - increased for large files
       xhr.ontimeout = () => {
-        setError('Upload timeout. Please try again.');
+        setError('Upload timeout. Large files may take longer to process. Please try again.');
         setIsUploading(false);
       };
 
-      xhr.timeout = 120000; // 2 minutes timeout
+      xhr.timeout = 300000; // 5 minutes timeout for large files
       xhr.open('POST', '/api/kyc/upload');
       xhr.send(formData);
 
@@ -224,9 +220,24 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB'];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // Get file size warning for large files
+  const getFileSizeWarning = (file: File | null): string | null => {
+    if (!file) return null;
+    
+    const sizeInMB = file.size / (1024 * 1024);
+    
+    if (sizeInMB > 50) {
+      return `Large file (${formatFileSize(file.size)}). Upload may take longer.`;
+    } else if (sizeInMB > 20) {
+      return `Medium file (${formatFileSize(file.size)}). Please be patient during upload.`;
+    }
+    
+    return null;
   };
 
   // Enhanced file upload field with preview
@@ -240,62 +251,74 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     label: string; 
     file: File | null;
     previewUrl: string | null;
-  }) => (
-    <div className="space-y-2">
-      <label className={`cursor-pointer ${isVerified ? 'opacity-50 cursor-not-allowed' : ''} bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl p-3 transition-colors block`}>
-        <div className="flex items-center justify-center mb-2">
-          <ImagePlus size={20} className="text-black dark:text-white mr-2" />
-          <span className="text-black dark:text-white">{label}</span>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {file ? file.name : 'No file selected'}
-          </span>
-          {file && (
-            <span className="text-xs text-gray-500">
-              {formatFileSize(file.size)}
+  }) => {
+    const sizeWarning = getFileSizeWarning(file);
+    
+    return (
+      <div className="space-y-2">
+        <label className={`cursor-pointer ${isVerified ? 'opacity-50 cursor-not-allowed' : ''} bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl p-3 transition-colors block`}>
+          <div className="flex items-center justify-center mb-2">
+            <ImagePlus size={20} className="text-black dark:text-white mr-2" />
+            <span className="text-black dark:text-white">{label}</span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {file ? file.name : 'No file selected'}
             </span>
-          )}
-        </div>
-        
-        <input
-          type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
-          className="hidden"
-          disabled={isVerified || isUploading}
-          onChange={(e) => handleFileChange(e, type)}
-        />
-      </label>
+            {file && (
+              <span className="text-xs text-gray-500">
+                {formatFileSize(file.size)}
+              </span>
+            )}
+          </div>
+          
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            className="hidden"
+            disabled={isVerified || isUploading}
+            onChange={(e) => handleFileChange(e, type)}
+          />
+        </label>
 
-      {/* File Preview */}
-      {previewUrl && (
-        <div className="relative bg-gray-100 dark:bg-gray-800 rounded-xl p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
-              <Eye size={16} />
-              Preview
-            </span>
-            <button
-              type="button"
-              onClick={() => removeFile(type)}
-              disabled={isUploading}
-              className="text-red-500 hover:text-red-700 disabled:opacity-50"
-            >
-              <X size={16} />
-            </button>
+        {/* File Size Warning */}
+        {sizeWarning && (
+          <div className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-100 p-2 rounded-lg text-xs flex items-center gap-1">
+            <AlertCircle size={14} />
+            {sizeWarning}
           </div>
-          <div className="flex justify-center">
-            <img
-              src={previewUrl}
-              alt={`${label} preview`}
-              className="max-w-full max-h-32 object-contain rounded-lg"
-            />
+        )}
+
+        {/* File Preview */}
+        {previewUrl && (
+          <div className="relative bg-gray-100 dark:bg-gray-800 rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                <Eye size={16} />
+                Preview
+              </span>
+              <button
+                type="button"
+                onClick={() => removeFile(type)}
+                disabled={isUploading}
+                className="text-red-500 hover:text-red-700 disabled:opacity-50"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="flex justify-center">
+              <img
+                src={previewUrl}
+                alt={`${label} preview`}
+                className="max-w-full max-h-32 object-contain rounded-lg"
+              />
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -346,7 +369,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         {isUploading && uploadProgress > 0 && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>Uploading...</span>
+              <span>Uploading and processing files...</span>
               <span>{uploadProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -368,7 +391,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
           {isUploading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              Uploading...
+              Uploading and Processing...
             </>
           ) : (
             <>
@@ -409,10 +432,11 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         {/* Requirements */}
         <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p>• Supported formats: JPEG, PNG, WebP</p>
-          <p>• Maximum file size: 10MB per file</p>
+          <p>• No file size limit - large files will be automatically compressed</p>
           <p>• Minimum file size: 1KB per file</p>
           <p>• Upload progress is tracked in real-time</p>
           <p>• Files are automatically previewed before upload</p>
+          <p>• Large files may take longer to upload and process</p>
         </div>
       </div>
     </div>

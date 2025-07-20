@@ -1,8 +1,8 @@
-// app/api/kyc/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { v2 as cloudinary } from 'cloudinary';
 import prisma from '@/lib/prisma';
+import sharp from 'sharp';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -31,19 +31,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Validate file types and sizes
+    // Validate file types - we'll handle size with compression
     const files = [frontFile, backFile, selfieFile];
     const fileNames = ['front', 'back', 'selfie'];
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
     const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (file.size > MAX_SIZE) {
-        return NextResponse.json({ 
-          error: `${fileNames[i]} file too large. Max size: 10MB` 
-        }, { status: 400 });
-      }
       if (!ALLOWED_TYPES.includes(file.type)) {
         return NextResponse.json({ 
           error: `${fileNames[i]} file type not supported` 
@@ -51,19 +45,82 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Convert files to buffer and upload to Cloudinary
-    const uploadFile = async (file: File, type: string) => {
-        console.log(type)
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+    // Enhanced file compression and upload function
+    const compressAndUploadFile = async (file: File, type: string) => {
+      console.log(`Processing ${type}, original size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
       
+      const bytes = await file.arrayBuffer();
+      let buffer = Buffer.from(bytes);
+      
+      // Compress if file is over 10MB or always compress for better performance
+      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      
+      if (file.size > MAX_SIZE) {
+        console.log(`Compressing ${type} file...`);
+        
+        // Aggressive compression for large files
+        buffer = await sharp(buffer)
+          .resize({ 
+            width: 1920, 
+            height: 1920, 
+            fit: 'inside',
+            withoutEnlargement: true 
+          })
+          .jpeg({ 
+            quality: 75,
+            progressive: true,
+            mozjpeg: true
+          })
+          .toBuffer();
+          
+        console.log(`${type} compressed to: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`);
+        
+        // If still too large, compress more aggressively
+        if (buffer.length > MAX_SIZE) {
+          buffer = await sharp(buffer)
+            .resize({ 
+              width: 1440, 
+              height: 1440, 
+              fit: 'inside',
+              withoutEnlargement: true 
+            })
+            .jpeg({ 
+              quality: 60,
+              progressive: true
+            })
+            .toBuffer();
+            
+          console.log(`${type} further compressed to: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`);
+        }
+        
+        // Final check - if still too large, return error
+        if (buffer.length > MAX_SIZE) {
+          throw new Error(`Unable to compress ${type} file below 10MB limit`);
+        }
+      } else {
+        // Light optimization for files under 10MB
+        buffer = await sharp(buffer)
+          .resize({ 
+            width: 2048, 
+            height: 2048, 
+            fit: 'inside',
+            withoutEnlargement: true 
+          })
+          .jpeg({ 
+            quality: 85,
+            progressive: true
+          })
+          .toBuffer();
+      }
+      
+      // Upload to Cloudinary
       return new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           {
             folder: 'kyc_uploads',
             resource_type: 'image',
+            // Remove transformation since we're handling it with Sharp
             transformation: [
-              { width: 1200, height: 1200, crop: 'limit' },
               { quality: 'auto', fetch_format: 'auto' }
             ]
           },
@@ -75,11 +132,11 @@ export async function POST(request: NextRequest) {
       });
     };
 
-    // Upload all files
+    // Upload all files with compression
     const [frontUrl, backUrl, selfieUrl] = await Promise.all([
-      uploadFile(frontFile, 'front'),
-      uploadFile(backFile, 'back'),
-      uploadFile(selfieFile, 'selfie')
+      compressAndUploadFile(frontFile, 'front'),
+      compressAndUploadFile(backFile, 'back'),
+      compressAndUploadFile(selfieFile, 'selfie')
     ]);
 
     // Get existing KYC credential
@@ -129,7 +186,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('KYC upload error:', error);
     return NextResponse.json(
-      { error: 'Upload failed. Please try again.' },
+      { error: error instanceof Error ? error.message : 'Upload failed. Please try again.' },
       { status: 500 }
     );
   }
