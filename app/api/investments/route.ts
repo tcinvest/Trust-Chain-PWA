@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check if user already has active/pending investment
+    /* Check if user already has active/pending investment
     const existingInvestment = await prisma.invests.findFirst({
       where: {
         user_id: user.id,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     if (existingInvestment) {
       return Response.json({ error: "You already have an active investment" }, { status: 400 });
-    }
+    } */
 
     // Get bot details from database
     const bot = await prisma.bots.findUnique({

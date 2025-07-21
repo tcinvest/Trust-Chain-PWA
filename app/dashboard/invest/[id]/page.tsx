@@ -16,7 +16,6 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
   const [selectedCoin, setSelectedCoin] = useState('');
   const [proof, setProof] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [alreadyInvesting, setAlreadyInvesting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -33,24 +32,17 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
     fetchBot();
   }, [id]);
 
-  // Check if user already has an active/pending investment and get balance
+  // Get user balance
   useEffect(() => {
-    const checkInvestment = async () => {
+    const getBalance = async () => {
       if (!user?.id) return;
-
-      // Check investment status
-      const res = await fetch(`/api/user/investment-status?clerkId=${user.id}`);
-      const data = await res.json();
-      if (data.hasActiveOrPending) {
-        setAlreadyInvesting(true);
-      }
 
       // Get user balance
       const userRes = await fetch(`/api/user/balance?clerkId=${user.id}`);
       const userData = await userRes.json();
       setUserBalance(userData.balance || 0);
     };
-    checkInvestment();
+    getBalance();
   }, [user?.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,12 +109,6 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
     <div className="min-h-screen bg-slate-900 text-white px-6 py-10 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Review and Confirm Investment</h1>
 
-      {alreadyInvesting && (
-        <div className="bg-yellow-600 p-4 rounded-lg mb-6">
-          ⚠️ You already have an active or pending investment. Complete it before starting a new one.
-        </div>
-      )}
-
       {submitStatus === 'success' && (
         <div className="bg-green-600 p-4 rounded-lg mb-6">
           ✅ Investment submitted successfully! Redirecting to dashboard...
@@ -160,7 +146,6 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
               onChange={(e) => setAmount(e.target.value)}
               className="flex-1 bg-slate-700 px-4 py-2 outline-none text-white"
               required
-              disabled={alreadyInvesting}
             />
             <span className="bg-blue-600 px-3 flex items-center">USD</span>
           </div>
@@ -173,7 +158,6 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
             value={selectedWallet}
             onChange={(e) => setSelectedWallet(e.target.value)}
             required
-            disabled={alreadyInvesting}
           >
             <option value="">-- Select --</option>
             <option value="main">Main Wallet (Balance: ${userBalance})</option>
@@ -192,7 +176,6 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
                 accept="image/*"
                 className="w-full bg-slate-700 px-4 py-2 rounded mt-1 text-white"
                 required
-                disabled={alreadyInvesting}
               />
             </div>
           </>
@@ -212,7 +195,7 @@ export default function BotInvestPage({ params }: { params: Promise<{ id: string
         <div className="flex justify-between mt-6">
           <button
             type="submit"
-            disabled={isSubmitting || alreadyInvesting}
+            disabled={isSubmitting}
             className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg"
           >
             {isSubmitting ? 'Processing...' : '✓ Invest Now'}

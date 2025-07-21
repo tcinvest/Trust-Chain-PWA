@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, Loader2, ImagePlus, AlertCircle, CheckCircle, X, RotateCcw, Eye } from "lucide-react";
+import imageCompression from 'browser-image-compression';
 
 interface KycUploadFormProps {
   kycStatus: number | null | undefined;
@@ -26,6 +27,16 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [compressionProgress, setCompressionProgress] = useState<{
+    front: boolean;
+    back: boolean;
+    selfie: boolean;
+  }>({
+    front: false,
+    back: false,
+    selfie: false,
+  });
   const [previewUrls, setPreviewUrls] = useState<{
     front: string | null;
     back: string | null;
@@ -47,7 +58,39 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     };
   }, [previewUrls]);
 
-  // Enhanced file validation (removed size restriction)
+  // Client-side image compression function
+  const compressImage = async (file: File, type: 'front' | 'back' | 'selfie'): Promise<File> => {
+    const options = {
+      maxSizeMB: 2, // Maximum file size in MB
+      maxWidthOrHeight: 1920, // Maximum width or height
+      useWebWorker: true, // Use web worker for better performance
+      fileType: 'image/jpeg', // Convert all to JPEG for consistency
+      initialQuality: 0.8, // Initial quality (0.1 to 1)
+    };
+
+    try {
+      console.log(`Compressing ${file.name}, original size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+      
+      // Set compression progress
+      setCompressionProgress(prev => ({ ...prev, [type]: true }));
+      
+      const compressedFile = await imageCompression(file, options);
+      
+      console.log(`Compressed to: ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+      
+      // Reset compression progress
+      setCompressionProgress(prev => ({ ...prev, [type]: false }));
+      
+      return compressedFile;
+    } catch (error) {
+      console.error('Compression failed:', error);
+      setCompressionProgress(prev => ({ ...prev, [type]: false }));
+      // Return original file if compression fails
+      return file;
+    }
+  };
+
+  // Enhanced file validation (removed size restriction since we compress)
   const validateFile = (file: File): string | null => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       return 'File must be JPEG, PNG, or WebP';
@@ -66,7 +109,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     } else if (xhr.status >= 500) {
       setError('Server error. Please try again later.');
     } else if (xhr.status === 413) {
-      setError('Request too large. The server is processing your files...');
+      setError('Request too large. Please try again.');
     } else if (xhr.status === 401) {
       setError('Authentication failed. Please refresh the page and try again.');
     } else {
@@ -79,8 +122,8 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     }
   };
 
-  // Handle file selection with preview
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'front' | 'back' | 'selfie') => {
+  // Handle file selection with compression and preview
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'front' | 'back' | 'selfie') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -90,26 +133,39 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
       return;
     }
 
-    // Clean up previous preview URL
-    if (previewUrls[type]) {
-      URL.revokeObjectURL(previewUrls[type]!);
-    }
-
-    // Create new preview URL
-    const previewUrl = URL.createObjectURL(file);
-    
-    setSelectedFiles(prev => ({
-      ...prev,
-      [type]: file
-    }));
-    
-    setPreviewUrls(prev => ({
-      ...prev,
-      [type]: previewUrl
-    }));
-    
     setError(null);
-    setRetryCount(0); // Reset retry count on new file selection
+    setIsCompressing(true);
+
+    try {
+      // Compress the image on client-side
+      const compressedFile = await compressImage(file, type);
+      
+      // Clean up previous preview URL
+      if (previewUrls[type]) {
+        URL.revokeObjectURL(previewUrls[type]!);
+      }
+
+      // Create new preview URL from compressed file
+      const previewUrl = URL.createObjectURL(compressedFile);
+      
+      setSelectedFiles(prev => ({
+        ...prev,
+        [type]: compressedFile // Store compressed file
+      }));
+      
+      setPreviewUrls(prev => ({
+        ...prev,
+        [type]: previewUrl
+      }));
+      
+      setRetryCount(0);
+      
+    } catch (error) {
+      console.error('Compression error:', error);
+      setError('Image compression failed. Please try a different image.');
+    } finally {
+      setIsCompressing(false);
+    }
   };
 
   // Remove file and preview
@@ -138,9 +194,8 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     }
   };
 
-  // Enhanced form submission
+  // Enhanced form submission (much faster now with pre-compressed files)
   const handleSubmit = async () => {
-    
     if (!selectedFiles.front || !selectedFiles.back || !selectedFiles.selfie) {
       setError('Please select all required files');
       return;
@@ -179,12 +234,11 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
           });
           setPreviewUrls({ front: null, back: null, selfie: null });
           
-          // Call success callback instead of hard reload
+          // Call success callback
           setTimeout(() => {
             if (onUploadSuccess) {
               onUploadSuccess();
             } else {
-              // Fallback to reload if no callback provided
               window.location.reload();
             }
           }, 2000);
@@ -200,13 +254,13 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         setIsUploading(false);
       };
 
-      // Handle timeout - increased for large files
+      // Handle timeout - reduced since files are now much smaller
       xhr.ontimeout = () => {
-        setError('Upload timeout. Large files may take longer to process. Please try again.');
+        setError('Upload timeout. Please check your connection and try again.');
         setIsUploading(false);
       };
 
-      xhr.timeout = 300000; // 5 minutes timeout for large files
+      xhr.timeout = 60000; // 1 minute timeout (much less needed now)
       xhr.open('POST', '/api/kyc/upload');
       xhr.send(formData);
 
@@ -225,22 +279,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Get file size warning for large files
-  const getFileSizeWarning = (file: File | null): string | null => {
-    if (!file) return null;
-    
-    const sizeInMB = file.size / (1024 * 1024);
-    
-    if (sizeInMB > 50) {
-      return `Large file (${formatFileSize(file.size)}). Upload may take longer.`;
-    } else if (sizeInMB > 20) {
-      return `Medium file (${formatFileSize(file.size)}). Please be patient during upload.`;
-    }
-    
-    return null;
-  };
-
-  // Enhanced file upload field with preview
+  // Enhanced file upload field with compression status
   const FileUploadField = ({ 
     type, 
     label, 
@@ -252,14 +291,20 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
     file: File | null;
     previewUrl: string | null;
   }) => {
-    const sizeWarning = getFileSizeWarning(file);
+    const isCompressingThis = compressionProgress[type];
     
     return (
       <div className="space-y-2">
         <label className={`cursor-pointer ${isVerified ? 'opacity-50 cursor-not-allowed' : ''} bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl p-3 transition-colors block`}>
           <div className="flex items-center justify-center mb-2">
-            <ImagePlus size={20} className="text-black dark:text-white mr-2" />
-            <span className="text-black dark:text-white">{label}</span>
+            {isCompressingThis ? (
+              <Loader2 size={20} className="animate-spin text-blue-500 mr-2" />
+            ) : (
+              <ImagePlus size={20} className="text-black dark:text-white mr-2" />
+            )}
+            <span className="text-black dark:text-white">
+              {isCompressingThis ? `Compressing ${label}...` : label}
+            </span>
           </div>
           
           <div className="flex items-center justify-between">
@@ -277,18 +322,10 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
             type="file"
             accept="image/jpeg,image/jpg,image/png,image/webp"
             className="hidden"
-            disabled={isVerified || isUploading}
+            disabled={isVerified || isUploading || isCompressing}
             onChange={(e) => handleFileChange(e, type)}
           />
         </label>
-
-        {/* File Size Warning */}
-        {sizeWarning && (
-          <div className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-100 p-2 rounded-lg text-xs flex items-center gap-1">
-            <AlertCircle size={14} />
-            {sizeWarning}
-          </div>
-        )}
 
         {/* File Preview */}
         {previewUrl && (
@@ -296,12 +333,12 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
                 <Eye size={16} />
-                Preview
+                Preview (Compressed)
               </span>
               <button
                 type="button"
                 onClick={() => removeFile(type)}
-                disabled={isUploading}
+                disabled={isUploading || isCompressing}
                 className="text-red-500 hover:text-red-700 disabled:opacity-50"
               >
                 <X size={16} />
@@ -334,7 +371,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         <select
           value={documentType}
           onChange={(e) => setDocumentType(e.target.value)}
-          disabled={isVerified || isUploading}
+          disabled={isVerified || isUploading || isCompressing}
           className="w-full bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-3 rounded-xl disabled:opacity-60"
         >
           <option value="Driver's license">Driver&apos;s license</option>
@@ -365,11 +402,19 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
           previewUrl={previewUrls.selfie}
         />
 
-        {/* Progress Bar */}
+        {/* Compression Progress */}
+        {isCompressing && (
+          <div className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 p-3 rounded-xl flex items-center gap-2">
+            <Loader2 size={16} className="animate-spin" />
+            <p className="text-sm">Compressing images... This improves upload speed.</p>
+          </div>
+        )}
+
+        {/* Upload Progress Bar */}
         {isUploading && uploadProgress > 0 && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>Uploading and processing files...</span>
+              <span>Uploading compressed files...</span>
               <span>{uploadProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -385,13 +430,18 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!selectedFiles.front || !selectedFiles.back || !selectedFiles.selfie || isVerified || isUploading}
+          disabled={!selectedFiles.front || !selectedFiles.back || !selectedFiles.selfie || isVerified || isUploading || isCompressing}
           className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
         >
           {isUploading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              Uploading and Processing...
+              Uploading...
+            </>
+          ) : isCompressing ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Compressing Images...
             </>
           ) : (
             <>
@@ -408,7 +458,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
               <AlertCircle size={20} />
               <p className="text-sm">{error}</p>
             </div>
-            {retryCount < MAX_RETRIES && !isUploading && (
+            {retryCount < MAX_RETRIES && !isUploading && !isCompressing && (
               <button
                 type="button"
                 onClick={retryUpload}
@@ -432,11 +482,10 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         {/* Requirements */}
         <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p>• Supported formats: JPEG, PNG, WebP</p>
-          <p>• No file size limit - large files will be automatically compressed</p>
-          <p>• Minimum file size: 1KB per file</p>
+          <p>• Images are automatically compressed to ~2MB for faster upload</p>
+          <p>• Compression happens on your device for better privacy</p>
           <p>• Upload progress is tracked in real-time</p>
-          <p>• Files are automatically previewed before upload</p>
-          <p>• Large files may take longer to upload and process</p>
+          <p>• Much faster upload times with client-side optimization</p>
         </div>
       </div>
     </div>
