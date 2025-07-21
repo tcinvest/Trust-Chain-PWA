@@ -256,7 +256,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
 
       // Handle timeout - reduced since files are now much smaller
       xhr.ontimeout = () => {
-        setError('Upload timeout. Please check your connection and try again.');
+        setError('Upload timeout. Your internet connection may be slow. Please try again.');
         setIsUploading(false);
       };
 
@@ -414,7 +414,7 @@ export default function KycUploadForm({ kycStatus, onUploadSuccess }: KycUploadF
         {isUploading && uploadProgress > 0 && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>Uploading compressed files...</span>
+              <span>Uploading please wait...</span>
               <span>{uploadProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
