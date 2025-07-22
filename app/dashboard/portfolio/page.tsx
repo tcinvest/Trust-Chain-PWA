@@ -119,8 +119,11 @@ export default function PortfolioScreen() {
             />
 
           <div className="mt-6">
-          <Link href="/dashboard/edit-user-info" className="flex items-center text-sm text-blue-500 transition-colors border mb-2">
-              <PencilIcon size={18} className="mr-2" />
+            <Link 
+              href="/dashboard/edit-user-info" 
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 rounded-lg transition-all duration-200 hover:shadow-sm"
+            >
+              <PencilIcon size={16} />
               Upload KYC Document
             </Link>
           </div>

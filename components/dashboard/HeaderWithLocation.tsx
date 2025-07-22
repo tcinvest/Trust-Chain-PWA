@@ -19,13 +19,12 @@ export default function HeaderWithLocation() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get location by IP address using free ipapi.co service
+
   const getLocationByIP = async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
 
-      // Using ipapi.co - free tier allows 1000 requests/day, no key required
       const response = await fetch('https://ipapi.co/json/', {
         method: 'GET',
       });
@@ -36,7 +35,7 @@ export default function HeaderWithLocation() {
       
       const data: IPLocationResponse = await response.json();
       
-      // Check if we got valid data
+    
       if (!data.city || !data.country_name) {
         throw new Error('Invalid location data received');
       }
