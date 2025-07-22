@@ -202,8 +202,8 @@ export default function PortfolioScreen() {
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-600 dark:text-gray-400">Account Status</span>
-                <span className={`font-medium ${userData?.status === 1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {userData?.status === 1 ? 'Active' : 'Inactive'}
+                <span className="font-medium text-green-600 dark:text-green-400">
+                  Active
                 </span>
               </div>
             </div>
