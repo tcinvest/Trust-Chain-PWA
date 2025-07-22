@@ -10,6 +10,7 @@ import { updateUserAvatar } from '@/lib/actions/UpdateAvatar';
 import AvatarUploadForm from '@/components/AvatarUploadForm'; 
 import { formatCurrency, getKycStatus } from '@/lib/utils';
 import Link from 'next/link';
+import HeaderWithLocation from '@/components/dashboard/HeaderWithLocation';
 
 export default function PortfolioScreen() {
   const { isLoaded, user } = useUser();
@@ -51,18 +52,7 @@ export default function PortfolioScreen() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="px-6 pt-8 pb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-black dark:text-white text-3xl font-bold mb-2">
-                Portfolio
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Manage your account and portfolio
-              </p>
-            </div>
-          </div>
-        </div>
+        <HeaderWithLocation />
 
         <div className="px-6 space-y-6">
           {/* Profile Card */}
