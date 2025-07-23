@@ -9,7 +9,7 @@ export async function getUserTransactions(userId: number, limit?: number) {
       where: {
         user_id: userId,
         type: {
-          in: ['signup_bonus','bonus', 'interest', 'refund', 'investment', 'manual_deposit', 'withdraw', 'withdrawal'],
+          in: [ 'interest', 'bonus', 'referral', 'investment', 'manual_deposit', 'withdraw', 'withdrawal', 'capital_return', 'profit_completion'],
         },
       },
       orderBy: { created_at: 'desc' },

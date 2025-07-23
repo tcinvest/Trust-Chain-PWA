@@ -85,3 +85,28 @@ export interface ReferralData {
   }>;
   pendingRewards: number;
 }
+
+// types/type.ts (or wherever your types are defined)
+export type DashboardData = {
+  totalBalance: number;
+  profitBalance: number;
+  // Changed from single activeInvestment to array of activeInvestments
+  activeInvestments: {
+    id: number; // Added id field for unique keys
+    amount: number;
+    bot: string;
+    createdAt: string;
+    botDays: number;
+    botReturnPercentage: number;
+  }[];
+  recentEarnings: {
+    date: string;
+    amount: number;
+    type: string;
+  }[];
+  kycStatus: string;
+  userInitial: string;
+  avatar: string | null;
+  firstName: string | null;
+  username: string | null;
+};

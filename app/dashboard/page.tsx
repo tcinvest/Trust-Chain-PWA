@@ -6,38 +6,18 @@ import { getUserData } from '@/lib/actions/GetUserData';
 import { getUserInvestments } from '@/lib/actions/getUserInvestments';
 import { getUserTransactions } from '@/lib/actions/getUserTransactions';
 import { getBotById } from '@/lib/actions/getBotById';
+import { processCompletedInvestments } from '@/lib/actions/processCompletedInvestments';
 
 import BalanceDisplay from '@/components/dashboard/DisplayBalance';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import ProfitSummaryCard from '@/components/dashboard/ProfitSummaryCard';
-import ActiveInvestmentCard from '@/components/dashboard/ActiveInvestmentCard';
+import InvestmentsList from '@/components/dashboard/InvestmentsList';
 import RecentEarningsList from '@/components/dashboard/RecentEarningsList';
 import QuickActionButtons from '@/components/dashboard/QuickActionButtons';
 import LoadingScreen from '@/components/dashboard/LoadingScreen';
 import ErrorScreen from '@/components/dashboard/ErrorScreen';
 import BotListSection from '@/components/BotListSection';
-
-type DashboardData = {
-  totalBalance: number;
-  profitBalance: number;
-  activeInvestment: {
-    amount: number;
-    bot: string;
-    createdAt: string;
-    botDays: number;
-    botReturnPercentage: number;
-  } | null;
-  recentEarnings: {
-    date: string;
-    amount: number;
-    type: string;
-  }[];
-  kycStatus: string;
-  userInitial: string;
-  avatar: string | null;
-  firstName: string | null;
-  username: string | null;
-};
+import { DashboardData } from '@/types/type';
 
 export default function Home() {
   const { user: clerkUser } = useUser();
@@ -52,19 +32,37 @@ export default function Home() {
       const userData = await getUserData(clerkUser.id);
       if (!userData) return;
 
+      // Process any completed investments first
+      await processCompletedInvestments(userData.id);
+
       const [investments, transactions] = await Promise.all([
         getUserInvestments(userData.id),
         getUserTransactions(userData.id),
       ]);
 
-      const activeInvestment = investments.find(
+      // Get ALL ongoing investments instead of just the first one
+      const ongoingInvestments = investments.filter(
         inv => inv.status === 'ongoing'
       );
 
-      let botConfig = null;
-      if (activeInvestment?.schema_id) {
-        botConfig = await getBotById(activeInvestment.schema_id);
-      }
+      // Fetch bot configurations for all ongoing investments
+      const investmentsWithBotData = await Promise.all(
+        ongoingInvestments.map(async (investment) => {
+          let botConfig = null;
+          if (investment.schema_id) {
+            botConfig = await getBotById(investment.schema_id);
+          }
+
+          return {
+            id: investment.id,
+            amount: investment.invest_amount,
+            bot: botConfig?.name || 'AI Trading Bot Pro',
+            createdAt: investment.created_at || new Date().toISOString(),
+            botDays: botConfig?.days || 0,
+            botReturnPercentage: botConfig?.return_percentage || 0,
+          };
+        })
+      );
 
       const recentEarnings = transactions.slice(0, 5).map(transaction => ({
         date: transaction.created_at || new Date().toISOString().split('T')[0],
@@ -72,12 +70,14 @@ export default function Home() {
         type:
           transaction.type === 'interest'
             ? 'Daily Return'
-            : transaction.type === 'signup_bonus'
-            ? 'Signup Bonus'
+            : transaction.type === 'profit_completion'
+            ? 'Profit Completion'
+            : transaction.type === 'capital_return'
+            ? 'Capital Return'
             : transaction.type === 'bonus'
             ? 'Bonus'
-            : transaction.type === 'refund'
-            ? 'Refund'
+            : transaction.type === 'referral'
+            ? 'Referral'
             : transaction.type === 'investment'
             ? 'Investment'
             : transaction.type === 'manual_deposit'
@@ -90,15 +90,7 @@ export default function Home() {
       setDashboardData({
         totalBalance: userData.balance,
         profitBalance: userData.profit_balance || 0,
-        activeInvestment: activeInvestment
-          ? {
-              amount: activeInvestment.invest_amount,
-              bot: botConfig?.name || 'AI Trading Bot Pro',
-              createdAt: activeInvestment.created_at || new Date().toISOString(),
-              botDays: botConfig?.days || 0,
-              botReturnPercentage: botConfig?.return_percentage || 0,
-            }
-          : null,
+        activeInvestments: investmentsWithBotData, // Changed to array
         recentEarnings,
         kycStatus: userData.kyc === 1 ? 'verified' : 'pending',
         userInitial: userData.first_name?.[0] || 'U',
@@ -156,14 +148,8 @@ export default function Home() {
 
           <BotListSection />
 
-          <ActiveInvestmentCard 
-            bot={dashboardData.activeInvestment?.bot}
-            amount={dashboardData.activeInvestment?.amount}
-            createdAt={dashboardData.activeInvestment?.createdAt}
-            botDays={dashboardData.activeInvestment?.botDays}
-            botReturnPercentage={dashboardData.activeInvestment?.botReturnPercentage}
-            hasActiveInvestment={!!dashboardData.activeInvestment}
-          />
+          {/* Updated to use InvestmentsList with array of investments */}
+          <InvestmentsList investments={dashboardData.activeInvestments} />
 
           {dashboardData.recentEarnings.length > 0 && (
             <RecentEarningsList earnings={dashboardData.recentEarnings} />

@@ -54,8 +54,9 @@ export default function TransactionsPage() {
           transactions.map((txn, index) => {
             const typeLabel =
               txn.type === 'interest' ? 'Daily Return' :
-              txn.type === 'signup_bonus' ? 'Signup Bonus' :
-              txn.type === 'bonus' ? 'Bonus' :
+              txn.type === 'referral_bonus' ? 'Referral Bonus' :
+              txn.type === 'profit_completion' ? 'Profit Completion' :
+              txn.type === 'capital_return' ? 'Capital Return' :
               txn.type === 'manual_deposit' ? 'Deposit' :
               txn.type === 'withdraw' || txn.type === 'withdrawal' ? 'Withdrawal' :
               txn.type === 'investment' ? 'Investment' :
