@@ -222,9 +222,9 @@ export default function ReferralsScreen() {
         {/* Generate Referral Code Button (shows when no code exists) */}
         {showGenerateButton() && (
           <div className="px-6 mb-6">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-2xl text-center">
+            <div className="bg-blue-600 p-4 rounded-2xl text-center">
               <h3 className="text-lg font-semibold mb-2">No Referral Code Yet</h3>
-              <p className="text-sm text-blue-100 mb-4">Generate your unique referral code to start earning</p>
+              <p className="text-sm text-blue-100 mb-4">Generate your unique referral code .</p>
               <button
                 onClick={handleGenerateReferralCode}
                 disabled={isGenerating}

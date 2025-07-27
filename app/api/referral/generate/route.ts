@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error generating referral code:', error);
+    console.error('Error generating referral code, please try again :', error);
     
     // Return safe error response
     return NextResponse.json(
