@@ -73,7 +73,6 @@ export type Investment = {
 export interface ReferralData {
   totalEarned: number;
   totalReferrals: number;
-  activeReferrals: number;
   referralCode: string;
   referralLink: string;
   recentReferrals: Array<{
@@ -83,7 +82,6 @@ export interface ReferralData {
     earned: number;
     status: 'active' | 'inactive';
   }>;
-  pendingRewards: number;
 }
 
 // types/type.ts (or wherever your types are defined)

@@ -33,8 +33,8 @@ model referral_relationships {
   id               Int     @id @default(autoincrement())
   referral_link_id Int?
   user_id          Int?
-  created_at       String? @db.VarChar(19)
-  updated_at       String? @db.VarChar(19)
+  created_at       String?
+  updated_at       String?
 }
 
 model referrals {
@@ -90,7 +90,7 @@ model users {
   zip_code        String?
   address         String?
   balance         Decimal? @default(0.00) @db.Decimal
-  profit_balance  Decimal? @db.Decimal
+  profit_balance  Decimal? @default(0.00) @db.Decimal
   recovery_fund   Decimal? @db.Decimal
   status          Int?
   kyc             Int?
@@ -108,9 +108,9 @@ model referral_links {
   id                  Int     @id @default(autoincrement())
   user_id             Int?
   referral_program_id Int?
-  code                String? @db.VarChar(36)
-  created_at          String? @db.VarChar(19)
-  updated_at          String? @db.VarChar(19)
+  code                String?
+  created_at          String?
+  updated_at          String?
 }
 
 model bots {
@@ -177,4 +177,28 @@ model support_complaints {
   status      String    @default("Open") @db.VarChar(20)
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model referral_programs {
+  id               Int?    @db.SmallInt
+  name             String? @db.VarChar(16)
+  uri              String? @db.VarChar(8)
+  lifetime_minutes Int?
+  created_at       String? @db.VarChar(19)
+  updated_at       String? @db.VarChar(19)
+
+  @@map("_referral_programs")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model referral_targets {
+  id         Int?    @db.SmallInt
+  name       String? @db.VarChar(9)
+  created_at String? @db.VarChar(19)
+  updated_at String? @db.VarChar(19)
+
+  @@map("_referral_targets")
+  @@ignore
 }

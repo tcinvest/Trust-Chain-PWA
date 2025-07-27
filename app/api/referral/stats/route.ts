@@ -1,4 +1,3 @@
-// /app/api/referral/stats/route.ts
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
@@ -19,7 +18,7 @@ export async function POST() {
 
     const userId = user.id;
 
-    // Step 1: Get user's referral link
+    // Get user's referral link
     const referralLink = await prisma.referral_links.findFirst({
       where: { user_id: userId },
       select: { id: true, code: true },
@@ -31,54 +30,92 @@ export async function POST() {
         data: {
           totalEarned: 0,
           totalReferrals: 0,
-          activeReferrals: 0,
-          pendingRewards: 0,
-          referralCode: `REF${userId}`,
-          referralLink: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}?ref=REF${userId}`,
+          referralCode: 'No referral code found',
+          referralLink: `${process.env.NEXT_PUBLIC_APP_URL}/sign-up?ref=NOCODE`,
           recentReferrals: [],
+          referralTransactions: [],
         },
       });
     }
 
+    // Get all referral relationships for this user with user details
     const relationships = await prisma.referral_relationships.findMany({
       where: { referral_link_id: referralLink.id },
       orderBy: { created_at: 'desc' },
       take: 10,
     });
 
-    const relationshipIds = relationships.map((rel) => rel.id);
-
-    const earnings = await prisma.referrals.findMany({
-      where: { referral_target_id: { in: relationshipIds } },
+    // Get user details for the referred users (filter out null user_ids)
+    const userIds = relationships.map(rel => rel.user_id).filter((id): id is number => id !== null);
+    const referredUsers = await prisma.users.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, first_name: true, last_name: true, username: true }
     });
 
-    const totalEarned = earnings
-      .filter((e) => e.status === 1)
-      .reduce((sum, e) => sum + Number(e.bounty || 0), 0);
+    // Create a map for quick lookup
+    const userMap = new Map();
+    referredUsers.forEach(user => {
+      const displayName = user.first_name && user.last_name
+         ? `${user.first_name} ${user.last_name}`.trim()
+        : user.username || `User ${user.id}`;
+      userMap.set(user.id, displayName);
+    });
 
-    const pendingRewards = earnings
-      .filter((e) => e.status === 0)
-      .reduce((sum, e) => sum + Number(e.bounty || 0), 0);
+    // Calculate total earned from transactions (referral + bonus types)
+    const totalEarnedResult = await prisma.transactions.aggregate({
+      where: {
+        user_id: userId,
+        type: {
+          in: ['referral', 'bonus']
+        }
+      },
+      _sum: {
+        amount: true
+      }
+    });
+
+    // Get referral transactions with details
+    const referralTransactions = await prisma.transactions.findMany({
+      where: {
+        user_id: userId,
+        type: {
+          in: ['referral', 'bonus']
+        }
+      },
+      orderBy: { created_at: 'desc' },
+      take: 10,
+      select: {
+        id: true,
+        amount: true,
+        type: true,
+        description: true,
+        status: true,
+        created_at: true
+      }
+    });
+
+    const totalEarned = totalEarnedResult._sum.amount || 0;
 
     const response = {
       success: true,
       data: {
-        totalEarned,
+        totalEarned: Number(totalEarned),
         totalReferrals: relationships.length,
-        activeReferrals: earnings.filter((e) => e.status === 1).length,
-        pendingRewards,
         referralCode: referralLink.code,
-        referralLink: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}?ref=${referralLink.code}`,
-        recentReferrals: relationships.slice(0, 5).map((rel) => {
-          const matched = earnings.find((e) => e.referral_target_id === rel.id);
-          return {
-            id: rel.id.toString(),
-            name: `User ${rel.user_id}`,
-            joinedAt: rel.created_at?.toString() || new Date().toISOString(),
-            earned: matched?.bounty || 0,
-            status: matched?.status === 1 ? 'active' : 'inactive',
-          };
-        }),
+        referralLink: `${process.env.NEXT_PUBLIC_APP_URL}/sign-up?ref=${referralLink.code}`,
+        recentReferrals: relationships.slice(0, 5).map((rel) => ({
+          id: rel.id.toString(),
+          name: userMap.get(rel.user_id) || `User ${rel.user_id}`,
+          joinedAt: rel.created_at || new Date().toISOString(),
+        })),
+        referralTransactions: referralTransactions.map((txn) => ({
+          id: txn.id.toString(),
+          amount: Number(txn.amount || 0),
+          type: txn.type || 'referral',
+          description: txn.description || 'Referral bonus',
+          status: txn.status || 'completed',
+          createdAt: txn.created_at || new Date().toISOString(),
+        })),
       },
     };
 
