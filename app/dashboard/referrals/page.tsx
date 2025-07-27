@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { Users, DollarSign, Share2, Copy, Loader2, Receipt, CheckCircle } from 'lucide-react';
+import { Users, DollarSign, Share2, Copy, Loader2, Receipt, CheckCircle, Plus } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 
 // Mock utility functions - replace with your actual implementations
@@ -53,6 +53,7 @@ export default function ReferralsScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'referrals' | 'earnings'>('referrals');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const getDefaultReferralData = (): ReferralData => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trustchaininvestai.com';
@@ -69,35 +70,58 @@ export default function ReferralsScreen() {
 
   const currentData = referralData || getDefaultReferralData();
 
+  const fetchReferralStats = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetch(`/api/referral/stats`, {
+        method: 'POST',
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setReferralData(result.data);
+      } else {
+        setError('Failed to load referral data');
+      }
+    } catch (err) {
+      setError('Failed to load referral data');
+      console.error('Referral fetch error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
-
-    const fetchReferralStats = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const response = await fetch(`/api/referral/stats`, {
-          method: 'POST',
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          setReferralData(result.data);
-        } else {
-          setError('Failed to load referral data');
-        }
-      } catch (err) {
-        setError('Failed to load referral data');
-        console.error('Referral fetch error:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchReferralStats();
   }, [user]);
+
+  const handleGenerateReferralCode = async () => {
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/referral/generate', {
+        method: 'POST',
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Refresh the referral data to show the new code
+        await fetchReferralStats();
+        alert('Referral code generated successfully!');
+      } else {
+        alert(result.error || 'Failed to generate referral code');
+      }
+    } catch (error) {
+      console.error('Generate referral error:', error);
+      alert('Failed to generate referral code. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleCopyLink = async () => {
     if (currentData.referralLink.includes('loading') || currentData.referralLink.includes('NOCODE')) {
@@ -106,6 +130,15 @@ export default function ReferralsScreen() {
     }
     const success = await copyToClipboard(currentData.referralLink);
     alert(success ? 'Referral link copied to clipboard' : 'Failed to copy referral link');
+  };
+
+  const handleCopyCode = async () => {
+    if (currentData.referralCode === 'Loading...' || currentData.referralCode === 'No referral code found') {
+      alert('Referral code not ready yet');
+      return;
+    }
+    const success = await copyToClipboard(currentData.referralCode);
+    alert(success ? 'Referral code copied to clipboard' : 'Failed to copy referral code');
   };
 
   const handleShare = async () => {
@@ -128,6 +161,13 @@ export default function ReferralsScreen() {
     } catch {
       alert('Failed to share referral link');
     }
+  };
+
+  const showGenerateButton = () => {
+    return !isLoading && 
+           (currentData.referralCode === 'No referral code found' || 
+            currentData.referralCode === 'NOCODE' ||
+            currentData.referralLink.includes('NOCODE'));
   };
 
   if (!user) {
@@ -179,49 +219,85 @@ export default function ReferralsScreen() {
           </div>
         </div>
 
-        {/* Referral Code & Link */}
-        <div className="px-6 space-y-4">
-          <div className="bg-gray-800 p-4 rounded-2xl">
-            <p className="text-sm text-gray-400 mb-2">Referral Code</p>
-            <div className="flex justify-between items-center">
-              <p className="text-xl font-mono font-bold">
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <Loader2 className="animate-spin mr-2" size={16} />
-                    Loading...
-                  </span>
-                ) : (
-                  currentData.referralCode
-                )}
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-4 rounded-2xl">
-            <p className="text-sm text-gray-400 mb-2">Referral Link</p>
-            <div className="flex justify-between items-center">
-              <p className="text-sm truncate mr-2">
-                {isLoading ? 'Loading referral link...' : currentData.referralLink}
-              </p>
-              <button 
-                onClick={handleCopyLink} 
-                disabled={isLoading || currentData.referralLink.includes('loading') || currentData.referralLink.includes('NOCODE')}
-                className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        {/* Generate Referral Code Button (shows when no code exists) */}
+        {showGenerateButton() && (
+          <div className="px-6 mb-6">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-2xl text-center">
+              <h3 className="text-lg font-semibold mb-2">No Referral Code Yet</h3>
+              <p className="text-sm text-blue-100 mb-4">Generate your unique referral code to start earning</p>
+              <button
+                onClick={handleGenerateReferralCode}
+                disabled={isGenerating}
+                className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold flex items-center justify-center mx-auto hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Copy size={18} className="text-white" />
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="animate-spin mr-2" size={16} />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Plus size={16} className="mr-2" />
+                    Generate Referral Code
+                  </>
+                )}
               </button>
             </div>
           </div>
+        )}
 
-          <button
-            onClick={handleShare}
-            disabled={isLoading || currentData.referralCode === 'Loading...' || currentData.referralCode === 'No referral code found'}
-            className="w-full bg-green-600 py-4 rounded-xl flex justify-center items-center hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Share2 size={20} className="text-white" />
-            <span className="ml-2 font-semibold text-lg">Share Referral Link</span>
-          </button>
-        </div>
+        {/* Referral Code & Link (only show if code exists) */}
+        {!showGenerateButton() && (
+          <div className="px-6 space-y-4">
+            <div className="bg-gray-800 p-4 rounded-2xl">
+              <p className="text-sm text-gray-400 mb-2">Referral Code</p>
+              <div className="flex justify-between items-center">
+                <p className="text-xl font-mono font-bold">
+                  {isLoading ? (
+                    <span className="flex items-center">
+                      <Loader2 className="animate-spin mr-2" size={16} />
+                      Loading...
+                    </span>
+                  ) : (
+                    currentData.referralCode
+                  )}
+                </p>
+                <button 
+                  onClick={handleCopyCode} 
+                  disabled={isLoading || currentData.referralCode === 'Loading...' || currentData.referralCode === 'No referral code found'}
+                  className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Copy size={18} className="text-white" />
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-2xl">
+              <p className="text-sm text-gray-400 mb-2">Referral Link</p>
+              <div className="flex justify-between items-center">
+                <p className="text-sm truncate mr-2">
+                  {isLoading ? 'Loading referral link...' : currentData.referralLink}
+                </p>
+                <button 
+                  onClick={handleCopyLink} 
+                  disabled={isLoading || currentData.referralLink.includes('loading') || currentData.referralLink.includes('NOCODE')}
+                  className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Copy size={18} className="text-white" />
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={handleShare}
+              disabled={isLoading || currentData.referralCode === 'Loading...' || currentData.referralCode === 'No referral code found'}
+              className="w-full bg-green-600 py-4 rounded-xl flex justify-center items-center hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Share2 size={20} className="text-white" />
+              <span className="ml-2 font-semibold text-lg">Share Referral Link</span>
+            </button>
+          </div>
+        )}
 
         {/* Tab Navigation */}
         <div className="px-6 mt-6">
