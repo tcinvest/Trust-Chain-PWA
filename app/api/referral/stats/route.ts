@@ -41,8 +41,7 @@ export async function POST() {
     // Get all referral relationships for this user with user details
     const relationships = await prisma.referral_relationships.findMany({
       where: { referral_link_id: referralLink.id },
-      orderBy: { created_at: 'desc' },
-      take: 10,
+      orderBy: { created_at: 'desc' }
     });
 
     // Get user details for the referred users (filter out null user_ids)
