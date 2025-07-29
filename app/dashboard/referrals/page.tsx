@@ -3,52 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { Users, DollarSign, Share2, Copy, Loader2, Receipt, CheckCircle, Plus } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-
-// Mock utility functions - replace with your actual implementations
-const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
-const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-interface ReferralTransaction {
-  id: string;
-  amount: number;
-  type: string;
-  description: string;
-  status: string;
-  createdAt: string;
-}
-
-interface ReferralData {
-  totalEarned: number;
-  totalReferrals: number;
-  referralCode: string;
-  referralLink: string;
-  recentReferrals: Array<{
-    id: string;
-    name: string;
-    joinedAt: string;
-  }>;
-  referralTransactions: ReferralTransaction[];
-}
+import { ReferralData} from '@/types/type';
+import { formatCurrency } from '@/lib/utils';
+import { formatDateTime } from '@/lib/utils';
+import { copyToClipboard } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export default function ReferralsScreen() {
   const { user } = useUser();
+  const router = useRouter();
   const [referralData, setReferralData] = useState<ReferralData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +72,6 @@ export default function ReferralsScreen() {
       const result = await response.json();
       
       if (result.success) {
-        // Refresh the referral data to show the new code
         await fetchReferralStats();
         alert('Referral code generated successfully!');
       } else {
@@ -161,6 +123,10 @@ export default function ReferralsScreen() {
     } catch {
       alert('Failed to share referral link');
     }
+  };
+
+  const handleViewAll = () => {
+    router.push('/dashboard/all-screen');
   };
 
   const showGenerateButton = () => {
@@ -302,7 +268,7 @@ export default function ReferralsScreen() {
         {/* Tab Navigation */}
         <div className="px-6 mt-6">
           <div className="flex bg-gray-800 rounded-xl p-1">
-            <button
+          <button
               onClick={() => setActiveTab('referrals')}
               className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
                 activeTab === 'referrals'
@@ -312,7 +278,19 @@ export default function ReferralsScreen() {
             >
               <Users size={16} className="inline mr-2" />
               Recent Referrals
+              {!isLoading && currentData.totalReferrals > 5 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewAll();
+                  }}
+                  className="ml-2 text-xs bg-blue-500 hover:bg-blue-400 px-2 py-1 rounded transition-colors"
+                >
+                  View All ({currentData.totalReferrals})
+                </button>
+              )}
             </button>
+            
             <button
               onClick={() => setActiveTab('earnings')}
               className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
@@ -323,6 +301,17 @@ export default function ReferralsScreen() {
             >
               <Receipt size={16} className="inline mr-2" />
               Earnings History
+              {!isLoading && currentData.referralTransactions.length >= 10 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewAll();
+                  }}
+                  className="ml-2 text-xs bg-green-500 hover:bg-green-400 px-2 py-1 rounded transition-colors"
+                >
+                  View All
+                </button>
+              )}
             </button>
           </div>
         </div>

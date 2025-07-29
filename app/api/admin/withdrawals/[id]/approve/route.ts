@@ -63,7 +63,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         amount: Number(withdrawalRequest.amount),
         type: "withdrawal",
         final_amount: Number(withdrawalRequest.amount),
-        status: "completed",
+        status: "success",
         created_at: currentTimestamp,
         updated_at: currentTimestamp
       }

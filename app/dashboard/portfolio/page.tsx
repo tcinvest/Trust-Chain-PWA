@@ -2,7 +2,7 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs'
 import React, { useState, useEffect } from 'react';
-import { HelpCircle, ChevronRight, Wallet, TrendingUp, Users, PencilIcon,  } from 'lucide-react';
+import { HelpCircle, ChevronRight, Wallet, TrendingUp, Users, PencilIcon, ArrowDownLeft } from 'lucide-react';
 
 import { getUserData } from '@/lib/actions/GetUserData';
 import { UserData } from '@/types/type';
@@ -43,9 +43,10 @@ export default function PortfolioScreen() {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
-  const balance = userData?.balance ? Number(userData.balance) : 0;
-  const profitBalance = userData?.profit_balance ? Number(userData.profit_balance) : 0;
-  const recoveryFund = userData?.recovery_fund ? Number(userData.recovery_fund) : 0;
+  const balance = userData?.balance || 0;
+  const profitBalance = userData?.profit_balance || 0;
+  const recoveryFund = userData?.recovery_fund || 0;
+  const totalWithdrawals = userData?.total_withdrawals || 0;
   const kycStatus = getKycStatus(userData?.kyc || null);
 
   return (
@@ -136,7 +137,7 @@ export default function PortfolioScreen() {
               <Wallet size={20} className="mr-2" />
               Financial Overview
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
                   <div>
@@ -172,6 +173,19 @@ export default function PortfolioScreen() {
                   <Users className="text-purple-500" size={24} />
                 </div>
               </div>
+
+              {/* New Total Withdrawals Card */}
+              <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-4 rounded-xl border border-orange-200 dark:border-orange-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-orange-600 dark:text-orange-400 text-sm font-medium">Total Withdrawals</p>
+                    <p className="text-black dark:text-white text-2xl font-bold">
+                      {formatCurrency(totalWithdrawals)}
+                    </p>
+                  </div>
+                  <ArrowDownLeft className="text-orange-500" size={24} />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -201,6 +215,7 @@ export default function PortfolioScreen() {
               </div>
             </div>
           </div>
+
           {/* Quick Actions */}
           <div className="space-y-3">
             {[
@@ -222,6 +237,7 @@ export default function PortfolioScreen() {
               </a>
             ))}
           </div>
+          
           <SignOutButton>
             <button className=" py-4 bg-slate-700 text-white w-full rounded-lg hover:bg-slate-500">
               Log Out

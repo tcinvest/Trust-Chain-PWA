@@ -13,6 +13,7 @@ export interface UserData {
     balance: number;
     profit_balance: number;
     recovery_fund: number;
+    total_withdrawals: number; 
     status: number | null;
     kyc: number | null;
     created_at: string | null;
@@ -70,6 +71,16 @@ export type Investment = {
   updated_at: string | null;
 };
 
+
+interface ReferralTransaction {
+  id: string;
+  amount: number;
+  type: string;
+  description: string;
+  status: string;
+  createdAt: string;
+}
+
 export interface ReferralData {
   totalEarned: number;
   totalReferrals: number;
@@ -79,9 +90,8 @@ export interface ReferralData {
     id: string;
     name: string;
     joinedAt: string;
-    earned: number;
-    status: 'active' | 'inactive';
   }>;
+  referralTransactions: ReferralTransaction[];
 }
 
 // types/type.ts (or wherever your types are defined)
