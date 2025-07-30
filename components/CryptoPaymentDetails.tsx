@@ -12,14 +12,14 @@ interface Props {
 const coinAddresses: Record<string, string> = {
   USDT: "TXBsRpZbjVGHmuLuy8QNXAEdpa9TdxvyM9",
   Bitcoin: "15zeNShzfXccLBa8CH28HWLAYcqTj5BVGv",
-  Ethereum: "0xaf32f27eb81f972fac4410f956c9e6e383e82043",
+  USDT_Ethereum: "0xaf32f27eb81f972fac4410f956c9e6e383e82043",
 };
 
 // QR code images for each cryptocurrency
 const qrCodeImages: Record<string, string> = {
   USDT: "/qr-codes/usdt-qr.png",
   Bitcoin: "/qr-codes/bitcoin-qr.png", 
-  Ethereum: "/qr-codes/ethereum-qr.png",
+  USDT_Ethereum: "/qr-codes/ethereum-qr.png",
 };
 
 export default function CryptoPaymentDetails({ selectedCoin, setSelectedCoin }: Props) {
@@ -45,7 +45,7 @@ export default function CryptoPaymentDetails({ selectedCoin, setSelectedCoin }: 
           <option value="">-- Select --</option>
           <option value="USDT">USDT</option>
           <option value="Bitcoin">Bitcoin</option>
-          <option value="Ethereum">Ethereum</option>
+          <option value="Ethereum">USDT Ethereum</option>
         </select>
       </div>
 
