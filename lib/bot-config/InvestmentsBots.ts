@@ -1,0 +1,40 @@
+import { InvestmentBot } from "@/types/type";
+
+export const bots: InvestmentBot[] = [
+  {
+    id: 1,
+    name: 'Geniusinvestai',
+    description: '30 Days 20%',
+    investmentRange: '$9 - $9000',
+    capitalBack: 'Yes',
+    returnType: 'Period',
+    numberOfPeriods: '1 Time',
+    profitWithdraw: 'Anytime',
+    holidayNote: '* Friday are Holidays',
+    isActive: true,
+  },
+  {
+    id: 2,
+    name: 'Alphainvestai',
+    description: '60 Days 30%',
+    investmentRange: '$9000 - $99999',
+    capitalBack: 'Yes',
+    returnType: 'Period',
+    numberOfPeriods: '1 Time',
+    profitWithdraw: 'Anytime',
+    holidayNote: '* Friday are Holidays',
+    isActive: true,
+  },
+  {
+    id: 3,
+    name: 'ChainMaster (Affiliate)',
+    description: '90 Days 40%',
+    investmentRange: '$99 - $9999999',
+    capitalBack: 'Yes',
+    returnType: 'Period',
+    numberOfPeriods: '1 Time',
+    profitWithdraw: 'Anytime',
+    holidayNote: '* Friday are Holidays',
+    isActive: true,
+  },
+];
