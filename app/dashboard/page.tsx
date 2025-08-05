@@ -84,7 +84,9 @@ export default function Home() {
             ? 'Deposit'
             : transaction.type === 'withdraw'
             ? 'Withdrawal'
-            : 'Return',
+            : transaction.type === 'transfer'
+            ? 'Profit Transfer'
+            : 'Transaction',
       }));
 
       setDashboardData({

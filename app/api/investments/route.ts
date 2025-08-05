@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
         invest_amount: investAmount,
         wallet,
         status,
-        interest: 20,
+        interest: bot.return_percentage,
         interest_type: "percentage",
         return_type: bot.return_type,
         number_of_period: 1,

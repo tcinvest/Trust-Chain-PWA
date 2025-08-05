@@ -44,15 +44,17 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
       profit_withdraw: bot.profit_withdraw,
       holiday_note: bot.holiday_note,
       is_active: bot.is_active,
+      return_percentage: bot.return_percentage, // Added this field
     });
     setSavingId(null);
   };
 
-  const fields: { label: string; field: keyof Bot }[] = [
+  const fields: { label: string; field: keyof Bot; type?: string }[] = [
     { label: 'Description', field: 'description' },
     { label: 'Investment Range', field: 'investment_range' },
     { label: 'Capital Back', field: 'capital_back' },
     { label: 'Return Type', field: 'return_type' },
+    { label: 'Return %', field: 'return_percentage', type: 'number' }, // Added this field
     { label: 'Periods', field: 'number_of_periods' },
     { label: 'Withdraw', field: 'profit_withdraw' },
     { label: 'Holiday Note', field: 'holiday_note' },
@@ -72,6 +74,7 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
                 'Range',
                 'Capital Back',
                 'Return Type',
+                'Return %', // Added this header
                 'Periods',
                 'Withdraw',
                 'Holiday',
@@ -131,6 +134,20 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
                     onChange={(e) =>
                       handleChange(index, 'return_type', e.target.value)
                     }
+                  />
+                </td>
+                {/* Added Return Percentage Column */}
+                <td className="px-3 py-2">
+                  <input
+                    type="number"
+                    className="w-full border rounded px-2 py-1"
+                    value={bot.return_percentage || ''}
+                    onChange={(e) =>
+                      handleChange(index, 'return_percentage', parseInt(e.target.value) || 0)
+                    }
+                    placeholder="0"
+                    min="0"
+                    max="100"
                   />
                 </td>
                 <td className="px-3 py-2">
@@ -208,15 +225,22 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
               />
             </div>
             <div className="grid grid-cols-1 gap-3 text-sm">
-              {fields.map(({ label, field }) => (
+              {fields.map(({ label, field, type }) => (
                 <div key={field}>
                   <p className="text-gray-500">{label}</p>
                   <input
+                    type={type || 'text'}
                     className="w-full border rounded px-2 py-1"
                     value={String(bot[field] || '')}
-                    onChange={(e) =>
-                      handleChange(index, field, e.target.value)
-                    }
+                    onChange={(e) => {
+                      const value = type === 'number' 
+                        ? parseInt(e.target.value) || 0 
+                        : e.target.value;
+                      handleChange(index, field, value);
+                    }}
+                    placeholder={type === 'number' ? '0' : ''}
+                    min={type === 'number' ? '0' : undefined}
+                    max={type === 'number' ? '100' : undefined}
                   />
                 </div>
               ))}

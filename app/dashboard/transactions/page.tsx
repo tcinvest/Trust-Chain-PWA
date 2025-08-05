@@ -61,6 +61,7 @@ export default function TransactionsPage() {
               txn.type === 'withdraw' || txn.type === 'withdrawal' ? 'Withdrawal' :
               txn.type === 'investment' ? 'Investment' :
               txn.type === 'refund' ? 'Refund' :
+              txn.type === 'transfer' ? 'Profit transfer' :
               'Transaction';
 
             return (
