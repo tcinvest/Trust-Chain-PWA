@@ -1,5 +1,5 @@
 // components/dashboard/InvestmentsList.tsx
-import { Clock, TrendingUp } from 'lucide-react';
+import { Clock, TrendingUp, Infinity } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ type Investment = {
   amount: number;
   bot: string;
   createdAt: string;
-  botDays: number;
+  botDays: number | null;
   botReturnPercentage: number;
 };
 
@@ -19,8 +19,9 @@ type InvestmentsListProps = {
 
 type InvestmentProgress = {
   progress: number;
-  daysRemaining: number;
+  daysRemaining: number | null;
   dailyReturn: number;
+  isLifetime: boolean;
 };
 
 export default function InvestmentsList({ investments }: InvestmentsListProps) {
@@ -33,36 +34,38 @@ export default function InvestmentsList({ investments }: InvestmentsListProps) {
       const progressData: Record<number, InvestmentProgress> = {};
 
       investments.forEach((investment) => {
-        // Parse the created_at date (format: "2025-03-04 14:38:23")
         const startDate = new Date(investment.createdAt.replace(' ', 'T'));
         const now = new Date();
         
-        // Calculate days passed
         const daysPassed = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
         
-        // Calculate progress percentage
-        const progressPercentage = Math.min((daysPassed / investment.botDays) * 100, 100);
+        const isLifetime = investment.botDays === null;
         
-        // Calculate days remaining
-        const remaining = Math.max(investment.botDays - daysPassed, 0);
+        // Calculate progress percentage (0 for lifetime plans)
+        const progressPercentage = isLifetime 
+        ? 0 
+        : Math.min((daysPassed / (investment.botDays || 1)) * 100, 100);
         
-        // Calculate daily return (total return / total days * investment amount)
-        const dailyReturnAmount = (investment.botReturnPercentage / 100 / investment.botDays) * investment.amount;
+        // Calculate days remaining (null for lifetime)
+        const remaining = isLifetime 
+        ? null 
+        : Math.max(investment.botDays! - daysPassed, 0);
+        
+        // Calculate daily return (botReturnPercentage is already daily rate)
+        const dailyReturnAmount = (investment.botReturnPercentage / 100) * investment.amount;
         
         progressData[investment.id] = {
           progress: Math.round(progressPercentage),
           daysRemaining: remaining,
           dailyReturn: dailyReturnAmount,
+          isLifetime,
         };
       });
 
       setInvestmentProgress(progressData);
     };
 
-    // Calculate immediately
     calculateProgress();
-    
-    // Update every minute to keep it real-time
     const interval = setInterval(calculateProgress, 60000);
     
     return () => clearInterval(interval);
@@ -118,25 +121,39 @@ export default function InvestmentsList({ investments }: InvestmentsListProps) {
                 </div>
               </div>
 
-              {/* Progress Bar */}
-              <div className="mb-6">
-                <div className="flex justify-between mb-3">
-                  <span className="text-gray-600 dark:text-gray-400">Progress</span>
-                  <span className="text-gray-600 dark:text-gray-400">{progress?.progress || 0}%</span>
+              {/* Progress Bar - Only show for fixed duration plans */}
+              {!progress?.isLifetime && (
+                <div className="mb-6">
+                  <div className="flex justify-between mb-3">
+                    <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                    <span className="text-gray-600 dark:text-gray-400">{progress?.progress || 0}%</span>
+                  </div>
+                  <div className="bg-gray-300 dark:bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-blue-500 rounded-full h-2 transition-all duration-300"
+                      style={{ width: `${progress?.progress || 0}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="bg-gray-300 dark:bg-gray-700 rounded-full h-2">
-                  <div
-                    className="bg-blue-500 rounded-full h-2 transition-all duration-300"
-                    style={{ width: `${progress?.progress || 0}%` }}
-                  />
-                </div>
-              </div>
+              )}
 
+              {/* Duration display */}
               <div className="flex items-center">
-                <Clock size={16} className="text-gray-600 dark:text-gray-400" />
-                <span className="text-gray-600 dark:text-gray-400 ml-2">
-                  {progress?.daysRemaining || 0} days remaining
-                </span>
+                {progress?.isLifetime ? (
+                  <>
+                    <Infinity size={16} className="text-purple-600 dark:text-purple-400" />
+                    <span className="text-purple-600 dark:text-purple-400 ml-2 font-medium">
+                      Lifetime Plan
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Clock size={16} className="text-gray-600 dark:text-gray-400" />
+                    <span className="text-gray-600 dark:text-gray-400 ml-2">
+                      {progress?.daysRemaining || 0} days remaining
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           );

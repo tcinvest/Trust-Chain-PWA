@@ -20,26 +20,26 @@ export async function PATCH(
       return Response.json({ error: "Investment not pending" }, { status: 400 });
     }
 
-    // ✅ Optional: Check if approved_at is part of your model
-    await prisma.invests.update({
-      where: { id: parseInt(resolvedParams.id) },
-      data: {
-        status: "ongoing",
-        updated_at: new Date().toISOString()
-      }
-    });
-
-    // ✅ Fix: Null check for transaction_id
     if (!investment.transaction_id) {
       return Response.json({ error: "Transaction ID missing" }, { status: 400 });
     }
 
-    await prisma.transactions.update({
-      where: { id: investment.transaction_id },
-      data: {
-        status: "completed",
-        updated_at: new Date().toISOString()
-      }
+    await prisma.$transaction(async (tx) => {
+      await tx.invests.update({
+        where: { id: parseInt(resolvedParams.id) },
+        data: {
+          status: "ongoing",
+          updated_at: new Date().toISOString()
+        }
+      });
+
+      await tx.transactions.update({
+        where: { id: investment.transaction_id! },
+        data: {
+          status: "completed",
+          updated_at: new Date().toISOString()
+        }
+      });
     });
 
     return Response.json({ success: true });

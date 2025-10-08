@@ -226,7 +226,7 @@ export default function WithdrawMoneyPage() {
             value={network}
             onChange={(e) => setNetwork(e.target.value)}
             className="w-full bg-slate-700 px-4 py-2 rounded mt-1 text-white outline-none"
-            placeholder="e.g., Bitcoin, Ethereum, BSC, Polygon"
+            placeholder="specify network"
             required
             disabled={hasPendingRequest || !isKycVerified}
           />

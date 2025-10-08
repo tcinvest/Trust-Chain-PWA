@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     // Get user data
     const user = await prisma.users.findUnique({
-      where: { clerk_id: clerkId },
+      where: { clerk_id: clerkId }, 
       select: { 
         id: true, 
         balance: true, 

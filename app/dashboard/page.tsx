@@ -82,6 +82,8 @@ export default function Home() {
             ? 'Investment'
             : transaction.type === 'manual_deposit'
             ? 'Deposit'
+            : transaction.type === 'deposit'
+            ? 'Deposit'
             : transaction.type === 'withdraw'
             ? 'Withdrawal'
             : transaction.type === 'transfer'

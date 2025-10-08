@@ -1,4 +1,3 @@
-
 import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -10,68 +9,74 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Missing clerkId" }, { status: 400 });
     }
 
-    // Get user with current balances
     const user = await prisma.users.findUnique({
       where: { clerk_id: clerkId },
-      select: { 
-        id: true, 
-        balance: true, 
-        profit_balance: true 
-      }
+      select: { id: true }
     });
 
     if (!user) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    const currentBalance = user.balance?.toNumber() ?? 0;
-    const currentProfitBalance = user.profit_balance?.toNumber() ?? 0;
+    const result = await prisma.$transaction(async (tx) => {
+      const freshUser = await tx.users.findUnique({
+        where: { id: user.id },
+        select: { 
+          balance: true, 
+          profit_balance: true 
+        }
+      });
 
-    // Check if there's profit balance to transfer
-    if (currentProfitBalance <= 0) {
-      return Response.json({ error: "No profit balance to transfer" }, { status: 400 });
-    }
-
-    // Calculate new balances
-    const newMainBalance = currentBalance + currentProfitBalance;
-    const newProfitBalance = 0;
-
-    // Update user balances
-    const updatedUser = await prisma.users.update({
-      where: { id: user.id },
-      data: {
-        balance: newMainBalance,
-        profit_balance: newProfitBalance,
-        updated_at: new Date().toISOString()
-      },
-      select: {
-        balance: true,
-        profit_balance: true
+      if (!freshUser) {
+        throw new Error("User not found");
       }
-    });
 
-    // Create transaction record for the transfer
-    await prisma.transactions.create({
-      data: {
-        user_id: user.id,
-        description: "Profit balance transferred to main balance",
-        amount: currentProfitBalance,
-        type: "transfer",
-        status: "completed",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+      const currentProfitBalance = freshUser.profit_balance?.toNumber() ?? 0;
+
+      if (currentProfitBalance <= 0) {
+        throw new Error("No profit balance to transfer");
       }
+
+      const updatedUser = await tx.users.update({
+        where: { id: user.id },
+        data: {
+          balance: { increment: currentProfitBalance },
+          profit_balance: 0,
+          updated_at: new Date().toISOString()
+        },
+        select: {
+          balance: true,
+          profit_balance: true
+        }
+      });
+
+      await tx.transactions.create({
+        data: {
+          user_id: user.id,
+          description: "Profit balance transferred to main balance",
+          amount: currentProfitBalance,
+          type: "transfer",
+          status: "completed",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }
+      });
+
+      return {
+        transferredAmount: currentProfitBalance,
+        newMainBalance: updatedUser.balance?.toNumber() ?? 0,
+        newProfitBalance: updatedUser.profit_balance?.toNumber() ?? 0
+      };
     });
 
     return Response.json({
       success: true,
-      transferredAmount: currentProfitBalance,
-      newMainBalance: updatedUser.balance?.toNumber() ?? 0,
-      newProfitBalance: updatedUser.profit_balance?.toNumber() ?? 0
+      ...result
     }, { status: 200 });
 
   } catch (err) {
     console.error("Transfer failed:", err);
-    return Response.json({ error: "Something went wrong" }, { status: 500 });
+    const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+    return Response.json({ error: errorMessage }, { status: 500 });
   }
 }

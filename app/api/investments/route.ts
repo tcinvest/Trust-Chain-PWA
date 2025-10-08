@@ -23,12 +23,10 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Only allow main wallet and gateway
     if (wallet !== "main" && wallet !== "gateway") {
       return Response.json({ error: "Invalid wallet type" }, { status: 400 });
     }
 
-    // Get user with balance
     const user = await prisma.users.findUnique({
       where: { clerk_id: clerkId },
       select: { id: true, balance: true }
@@ -38,19 +36,6 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    /* Check if user already has active/pending investment
-    const existingInvestment = await prisma.invests.findFirst({
-      where: {
-        user_id: user.id,
-        status: { in: ["pending", "ongoing"] }
-      }
-    });
-
-    if (existingInvestment) {
-      return Response.json({ error: "You already have an active investment" }, { status: 400 });
-    } */
-
-    // Get bot details from database
     const bot = await prisma.bots.findUnique({
       where: { id: parseInt(schemaId) }
     });
@@ -60,51 +45,27 @@ export async function POST(req: NextRequest) {
     }
 
     const investAmount = parseFloat(amount);
-    const balanceNum = user.balance?.toNumber() ?? 0;
 
-    // Check balance for main wallet
-    if (wallet === "main" && balanceNum < investAmount) {
-      return Response.json({ error: "Insufficient balance" }, { status: 400 });
+    // Validate min/max investment amounts
+    const minInvest = bot.min_invest?.toNumber();
+    const maxInvest = bot.max_invest?.toNumber();
+
+    if (minInvest && investAmount < minInvest) {
+      return Response.json({ 
+        error: `Minimum investment for ${bot.name} is ${minInvest}` 
+      }, { status: 400 });
     }
 
-    // Determine status and period hours
+    if (maxInvest && investAmount > maxInvest) {
+      return Response.json({ 
+        error: `Maximum investment for ${bot.name} is ${maxInvest}` 
+      }, { status: 400 });
+    }
+
     const status = wallet === "main" ? "ongoing" : "pending";
-    const periodHours = bot.id === 1 ? 720 : bot.id === 2 ? 1440 : 2160; // 30/60/90 days
+    const periodHours = bot.days || 0;
 
-    // Create transaction
-    const transaction = await prisma.transactions.create({
-      data: {
-        user_id: user.id,
-        description: `Investment in ${bot.name}`,
-        amount: investAmount,
-        type: "investment",
-        status: status === "ongoing" ? "completed" : "pending",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
-    });
-
-    // Create investment
-    const investment = await prisma.invests.create({
-      data: {
-        user_id: user.id,
-        schema_id: parseInt(schemaId),
-        transaction_id: transaction.id,
-        invest_amount: investAmount,
-        wallet,
-        status,
-        interest: bot.return_percentage,
-        interest_type: "percentage",
-        return_type: bot.return_type,
-        number_of_period: 1,
-        period_hours: periodHours,
-        capital_back: 1,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
-    });
-
-    // Upload proof and store URL for gateway wallet
+    let proofUrl: string | null = null;
     if (wallet === "gateway" && file && file.size > 0) {
       const buffer = await file.arrayBuffer();
       const base64 = Buffer.from(buffer).toString("base64");
@@ -113,38 +74,91 @@ export async function POST(req: NextRequest) {
         `data:${file.type};base64,${base64}`,
         { folder: "investments" }
       );
+      proofUrl = uploadResult.secure_url;
+    }
 
-      // Store proof URL in payment_proofs table
-      await prisma.payment_proofs.create({
+    const result = await prisma.$transaction(async (tx) => {
+      const freshUser = await tx.users.findUnique({
+        where: { id: user.id },
+        select: { balance: true }
+      });
+
+      if (!freshUser) {
+        throw new Error("User not found");
+      }
+
+      const balanceNum = freshUser.balance?.toNumber() ?? 0;
+
+      if (wallet === "main" && balanceNum < investAmount) {
+        throw new Error("Insufficient balance");
+      }
+
+      const transaction = await tx.transactions.create({
         data: {
           user_id: user.id,
-          proof_url: uploadResult.secure_url,
+          description: `Investment in ${bot.name}`,
+          amount: investAmount,
           type: "investment",
-          reference_id: investment.id,
+          status: status === "ongoing" ? "completed" : "pending",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         }
       });
-    }
 
-    // Deduct balance for main wallet
-    if (wallet === "main") {
-      await prisma.users.update({
-        where: { id: user.id },
+      const investment = await tx.invests.create({
         data: {
-          balance: balanceNum - investAmount,
-          updated_at: new Date().toISOString()
+          user_id: user.id,
+          schema_id: parseInt(schemaId),
+          transaction_id: transaction.id,
+          invest_amount: investAmount,
+          wallet,
+          status,
+          interest: bot.return_percentage,
+          interest_type: "percentage",
+          return_type: bot.return_type,
+          number_of_period: 1,
+          period_hours: periodHours * 24, // Convert days to hours
+          capital_back: 1,
+          days_credited: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         }
       });
-    }
+
+      if (wallet === "gateway" && proofUrl) {
+        await tx.payment_proofs.create({
+          data: {
+            user_id: user.id,
+            proof_url: proofUrl,
+            type: "investment",
+            reference_id: investment.id,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
+        });
+      }
+
+      if (wallet === "main") {
+        await tx.users.update({
+          where: { id: user.id },
+          data: {
+            balance: balanceNum - investAmount,
+            updated_at: new Date().toISOString()
+          }
+        });
+      }
+
+      return investment;
+    });
 
     return Response.json({
       success: true,
-      investmentId: investment.id
+      investmentId: result.id
     }, { status: 201 });
 
   } catch (err) {
     console.error("Investment failed:", err);
-    return Response.json({ error: "Something went wrong" }, { status: 500 });
+    const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+    return Response.json({ error: errorMessage }, { status: 500 });
   }
 }

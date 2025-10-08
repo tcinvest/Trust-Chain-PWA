@@ -58,6 +58,7 @@ export default function TransactionsPage() {
               txn.type === 'profit_completion' ? 'Profit Completion' :
               txn.type === 'capital_return' ? 'Capital Return' :
               txn.type === 'manual_deposit' ? 'Deposit' :
+              txn.type === 'deposit' ? 'Deposit' :
               txn.type === 'withdraw' || txn.type === 'withdrawal' ? 'Withdrawal' :
               txn.type === 'investment' ? 'Investment' :
               txn.type === 'refund' ? 'Refund' :

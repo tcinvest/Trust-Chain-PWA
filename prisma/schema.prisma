@@ -8,13 +8,13 @@ datasource db {
 }
 
 model invests {
-  id                    Int      @id @default(autoincrement())
+  id                    Int       @id @default(autoincrement())
   user_id               Int?
   schema_id             Int?
   transaction_id        Int?
-  invest_amount         Decimal? @db.Decimal
+  invest_amount         Decimal?  @db.Decimal
   already_return_profit Int?
-  total_profit_amount   Decimal? @db.Decimal
+  total_profit_amount   Decimal?  @db.Decimal
   last_profit_time      String?
   next_profit_time      String?
   capital_back          Int?
@@ -27,6 +27,8 @@ model invests {
   status                String?
   created_at            String?
   updated_at            String?
+  last_credited_date    DateTime? @db.Timestamp(6)
+  days_credited         Int?      @default(0)
 }
 
 model referral_relationships {
@@ -126,6 +128,8 @@ model bots {
   is_active         Boolean? @default(true)
   days              Int?
   return_percentage Int?
+  min_invest        Decimal? @db.Decimal(20, 8)
+  max_invest        Decimal? @db.Decimal(20, 8)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
