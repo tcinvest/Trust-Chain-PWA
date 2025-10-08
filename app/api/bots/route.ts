@@ -1,4 +1,3 @@
-// app/api/bots/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
@@ -8,5 +7,14 @@ export async function GET() {
     orderBy: { id: 'asc' },
   });
 
-  return NextResponse.json(bots);
+  const formattedBots = bots.map((bot) => ({
+    ...bot,
+    return_percentage: bot.return_percentage !== null
+      ? Number(bot.return_percentage)
+      : null,
+    min_invest: bot.min_invest !== null ? Number(bot.min_invest) : null,
+    max_invest: bot.max_invest !== null ? Number(bot.max_invest) : null,
+  }));
+
+  return NextResponse.json(formattedBots);
 }

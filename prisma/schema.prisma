@@ -127,7 +127,7 @@ model bots {
   holiday_note      String?
   is_active         Boolean? @default(true)
   days              Int?
-  return_percentage Int?
+  return_percentage Decimal? @db.Decimal
   min_invest        Decimal? @db.Decimal(20, 8)
   max_invest        Decimal? @db.Decimal(20, 8)
 }

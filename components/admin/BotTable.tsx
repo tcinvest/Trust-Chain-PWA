@@ -2,20 +2,7 @@
 
 import { useState } from 'react';
 import { updateBot } from '@/lib/actions/admin/bots';
-
-type Bot = {
-  id: number;
-  name: string;
-  description: string | null;
-  investment_range: string | null;
-  capital_back: string | null;
-  return_type: string | null;
-  number_of_periods: string | null;
-  profit_withdraw: string | null;
-  holiday_note: string | null;
-  is_active: boolean | null;
-  return_percentage: number | null;
-};
+import { Bot } from '@/types/type';
 
 export default function BotTable({ bots }: { bots: Bot[] }) {
   const [botData, setBotData] = useState<Bot[]>(bots);
@@ -44,7 +31,10 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
       profit_withdraw: bot.profit_withdraw,
       holiday_note: bot.holiday_note,
       is_active: bot.is_active,
-      return_percentage: bot.return_percentage, // Added this field
+      return_percentage: bot.return_percentage,
+      days: bot.days,
+      min_invest: bot.min_invest,
+      max_invest: bot.max_invest,
     });
     setSavingId(null);
   };
@@ -54,18 +44,21 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
     { label: 'Investment Range', field: 'investment_range' },
     { label: 'Capital Back', field: 'capital_back' },
     { label: 'Return Type', field: 'return_type' },
-    { label: 'Return %', field: 'return_percentage', type: 'number' }, // Added this field
+    { label: 'Return %', field: 'return_percentage', type: 'number' },
     { label: 'Periods', field: 'number_of_periods' },
     { label: 'Withdraw', field: 'profit_withdraw' },
     { label: 'Holiday Note', field: 'holiday_note' },
+    { label: 'Days', field: 'days', type: 'number' },
+    { label: 'Min Invest', field: 'min_invest', type: 'number' },
+    { label: 'Max Invest', field: 'max_invest', type: 'number' },
   ];
 
   return (
     <div className="space-y-6">
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full border bg-white shadow text-sm rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 text-gray-700">
+        <table className="min-w-full border border-gray-200 bg-white rounded-xl text-sm shadow-sm">
+          <thead className="bg-gray-50 text-gray-600 font-medium text-xs uppercase tracking-wide">
             <tr>
               {[
                 'ID',
@@ -74,14 +67,17 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
                 'Range',
                 'Capital Back',
                 'Return Type',
-                'Return %', // Added this header
+                'Return %',
                 'Periods',
                 'Withdraw',
                 'Holiday',
                 'Active',
+                'Days',
+                'Min Invest',
+                'Max Invest',
                 'Actions',
               ].map((header, i) => (
-                <th key={i} className="px-3 py-3 text-left">
+                <th key={i} className="px-4 py-3 text-left border-b border-gray-200">
                   {header}
                 </th>
               ))}
@@ -89,114 +85,68 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
           </thead>
           <tbody>
             {botData.map((bot, index) => (
-              <tr key={bot.id} className="border-t hover:bg-gray-50">
-                <td className="px-3 py-2">{bot.id}</td>
-                <td className="px-3 py-2">
+              <tr
+                key={bot.id}
+                className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <td className="px-4 py-3 text-gray-700">{bot.id}</td>
+                <td className="px-4 py-3">
                   <input
-                    className="w-full border rounded px-2 py-1"
+                    className="w-full rounded-md bg-transparent px-2 py-1 border border-transparent focus:border-gray-300 focus:bg-white transition-colors"
                     value={bot.name}
-                    onChange={(e) =>
-                      handleChange(index, 'name', e.target.value)
-                    }
+                    onChange={(e) => handleChange(index, 'name', e.target.value)}
                   />
                 </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.description || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'description', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.investment_range || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'investment_range', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.capital_back || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'capital_back', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.return_type || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'return_type', e.target.value)
-                    }
-                  />
-                </td>
-                {/* Added Return Percentage Column */}
-                <td className="px-3 py-2">
-                  <input
-                    type="number"
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.return_percentage || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'return_percentage', parseInt(e.target.value) || 0)
-                    }
-                    placeholder="0"
-                    min="0"
-                    max="100"
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.number_of_periods || ''}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'number_of_periods',
-                        e.target.value
-                      )
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.profit_withdraw || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'profit_withdraw', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full border rounded px-2 py-1"
-                    value={bot.holiday_note || ''}
-                    onChange={(e) =>
-                      handleChange(index, 'holiday_note', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="px-3 py-2 text-center">
+                {fields.slice(0, 8).map(({ field, type }) => (
+                  <td key={field} className="px-4 py-3">
+                    <input
+                      type={type || 'text'}
+                      className="w-full rounded-md bg-transparent px-2 py-1 border border-transparent focus:border-gray-300 focus:bg-white transition-colors"
+                      value={String(bot[field] || '')}
+                      onChange={(e) => {
+                        const value =
+                          type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
+                        handleChange(index, field, value);
+                      }}
+                      placeholder={type === 'number' ? '0' : ''}
+                    />
+                  </td>
+                ))}
+                <td className="px-4 py-3 text-center">
                   <input
                     type="checkbox"
                     checked={bot.is_active || false}
-                    onChange={(e) =>
-                      handleChange(index, 'is_active', e.target.checked)
-                    }
+                    onChange={(e) => handleChange(index, 'is_active', e.target.checked)}
+                    className="w-4 h-4 accent-blue-600"
                   />
                 </td>
-                <td className="px-3 py-2 text-center">
+                {/* New fields at end */}
+                {fields.slice(8).map(({ field, type }) => (
+                  <td key={field} className="px-4 py-3">
+                    <input
+                      type={type || 'text'}
+                      className="w-full rounded-md bg-transparent px-2 py-1 border border-transparent focus:border-gray-300 focus:bg-white transition-colors"
+                      value={String(bot[field] || '')}
+                      onChange={(e) => {
+                        const value =
+                          type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
+                        handleChange(index, field, value);
+                      }}
+                      placeholder={type === 'number' ? '0' : ''}
+                    />
+                  </td>
+                ))}
+                <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => handleSave(index)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded"
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                      savingId === bot.id
+                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        : 'bg-gray-900 text-white hover:bg-gray-700'
+                    }`}
                     disabled={savingId === bot.id}
                   >
-                    {savingId === bot.id ? 'Saving...' : 'Save'}
+                    {savingId === bot.id ? 'Saving…' : 'Save'}
                   </button>
                 </td>
               </tr>
@@ -205,42 +155,38 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
         </table>
       </div>
 
-      {/* Mobile Card View */}
+      {/* Mobile View */}
       <div className="md:hidden space-y-4">
         {botData.map((bot, index) => (
           <div
             key={bot.id}
-            className="bg-white rounded-xl shadow p-4 border space-y-3"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 space-y-3"
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-gray-800">
-                #{bot.id} - {bot.name}
+              <h3 className="font-semibold text-gray-800">
+                #{bot.id} – {bot.name}
               </h3>
               <input
                 type="checkbox"
                 checked={bot.is_active || false}
-                onChange={(e) =>
-                  handleChange(index, 'is_active', e.target.checked)
-                }
+                onChange={(e) => handleChange(index, 'is_active', e.target.checked)}
+                className="w-4 h-4 accent-blue-600"
               />
             </div>
             <div className="grid grid-cols-1 gap-3 text-sm">
               {fields.map(({ label, field, type }) => (
                 <div key={field}>
-                  <p className="text-gray-500">{label}</p>
+                  <p className="text-gray-500 text-xs mb-1">{label}</p>
                   <input
                     type={type || 'text'}
-                    className="w-full border rounded px-2 py-1"
+                    className="w-full rounded-md bg-gray-50 px-2 py-1 border border-transparent focus:border-gray-300 focus:bg-white transition-colors"
                     value={String(bot[field] || '')}
                     onChange={(e) => {
-                      const value = type === 'number' 
-                        ? parseInt(e.target.value) || 0 
-                        : e.target.value;
+                      const value =
+                        type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
                       handleChange(index, field, value);
                     }}
                     placeholder={type === 'number' ? '0' : ''}
-                    min={type === 'number' ? '0' : undefined}
-                    max={type === 'number' ? '100' : undefined}
                   />
                 </div>
               ))}
@@ -248,10 +194,14 @@ export default function BotTable({ bots }: { bots: Bot[] }) {
             <div className="text-right pt-2">
               <button
                 onClick={() => handleSave(index)}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1 rounded"
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  savingId === bot.id
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-900 text-white hover:bg-gray-700'
+                }`}
                 disabled={savingId === bot.id}
               >
-                {savingId === bot.id ? 'Saving...' : 'Save'}
+                {savingId === bot.id ? 'Saving…' : 'Save'}
               </button>
             </div>
           </div>

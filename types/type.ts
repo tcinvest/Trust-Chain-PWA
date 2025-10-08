@@ -118,3 +118,20 @@ export type DashboardData = {
   firstName: string | null;
   username: string | null;
 };
+
+export type Bot = {
+  id: number;
+  name: string;
+  description: string | null;
+  investment_range: string | null;
+  capital_back: string | null;
+  return_type: string | null;
+  number_of_periods: string | null;
+  profit_withdraw: string | null;
+  holiday_note: string | null;
+  is_active: boolean | null;
+  return_percentage: number | null;
+  min_invest: number | null;
+  max_invest: number | null;
+  days: number|null;
+};

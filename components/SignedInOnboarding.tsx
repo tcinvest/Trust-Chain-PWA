@@ -1,11 +1,97 @@
+
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Brain, TrendingUp, ArrowRight, Bot, DollarSign, Zap, Shield, Target, Clock } from 'lucide-react';
 import InstallButton from './InstallButton';
 
+// Type definitions
+interface DbBot {
+  id: number;
+  name: string;
+  description: string | null;
+  investment_range: string | null;
+  capital_back: string | null;
+  return_type: string | null;
+  number_of_periods: string | null;
+  profit_withdraw: string | null;
+  holiday_note: string | null;
+  is_active: boolean | null;
+  days: number | null;
+  return_percentage: number | null;
+  min_invest: number | null;
+  max_invest: number | null;
+}
+
+interface BotDisplay extends DbBot {
+  minInvestmentFormatted: string;
+  returnsFormatted: string;
+}
+
 export default function SignedInOnboarding() {
+  const [bots, setBots] = useState<BotDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBots = async () => {
+      try {
+        const res = await fetch('/api/bots');
+        if (!res.ok) throw new Error('Failed to fetch bots');
+        const data: DbBot[] = await res.json();
+        
+        const formatted = data.map(bot => ({
+          ...bot,
+          minInvestmentFormatted: bot.min_invest !== null ? `$${Number(bot.min_invest).toLocaleString()} min` : 'N/A',
+          returnsFormatted: bot.return_percentage !== null
+            ? bot.days !== null
+              ? `${Number(bot.return_percentage)}% in ${bot.days} Days`
+              : `${Number(bot.return_percentage)}% for lifetime`
+            : 'N/A',
+        }));
+
+        setBots(formatted);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load bots');
+        console.error('Error fetching bots:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBots();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-3 sm:mb-4"></div>
+          <p className="text-gray-400 text-sm sm:text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || bots.length === 0) {
+    return (
+
+        <div className="text-center max-w-md">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" />
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Unable to Load Bots</h2>
+          <p className="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6">{error || 'No active bots available'}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
       {/* Animated Background - Optimized for mobile */}
@@ -74,7 +160,7 @@ export default function SignedInOnboarding() {
               <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-white">Active Bots</h3>
               <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
             </div>
-            <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2">3 Running</div>
+            <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2">{bots.filter(bot => bot.is_active).length} Running</div>
             <div className="text-indigo-400 text-xs sm:text-sm">Generating returns</div>
           </div>
         </div>
@@ -83,13 +169,13 @@ export default function SignedInOnboarding() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 max-w-3xl mx-auto mb-6 sm:mb-8 lg:mb-12 w-full px-2">
           <div className="bg-gray-800/50 backdrop-blur-lg rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 border border-gray-700 text-center">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-400 mx-auto mb-1 sm:mb-2" />
-            <div className="text-base sm:text-lg lg:text-xl font-bold text-white">$99</div>
+            <div className="text-base sm:text-lg lg:text-xl font-bold text-white">{bots[0]?.minInvestmentFormatted || '$99'}</div>
             <div className="text-xs sm:text-sm text-gray-400">Min Investment</div>
           </div>
           <div className="bg-gray-800/50 backdrop-blur-lg rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 border border-gray-700 text-center">
             <Target className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-cyan-400 mx-auto mb-1 sm:mb-2" />
-            <div className="text-base sm:text-lg lg:text-xl font-bold text-white">10%</div>
-            <div className="text-xs sm:text-sm text-gray-400">Monthly ROI</div>
+            <div className="text-base sm:text-lg lg:text-xl font-bold text-white">{bots[0]?.returnsFormatted || '10%'}</div>
+            <div className="text-xs sm:text-sm text-gray-400">Expected ROI</div>
           </div>
           <div className="bg-gray-800/50 backdrop-blur-lg rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 border border-gray-700 text-center">
             <Clock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-blue-400 mx-auto mb-1 sm:mb-2" />
@@ -107,50 +193,39 @@ export default function SignedInOnboarding() {
         <div className="max-w-4xl mx-auto mb-6 sm:mb-8 lg:mb-12 w-full px-2">
           <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4 lg:mb-6">Your Available AI Bots</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            <div className="bg-gray-900/60 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 border border-gray-700 shadow-lg shadow-cyan-500/20">
-              <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-                  <Bot className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
+            {bots.slice(0, 3).map((bot, index) => (
+              <div
+                key={bot.id}
+                className={`bg-gray-900/60 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 border border-gray-700 shadow-lg ${
+                  index === 0 ? 'shadow-cyan-500/20' : index === 1 ? 'shadow-blue-500/20' : 'shadow-purple-500/20'
+                } sm:col-span-${index === 2 && bots.length < 3 ? '2 lg:col-span-1' : '1'}`}
+              >
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <div
+                    className={`w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center bg-gradient-to-br ${
+                      index === 0
+                        ? 'from-cyan-400 to-blue-500'
+                        : index === 1
+                        ? 'from-blue-400 to-indigo-500'
+                        : 'from-blue-500 to-purple-500'
+                    }`}
+                  >
+                    <Bot className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
+                  </div>
+                  <span className={`text-xs sm:text-sm font-medium ${bot.is_active ? 'text-cyan-400' : 'text-gray-500'}`}>
+                    {bot.is_active ? 'ACTIVE' : 'AVAILABLE'}
+                  </span>
                 </div>
-                <span className="text-xs sm:text-sm text-cyan-400 font-medium">ACTIVE</span>
-              </div>
-              <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1">GeniusInvestAiBot</h4>
-              <p className="text-xs sm:text-sm text-gray-400 mb-2">Smart Investment Made Simple</p>
-              <div className="flex justify-between text-xs sm:text-sm">
-                <span className="text-cyan-400">$99 min</span>
-                <span className="text-green-400">10% monthly</span>
-              </div>
-            </div>
-
-            <div className="bg-gray-900/60 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 border border-gray-700 shadow-lg shadow-blue-500/20">
-              <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
-                  <Bot className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
+                <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1">{bot.name}</h4>
+                <p className="text-xs sm:text-sm text-gray-400 mb-2">{bot.description || 'AI Investment Bot'}</p>
+                <div className="flex justify-between text-xs sm:text-sm">
+                  <span className={`font-medium ${
+                    index === 0 ? 'text-cyan-400' : index === 1 ? 'text-blue-400' : 'text-purple-400'
+                  }`}>{bot.minInvestmentFormatted}</span>
+                  <span className="text-green-400">{bot.returnsFormatted}</span>
                 </div>
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">AVAILABLE</span>
               </div>
-              <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1">AlphaInvestAIBot</h4>
-              <p className="text-xs sm:text-sm text-gray-400 mb-2">Lightspeed Elite Trading</p>
-              <div className="flex justify-between text-xs sm:text-sm">
-                <span className="text-blue-400">$9,999 min</span>
-                <span className="text-green-400">30% in 60 days</span>
-              </div>
-            </div>
-
-            <div className="bg-gray-900/60 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 border border-gray-700 shadow-lg shadow-purple-500/20 sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                  <Bot className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
-                </div>
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">AVAILABLE</span>
-              </div>
-              <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1">ChainMasterBot</h4>
-              <p className="text-xs sm:text-sm text-gray-400 mb-2">High-Growth + Fund Recovery</p>
-              <div className="flex justify-between text-xs sm:text-sm">
-                <span className="text-purple-400">$999 min</span>
-                <span className="text-green-400">40% in 90 days</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -161,7 +236,7 @@ export default function SignedInOnboarding() {
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </Link>
-        </div>
       </div>
+    </div>
   );
 }

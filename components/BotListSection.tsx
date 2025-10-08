@@ -21,10 +21,19 @@ export default function BotListSection() {
     const fetchBots = async () => {
       const res = await fetch('/api/bots');
       const data = await res.json();
-      setBots(data);
+  
+      // Convert Decimal strings to numbers
+      // eslint-disable-next-line
+      const formatted = data.map((bot: any) => ({
+        ...bot,
+        return_percentage: bot.return_percentage ? parseFloat(bot.return_percentage) : null,
+      }));
+  
+      setBots(formatted);
     };
     fetchBots();
   }, []);
+  
 
   return (
     <div className="px-6 pt-4 pb-2">
