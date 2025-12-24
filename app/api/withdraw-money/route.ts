@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
         kyc: true,
         email: true,
         first_name: true,
-        last_name: true
+        last_name: true,
+        withdrawals_enabled: true
       }
     });
 
@@ -39,12 +40,18 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check KYC verification
+    if (user.withdrawals_enabled === false) {
+      return Response.json({ 
+        error: "Withdrawals are temporarily disabled. Please try again later or contact support." 
+      }, { status: 403 });
+    }
+
+    // KYC
     if (user.kyc !== 2) {
       return Response.json({ error: "KYC verification required" }, { status: 400 });
     }
 
-    // Check for existing pending withdrawal
+    // existing pending withdrawal
     const existingRequest = await prisma.withdrawalrequests.findFirst({
       where: {
         user_id: user.id,
@@ -56,7 +63,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "You already have a pending withdrawal request" }, { status: 400 });
     }
 
-    // Check sufficient balance
+    //  balance check
     const currentBalance = balanceType === 'balance' 
       ? Number(user.balance) 
       : Number(user.profit_balance);
@@ -67,11 +74,10 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    // Calculate charges (5%)
+    // charges (5%)
     const charges = withdrawAmount * 0.05;
     const netAmount = withdrawAmount - charges;
 
-    // Create withdrawal request
     const withdrawalRequest = await prisma.withdrawalrequests.create({
       data: {
         user_id: user.id,

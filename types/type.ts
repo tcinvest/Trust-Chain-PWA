@@ -13,6 +13,7 @@ export interface UserData {
     balance: number;
     profit_balance: number;
     recovery_fund: number;
+    withdrawals_enabled: boolean;
     total_withdrawals: number; 
     status: number | null;
     kyc: number | null;
@@ -94,13 +95,10 @@ export interface ReferralData {
   referralTransactions: ReferralTransaction[];
 }
 
-// types/type.ts (or wherever your types are defined)
 export type DashboardData = {
   totalBalance: number;
   profitBalance: number;
-  // Changed from single activeInvestment to array of activeInvestments
   activeInvestments: {
-    id: number; // Added id field for unique keys
     amount: number;
     bot: string;
     createdAt: string;

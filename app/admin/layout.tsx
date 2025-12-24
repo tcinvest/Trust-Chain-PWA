@@ -1,10 +1,9 @@
 // app/admin/layout.tsx
 'use client';
-
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import WithdrawalMasterToggle from '@/components/admin/WithdrawalMasterToggle';
 
 const adminRoutes = [
   {
@@ -74,7 +73,7 @@ export default function AdminLayout({
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Mobile sidebar backdrop */}
+      {/* Mobile sidebar */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -115,6 +114,8 @@ export default function AdminLayout({
               </Link>
             );
           })}
+
+          <WithdrawalMasterToggle />
         </nav>
       </div>
 

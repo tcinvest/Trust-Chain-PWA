@@ -76,34 +76,35 @@ model transactions {
 }
 
 model users {
-  id              Int      @id @default(autoincrement())
-  ranking_id      Int?
-  rankings        String?
-  avatar          String?
-  first_name      String?
-  last_name       String?
-  country         String?
-  phone           String?
-  username        String?
-  email           String?
-  gender          String?
-  date_of_birth   String?
-  city            String?
-  zip_code        String?
-  address         String?
-  balance         Decimal? @default(0.00) @db.Decimal
-  profit_balance  Decimal? @default(0.00) @db.Decimal
-  recovery_fund   Decimal? @db.Decimal
-  status          Int?
-  kyc             Int?
-  kyc_credential  String?
-  deposit_status  Int?
-  withdraw_status Int?
-  transfer_status Int?
-  ref_id          String?
-  created_at      String?
-  updated_at      String?
-  clerk_id        String?  @unique(map: "users_clerkid_key")
+  id                  Int      @id @default(autoincrement())
+  ranking_id          Int?
+  rankings            String?
+  avatar              String?
+  first_name          String?
+  last_name           String?
+  country             String?
+  phone               String?
+  username            String?
+  email               String?
+  gender              String?
+  date_of_birth       String?
+  city                String?
+  zip_code            String?
+  address             String?
+  balance             Decimal? @default(0.00) @db.Decimal
+  profit_balance      Decimal? @default(0.00) @db.Decimal
+  recovery_fund       Decimal? @db.Decimal
+  status              Int?
+  kyc                 Int?
+  kyc_credential      String?
+  deposit_status      Int?
+  withdraw_status     Int?
+  transfer_status     Int?
+  ref_id              String?
+  created_at          String?
+  updated_at          String?
+  clerk_id            String?  @unique(map: "users_clerkid_key")
+  withdrawals_enabled Boolean? @default(true)
 }
 
 model referral_links {
