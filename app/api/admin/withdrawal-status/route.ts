@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
+  console.log(req)
   try {
 
     // Get count of users with withdrawals enabled vs disabled
