@@ -193,7 +193,7 @@ export default function SignedInOnboarding() {
         <div className="max-w-4xl mx-auto mb-6 sm:mb-8 lg:mb-12 w-full px-2">
           <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4 lg:mb-6">Your Available AI Bots</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {bots.slice(0, 3).map((bot, index) => (
+            {bots.map((bot, index) => (
               <div
                 key={bot.id}
                 className={`bg-gray-900/60 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 border border-gray-700 shadow-lg ${
