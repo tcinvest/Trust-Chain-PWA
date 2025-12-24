@@ -13,7 +13,7 @@ export interface UserData {
     balance: number;
     profit_balance: number;
     recovery_fund: number;
-    withdrawals_enabled: boolean;
+    withdrawals_enabled: boolean | null;
     total_withdrawals: number; 
     status: number | null;
     kyc: number | null;
@@ -38,7 +38,7 @@ export interface MarketProps {
   }
 
   export interface InvestmentBot {
-    id: number;
+    id?: number;
     name: string;
     description: string;
     investmentRange: string;
@@ -51,7 +51,7 @@ export interface MarketProps {
   }
   
 export type Investment = {
-  id: number;
+  id?: number;
   user_id: number | null;
   schema_id: number | null;
   transaction_id: number | null;

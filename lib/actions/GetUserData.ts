@@ -15,6 +15,7 @@ export async function getUserData(clerkId: string) {
         city: true,
         avatar: true,
         balance: true,
+        withdrawals_enabled: true,
         profit_balance: true,
         recovery_fund: true,
         status: true,

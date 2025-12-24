@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type Investment = {
-  id: number;
+  id?: number;
   amount: number;
   bot: string;
   createdAt: string;
@@ -33,7 +33,7 @@ export default function InvestmentsList({ investments }: InvestmentsListProps) {
     const calculateProgress = () => {
       const progressData: Record<number, InvestmentProgress> = {};
 
-      investments.forEach((investment) => {
+      investments.forEach((investment, index) => {
         const startDate = new Date(investment.createdAt.replace(' ', 'T'));
         const now = new Date();
         
@@ -54,7 +54,7 @@ export default function InvestmentsList({ investments }: InvestmentsListProps) {
         // Calculate daily return (botReturnPercentage is already daily rate)
         const dailyReturnAmount = (investment.botReturnPercentage / 100) * investment.amount;
         
-        progressData[investment.id] = {
+        progressData[index] = {
           progress: Math.round(progressPercentage),
           daysRemaining: remaining,
           dailyReturn: dailyReturnAmount,
@@ -99,8 +99,8 @@ export default function InvestmentsList({ investments }: InvestmentsListProps) {
   return (
     <div className="px-6 mb-6">
       <div className="space-y-4">
-        {investments.map((investment) => {
-          const progress = investmentProgress[investment.id];
+        {investments.map((investment, index) => {
+          const progress = investmentProgress[index];
           
           return (
             <div key={investment.id} className="bg-gray-100 dark:bg-gray-800 rounded-3xl p-6">
