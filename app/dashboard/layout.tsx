@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Nav from '@/components/Nav'
 import { checkUser } from '@/lib/check-user'
 import { redirect } from 'next/navigation'

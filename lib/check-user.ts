@@ -88,8 +88,9 @@ export const checkUser = async () => {
   }
    
   // Get referral code from cookie instead of referer header
-  const cookieStore = await cookies();
-  const referralCode = cookieStore.get('referral_code')?.value;
+ // NEW:
+const cookieStore = await cookies();
+const referralCode = cookieStore.get('referral_code')?.value;
 
   let loggedInUser = await prisma.users.findUnique({
     where: {
