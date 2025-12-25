@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     if (user.withdrawals_enabled === false) {
       return Response.json({ 
-        error: "Withdrawals are temporarily disabled. Please try again later or contact support." 
+        error: "Withdrawals are not allowed until end of the plan." 
       }, { status: 403 });
     }
 
