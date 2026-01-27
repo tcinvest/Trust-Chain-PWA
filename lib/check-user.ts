@@ -37,32 +37,7 @@ const handleReferralSignup = async (newUserId: number, referralCode: string) => 
             }
           });
 
-          // 2. Credit the referrer's profit balance
-          await tx.users.update({
-            where: { id: referralLink.user_id! },
-            data: {
-              profit_balance: {
-                increment: 10.00
-              },
-              updated_at: new Date().toISOString(),
-            }
-          });
-
-          // 3. Create transaction record for the referrer
-          await tx.transactions.create({
-            data: {
-              user_id: referralLink.user_id!,
-              description: "Referral bonus for new user signup",
-              amount: 10.00,
-              type: "referral",
-              status: "completed",
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            }
-          });
-        });
-
-        console.log(`✅ Referral processed: User ${newUserId} referred by user ${referralLink.user_id}, $10 credited`);
+        console.log(`✅ Referral processed: User ${newUserId} referred by user ${referralLink.user_id},`);
       } else {
         console.log('⚠️ Referral relationship already exists');
       }
