@@ -37,7 +37,7 @@ const handleReferralSignup = async (newUserId: number, referralCode: string) => 
             }
           });
 
-        console.log(`✅ Referral processed: User ${newUserId} referred by user ${referralLink.user_id},`);
+        console.log(`✅ Referral processed: User ${newUserId} referred by user ${referralLink.user_id},`); });
       } else {
         console.log('⚠️ Referral relationship already exists');
       }
