@@ -17,7 +17,7 @@ interface Window {
 
   export default function GoogleTranslate() {
     useEffect(() => {
-      if (document.getElementById('google-translate-script')) return;
+      if (document.getElementById('google-translate-script')) return;   
 
       window.googleTranslateInit = () => {
         new window.google.translate.TranslateElement(
