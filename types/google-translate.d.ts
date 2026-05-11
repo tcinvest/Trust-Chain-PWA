@@ -3,7 +3,7 @@ interface Window {
   googleTranslateInit: () => void;
   google: {
     translate: {
-      translateElement: new (
+      TranslateElement: new (
         options: { pageLanguage: string; autoDisplay: boolean },
         element: string
         ) => void;
