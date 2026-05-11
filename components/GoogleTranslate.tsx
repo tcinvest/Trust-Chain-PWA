@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 
       return () => {
         const existingScript = document.getElementById('google-translate-script');
-        if (existingScript) document.body.removeChild(exisingScript);
+        if (existingScript) document.body.removeChild(existingScript);
       };
     }, []);
 
