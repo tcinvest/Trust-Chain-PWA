@@ -19,8 +19,8 @@ interface Window {
     useEffect(() => {
       if (document.getElementById('google-translate-script')) return;
 
-      (window as any).googleTranslateInit = () => {
-        new (window as any).google.translate.TranslateElement(
+      window.googleTranslateInit = () => {
+        new window.google.translate.TranslateElement(
           { pageLanguage: 'en', autoDisplay: false },
           'google_translate_element'
           );
