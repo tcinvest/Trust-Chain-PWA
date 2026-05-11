@@ -11,7 +11,9 @@ interface Window {
         element: string
         ) => void;
     };
-  }
+  };
+};
+};
 
   export default function GoogleTranslate() {
     useEffect(() => {
