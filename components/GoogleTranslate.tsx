@@ -1,20 +1,6 @@
 'use client'
 import { useEffect } from 'react';
 
-declare global {
-interface Window {
-  googleTranslateInit: () => void;
-  google: {
-    translate: {
-      translateElement: new (
-        options: { pageLanguage: string; autoDisplay: boolean },
-        element: string
-        ) => void;
-    };
-  };
-};
-};
-
   export default function GoogleTranslate() {
     useEffect(() => {
       if (document.getElementById('google-translate-script')) return;   
