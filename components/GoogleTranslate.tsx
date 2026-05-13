@@ -19,10 +19,6 @@ export default function GoogleTranslate() {
     document.body.appendChild(script);
   }, []);
 
-  const handleClick = () => {
-    const select = document.querySelector('#google_translate_element select') as HTMLSelectElement;
-    if (select) select.click();
-  };
 return (
   <div className="fixed left-4 bottom-4 z-50 flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-white shadow-sm">
     <span>🌐</span>
