@@ -24,10 +24,10 @@ import { useEffect } from 'react';
       };
     }, []);
 
-   return (
-      <div className="fixed left-4 bottom-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-gray-200 shadow-lg">
-        <span>🌐</span>
-        <div id="google_translate_element" />
-      </div>
-    );
+       return (
+        <div className="fixed left-4 bottom-4 z-50 flex items-center gap-1 bg-white rounded-full shadow-lg px-2 py-1 border border-gray-200">
+          <span>🌐</span>
+          <div id="google_translate_element" />
+        </div>
+      );
   };
