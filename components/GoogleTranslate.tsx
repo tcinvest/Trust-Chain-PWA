@@ -24,5 +24,10 @@ import { useEffect } from 'react';
       };
     }, []);
 
-    return <div id="google_translate_element" />
+    return (
+      <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-white shadow-sm">
+        <span>🌐</span>
+        <div id="google_translate_element" />
+      </div>
+);
   };
