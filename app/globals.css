@@ -19,7 +19,19 @@
   }
 }
 
-.goog-te-banner-frame {
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  font-size: 13px !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+}
+
+.goog-logo-link {
   display: none !important;
 }
 
