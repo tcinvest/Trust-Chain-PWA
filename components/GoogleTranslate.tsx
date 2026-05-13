@@ -24,12 +24,20 @@ import { useEffect } from 'react';
       };
     }, []);
 
-    return (
-      <div className="fixed left-4 bottom-4 z-50 relative w-10 h-10 cursor-pointer">
-        <div className="w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-xl">
-          🌐
-        </div>
-        <div id="google_translate_element" className="absolute inset-0" />
-      </div>
-    );
+   return (
+  <div className="fixed left-4 bottom-4 z-50">
+    <style>{`
+      .goog-te-banner-frame { display: none !important; }
+      .goog-te-banner-frame.skiptranslate { display: none !important; }
+      body { top: 0 !important; position: static !important; }
+    `}</style>
+    <button
+      onClick={handleClick}
+      className="w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-xl hover:scale-110 transition-transform"
+    >
+      🌐
+    </button>
+    <div id="google_translate_element" className="hidden" />
+  </div>
+);
   };
