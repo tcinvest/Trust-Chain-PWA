@@ -25,11 +25,11 @@ import { useEffect } from 'react';
     }, []);
 
     return (
-      <div className="fixed left-4 bottom-4 z-50 w-10 h-10 cursor-pointer">
+      <div className="fixed left-4 bottom-4 z-50 relative w-10 h-10 cursor-pointer">
         <div className="w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-xl">
           🌐
         </div>
-        <div id="google_translate_element" className="absolute inset-0 opacity-0 overflow-hidden" />
+        <div id="google_translate_element" className="absolute inset-0" />
       </div>
     );
   };
