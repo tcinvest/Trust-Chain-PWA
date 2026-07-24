@@ -37,11 +37,11 @@ export default function PWAOnboarding() {
         }}
       />
 
-      {/* Animated background elements with neon blue */}
+      {/* Animated background elements with gold glow */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-600 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-amber-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse delay-500"></div>
       </div>
 
       <div className="relative z-10 text-center max-w-md mx-auto">
@@ -50,7 +50,7 @@ export default function PWAOnboarding() {
           {/* Title */}
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Trust Chain
-            <span className="block text-cyan-400 neon-glow">Invest AI</span>
+            <span className="block text-amber-400 neon-glow">Invest AI</span>
           </h1>
 
           {/* Subtitle */}
@@ -64,19 +64,19 @@ export default function PWAOnboarding() {
           <div className="relative mx-auto w-32 h-32">
             {/* AI Letters with 3D effect */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-6xl font-black text-cyan-400 neon-glow transform rotate-12 perspective-3d">
+              <span className="text-6xl font-black text-amber-400 neon-glow transform rotate-12 perspective-3d">
                 AI
               </span>
             </div>
 
             {/* Geometric shapes */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-cyan-400 rounded opacity-80 animate-pulse"></div>
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-400 rounded opacity-60 animate-pulse delay-300"></div>
-            <div className="absolute top-1/2 -right-4 w-3 h-3 bg-cyan-300 rounded-full opacity-70 animate-pulse delay-700"></div>
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-400 rounded opacity-80 animate-pulse"></div>
+            <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-yellow-500 rounded opacity-60 animate-pulse delay-300"></div>
+            <div className="absolute top-1/2 -right-4 w-3 h-3 bg-amber-300 rounded-full opacity-70 animate-pulse delay-700"></div>
 
             {/* Connecting lines */}
-            <div className="absolute top-4 left-4 w-16 h-px bg-gradient-to-r from-cyan-400 to-transparent opacity-50"></div>
-            <div className="absolute bottom-4 right-4 w-12 h-px bg-gradient-to-l from-blue-400 to-transparent opacity-50"></div>
+            <div className="absolute top-4 left-4 w-16 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-50"></div>
+            <div className="absolute bottom-4 right-4 w-12 h-px bg-gradient-to-l from-yellow-500 to-transparent opacity-50"></div>
           </div>
         </div>
 
@@ -85,7 +85,7 @@ export default function PWAOnboarding() {
           <SignedOut>
             <button
               onClick={handleGetStarted}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 neon-button"
+              className="w-full bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25 neon-button"
             >
               Get Started
             </button>
@@ -94,7 +94,7 @@ export default function PWAOnboarding() {
           <SignedIn>
             <button
               onClick={handleDashboard}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 neon-button"
+              className="w-full bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25 neon-button"
             >
               Dashboard
             </button>
@@ -103,7 +103,7 @@ export default function PWAOnboarding() {
 
         {/* Progress indicator */}
         <div className="mt-12 flex justify-center">
-          <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+          <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
         </div>
       </div>
 
@@ -111,21 +111,21 @@ export default function PWAOnboarding() {
       <style jsx>{`
         .neon-glow {
           text-shadow: 
-            0 0 5px #00bcd4,
-            0 0 10px #00bcd4,
-            0 0 15px #00bcd4,
-            0 0 20px #00bcd4;
+            0 0 5px #D4AF37,
+            0 0 10px #D4AF37,
+            0 0 15px #D4AF37,
+            0 0 20px #D4AF37;
         }
         
         .neon-button {
           box-shadow: 
-            0 0 20px rgba(0, 188, 212, 0.3),
+            0 0 20px rgba(212, 175, 55, 0.3),
             0 4px 15px rgba(0, 0, 0, 0.3);
         }
         
         .neon-button:hover {
           box-shadow: 
-            0 0 30px rgba(0, 188, 212, 0.5),
+            0 0 30px rgba(212, 175, 55, 0.5),
             0 6px 20px rgba(0, 0, 0, 0.4);
         }
         
