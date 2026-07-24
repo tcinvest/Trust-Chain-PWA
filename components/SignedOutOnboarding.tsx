@@ -370,8 +370,8 @@ export default function TrustChainLanding() {
                   Download our comprehensive guide covering all AI bots, investment strategies, and risk management.
                 </p>
               </div>
-              
-                href="/api/download-guide"
+
+              <a href="/api/download-guide"
                 className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-amber-500/50 flex items-center space-x-2"
               >
                 <Download className="w-5 h-5" />
