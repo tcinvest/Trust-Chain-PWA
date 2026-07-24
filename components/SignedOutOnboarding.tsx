@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Script from 'next/script';
 import Link from 'next/link';
 import {
@@ -14,7 +13,9 @@ import {
   Play,
   CheckCircle,
   Lock,
-  Lightbulb
+  Lightbulb,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
@@ -115,6 +116,9 @@ export default function TrustChainLanding() {
     );
   }
 
+  const activeBotsCount = bots.filter(b => b.is_active).length;
+  const topReturn = bots.reduce((max, b) => (b.return_percentage > max ? b.return_percentage : max), 0);
+
   return (
     <div className="relative min-h-screen bg-black">
       <Script
@@ -151,64 +155,116 @@ export default function TrustChainLanding() {
       </div>
 
       <div className="relative z-10 px-4 py-8 sm:py-12">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-2xl shadow-amber-500/50">
-                <Brain className="w-8 h-8 sm:w-10 sm:h-10 text-black" />
-              </div>
-              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-6 h-6 sm:w-8 sm:h-8 bg-amber-400 rounded-full flex items-center justify-center shadow-lg shadow-amber-400/50">
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
-              </div>
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">TrustChain</h1>
-              <p className="text-amber-300 text-sm sm:text-base lg:text-lg font-medium">InvestAI</p>
-            </div>
-          </div>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-            AI-Powered
-            <span className="bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent block">
-              Investment
-            </span>
-            <span className="text-amber-400 drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">Revolution</span>
-          </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12">
-            Choose your AI investment strategy. From accessible wealth building to elite trading and fund recovery—powered by cutting-edge artificial intelligence.
-          </p>
-
-          <div className="mb-8 sm:mb-12 flex justify-center">
-            <Link href="/sign-up">
-              <button className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105 text-lg sm:text-xl">
-                Get Started Now
-              </button>
-            </Link>
-          </div>
-
-          {/* Hero Image */}
-          <div className="relative max-w-5xl mx-auto mb-12 sm:mb-16">
+        {/* ============ NEW HERO ============ */}
+        <div className="max-w-7xl mx-auto mb-16 sm:mb-24">
+          <div className="flex justify-end mb-4">
             <InstallButton />
-            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-amber-500/20 shadow-2xl shadow-amber-500/20">
-              <Image
-                src="/Trustchain.png"
-                alt="Three AI robots representing TrustChain's investment bots"
-                width={1200}
-                height={600}
-                className="w-full h-64 sm:h-80 lg:h-96 object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+            {/* Left column — copy */}
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 mb-6">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-amber-300 text-xs sm:text-sm font-medium tracking-wide">AI-POWERED INVESTMENT PLATFORM</span>
+              </div>
+
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-amber-500/50">
+                  <Brain className="w-7 h-7 sm:w-8 sm:h-8 text-black" />
+                </div>
+                <div className="text-left">
+                  <h1 className="text-xl sm:text-2xl font-bold text-white leading-none">TrustChain</h1>
+                  <p className="text-amber-300 text-xs sm:text-sm font-medium">InvestAI</p>
+                </div>
+              </div>
+
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                Let AI Bots
+                <span className="bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent block">
+                  Grow Your Wealth
+                </span>
+              </h2>
+
+              <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
+                Pick a bot, set your investment, and let cutting-edge AI handle the strategy. Transparent returns, real-time tracking, zero guesswork.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center lg:items-start gap-3 sm:gap-4 mb-10 justify-center lg:justify-start">
+                <Link href="/sign-up" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto group bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105 text-base sm:text-lg flex items-center justify-center gap-2">
+                    Get Started Now
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </Link>
+                <a href="#tutorial" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto flex items-center justify-center gap-2 py-4 px-8 rounded-full border border-amber-500/30 text-amber-300 hover:bg-amber-500/10 transition-all duration-300 font-semibold text-base sm:text-lg">
+                    <Play className="w-4 h-4" />
+                    Watch Tutorial
+                  </button>
+                </a>
+              </div>
+
+              {/* Trust strip */}
+              <div className="flex items-center justify-center lg:justify-start gap-6 sm:gap-8 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-amber-400" />
+                  <span className="text-gray-300 text-xs sm:text-sm">SEC Regulated</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-amber-400" />
+                  <span className="text-gray-300 text-xs sm:text-sm">TRM Labs Backed</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-amber-400" />
+                  <span className="text-gray-300 text-xs sm:text-sm">50,000+ Investors</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right column — floating dashboard preview */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl"></div>
+
+              <div className="relative w-full max-w-md bg-gray-900/70 backdrop-blur-xl rounded-3xl border border-amber-500/20 shadow-2xl shadow-amber-500/20 p-5 sm:p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <span className="text-white font-semibold text-sm sm:text-base">Live Portfolio</span>
+                  <span className="flex items-center gap-1.5 text-xs text-amber-300">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    Live
+                  </span>
+                </div>
+
+                <div className="mb-6">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">$12,847.92</div>
+                  <div className="text-amber-400 text-sm font-medium">+15.7% this month</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  <div className="bg-black/40 rounded-xl p-3 border border-amber-500/10">
+                    <Bot className="w-4 h-4 text-amber-400 mb-1.5" />
+                    <div className="text-lg font-bold text-white">{activeBotsCount}</div>
+                    <div className="text-gray-400 text-xs">Active Bots</div>
+                  </div>
+                  <div className="bg-black/40 rounded-xl p-3 border border-amber-500/10">
+                    <TrendingUp className="w-4 h-4 text-amber-400 mb-1.5" />
+                    <div className="text-lg font-bold text-white">{topReturn}%</div>
+                    <div className="text-gray-400 text-xs">Top Return</div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   {bots.slice(0, 3).map((bot) => (
-                    <div key={bot.id} className="text-center p-2 sm:p-3 bg-black/50 backdrop-blur-lg rounded-lg border border-amber-500/30">
-                      <div className={`w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br ${bot.color || defaultColor} rounded-lg mx-auto mb-1 sm:mb-2 flex items-center justify-center`}>
-                        <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
+                    <div key={bot.id} className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-amber-500/10">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-6 h-6 rounded-md bg-gradient-to-br ${bot.color || defaultColor} flex items-center justify-center`}>
+                          <Bot className="w-3 h-3 text-black" />
+                        </div>
+                        <span className="text-gray-200 text-xs sm:text-sm font-medium">{bot.name}</span>
                       </div>
-                      <p className="text-xs sm:text-sm text-amber-300 font-medium">{bot.name}</p>
-                      <p className="text-xs text-gray-400">{bot.minInvestmentFormatted}</p>
+                      <span className="text-amber-400 text-xs font-semibold">{bot.minInvestmentFormatted}</span>
                     </div>
                   ))}
                 </div>
@@ -216,6 +272,7 @@ export default function TrustChainLanding() {
             </div>
           </div>
         </div>
+        {/* ============ END NEW HERO ============ */}
 
         {/* Bot Selection */}
         <div className="max-w-6xl mx-auto mb-12 sm:mb-16">
@@ -315,7 +372,7 @@ export default function TrustChainLanding() {
         </div>
 
         {/* Tutorial Videos */}
-        <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
+        <div id="tutorial" className="max-w-4xl mx-auto mb-12 sm:mb-16">
           <div className="bg-gray-900/60 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-500/20 shadow-2xl shadow-amber-500/10">
             <div className="text-center mb-6 sm:mb-8">
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-amber-500 to-yellow-700 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/50">
@@ -370,8 +427,8 @@ export default function TrustChainLanding() {
                   Download our comprehensive guide covering all AI bots, investment strategies, and risk management.
                 </p>
               </div>
-
-              <a href="/api/download-guide"
+              
+                <a href="/api/download-guide"
                 className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-amber-500/50 flex items-center space-x-2"
               >
                 <Download className="w-5 h-5" />
