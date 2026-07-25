@@ -71,4 +71,33 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu panel
+      {/* Mobile menu panel */}
+      {isOpen && (
+        <div className="lg:hidden bg-black/98 backdrop-blur-lg border-t border-amber-500/20 px-4 py-4 space-y-1">
+          {NAV_LINKS.map((link) => (
+            
+              key={link.label}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-300 hover:text-amber-400 hover:bg-amber-500/5 text-sm font-medium py-3 px-3 rounded-lg transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-amber-500/10">
+            <Link href="/sign-in" onClick={() => setIsOpen(false)}>
+              <button className="w-full text-white border border-amber-500/30 hover:bg-amber-500/10 font-semibold px-5 py-3 rounded-lg transition-colors text-sm">
+                Login
+              </button>
+            </Link>
+            <Link href="/sign-up" onClick={() => setIsOpen(false)}>
+              <button className="w-full bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold px-5 py-3 rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/40 text-sm">
+                Get Started
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
