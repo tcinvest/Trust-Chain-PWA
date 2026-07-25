@@ -10,7 +10,9 @@ const isPublicRoute = createRouteMatcher([
   '/api/cron/process-daily-returns',
   '/manifest.json',       
   '/letterT.png',          
-  '/letterT2.png',     
+  '/letterT2.png',  
+  '/faq',  
+  
 ])
 
 export default clerkMiddleware(async (auth, req) => {
