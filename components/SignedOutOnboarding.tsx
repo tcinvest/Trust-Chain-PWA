@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
-import Navbar from './Navbar';
+import Navbar from './NavBar';
 
 // Type definitions
 interface DbBot {
