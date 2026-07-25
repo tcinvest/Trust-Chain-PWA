@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import {
-  Brain,
   TrendingUp,
   Shield,
   DollarSign,
@@ -116,9 +115,6 @@ export default function TrustChainLanding() {
       </div>
     );
   }
-
-  const activeBotsCount = bots.filter(b => b.is_active).length;
-  const topReturn = bots.reduce((max, b) => (b.return_percentage > max ? b.return_percentage : max), 0);
 
   return (
     <div className="relative min-h-screen bg-black">
