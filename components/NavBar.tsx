@@ -37,7 +37,8 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {NAV_LINKS.map((link) => (
               
-                key={link.label}
+             <a 
+               key={link.label}
                 href={link.href}
                 className="text-gray-300 hover:text-amber-400 text-sm font-medium transition-colors whitespace-nowrap"
               >
@@ -76,7 +77,7 @@ export default function Navbar() {
         <div className="lg:hidden bg-black/98 backdrop-blur-lg border-t border-amber-500/20 px-4 py-4 space-y-1">
           {NAV_LINKS.map((link) => (
             
-              key={link.label}
+             <a key={link.label}
               href={link.href}
               onClick={() => setIsOpen(false)}
               className="block text-gray-300 hover:text-amber-400 hover:bg-amber-500/5 text-sm font-medium py-3 px-3 rounded-lg transition-colors"
