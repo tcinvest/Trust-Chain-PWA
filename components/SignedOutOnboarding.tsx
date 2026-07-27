@@ -256,6 +256,9 @@ export default function TrustChainLanding() {
               </div>
             </div>
 
+               </div>
+            </div>
+
          {/* Card mockup — closely matches physical card design, generic data only */}
 
         {/* ============ END HERO ============ */}
