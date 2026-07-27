@@ -325,6 +325,7 @@ export default function TrustChainLanding() {
     </div>
   </div>
 </div>
+ </div>           
         {/* ============ END HERO ============ */}
 
         {/* Stats Bar */}
