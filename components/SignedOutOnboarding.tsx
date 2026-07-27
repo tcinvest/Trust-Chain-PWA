@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import {
+  Brain,
   TrendingUp,
   Shield,
   DollarSign,
@@ -14,11 +15,13 @@ import {
   Lock,
   Lightbulb,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Gem,
+  Infinity as InfinityIcon,
 } from 'lucide-react';
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
-import Navbar from './NavBar';
+import Navbar from './Navbar';
 
 // Type definitions
 interface DbBot {
@@ -42,6 +45,47 @@ interface BotDisplay extends DbBot {
   returnsFormatted: string;
   periodFormatted: string;
 }
+
+// Visual tier styling — cycles through 4 looks matching the reference design
+const TIER_STYLES = [
+  {
+    icon: Brain,
+    border: 'border-gray-500/40 hover:border-gray-400',
+    iconBg: 'from-gray-300 to-gray-500',
+    iconRing: 'ring-gray-400/30',
+    label: 'text-gray-300',
+    button: 'bg-gray-700 hover:bg-gray-600 text-white',
+    cardBg: 'bg-gray-900/60',
+  },
+  {
+    icon: InfinityIcon,
+    border: 'border-blue-500/40 hover:border-blue-400',
+    iconBg: 'from-blue-400 to-blue-600',
+    iconRing: 'ring-blue-400/30',
+    label: 'text-blue-300',
+    button: 'bg-blue-700 hover:bg-blue-600 text-white',
+    cardBg: 'bg-blue-950/40',
+  },
+  {
+    icon: TrendingUp,
+    border: 'border-amber-500/40 hover:border-amber-400',
+    iconBg: 'from-amber-400 to-yellow-600',
+    iconRing: 'ring-amber-400/30',
+    label: 'text-amber-300',
+    button: 'bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black',
+    cardBg: 'bg-gray-900/60',
+  },
+  {
+    icon: Gem,
+    border: 'border-amber-400/60 hover:border-amber-300',
+    iconBg: 'from-amber-300 to-yellow-500',
+    iconRing: 'ring-amber-300/40',
+    label: 'text-amber-200',
+    button: 'bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black',
+    cardBg: 'bg-gradient-to-b from-amber-950/40 to-gray-900/60',
+    premium: true,
+  },
+];
 
 export default function TrustChainLanding() {
   const [activeBot, setActiveBot] = useState<number | null>(null);
@@ -115,6 +159,9 @@ export default function TrustChainLanding() {
       </div>
     );
   }
+
+  const activeBotsCount = bots.filter(b => b.is_active).length;
+  const topReturn = bots.reduce((max, b) => (b.return_percentage > max ? b.return_percentage : max), 0);
 
   return (
     <div className="relative min-h-screen bg-black">
@@ -272,35 +319,73 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
-        {/* Bot Selection */}
-        <div id="plans" className="max-w-6xl mx-auto mb-12 sm:mb-16">
+        {/* Bot Selection — Tiered Investment Solutions */}
+        <div id="plans" className="max-w-7xl mx-auto mb-12 sm:mb-16">
           <div className="flex flex-col gap-6 sm:gap-8 mb-8 sm:mb-12">
             <div className="w-full">
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 text-center">Choose Your AI Bot</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                {bots.map((bot) => (
-                  <button
-                    key={bot.id}
-                    onClick={() => setActiveBot(bot.id)}
-                    className={`text-left p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 ${
-                      activeBot === bot.id
-                        ? 'border-amber-400 bg-amber-500/20 backdrop-blur-lg shadow-lg shadow-amber-400/30'
-                        : 'border-gray-700 bg-gray-900/50 backdrop-blur-lg hover:border-amber-400/50 hover:bg-amber-500/10'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-base sm:text-lg lg:text-xl font-semibold text-white leading-tight">{bot.name}</h4>
-                      <div className={`w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br ${bot.color || defaultColor} rounded-lg flex items-center justify-center shadow-lg`}>
-                        <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
+              <div className="text-center mb-8 sm:mb-10">
+                <div className="inline-flex items-center gap-2 mb-3">
+                  <span className="h-px w-8 bg-amber-500/50"></span>
+                  <span className="text-amber-400 text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase">Our Investment Solutions</span>
+                  <span className="h-px w-8 bg-amber-500/50"></span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">Tailored Solutions for Every Investor</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {bots.map((bot, index) => {
+                  const tier = TIER_STYLES[index % TIER_STYLES.length];
+                  const TierIcon = tier.icon;
+                  const isSelected = activeBot === bot.id;
+
+                  return (
+                    <button
+                      key={bot.id}
+                      onClick={() => setActiveBot(bot.id)}
+                      className={`relative text-left rounded-2xl border-2 p-5 sm:p-6 transition-all duration-300 flex flex-col ${tier.cardBg} ${
+                        isSelected ? tier.border.split(' ')[1].replace('hover:', '') : 'border-gray-700'
+                      } ${tier.border}`}
+                    >
+                      {tier.premium && (
+                        <span className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-yellow-600 text-black text-[10px] sm:text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl tracking-wide">
+                          PREMIUM
+                        </span>
+                      )}
+
+                      <div className="flex flex-col items-center text-center mb-4">
+                        <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${tier.iconBg} ring-4 ${tier.iconRing} flex items-center justify-center mb-3`}>
+                          <TierIcon className="w-6 h-6 sm:w-7 sm:h-7 text-black" />
+                        </div>
+                        <h4 className="text-white font-bold text-sm sm:text-base tracking-wide uppercase">{bot.name}</h4>
+                        <p className={`${tier.label} text-xs sm:text-sm mt-1`}>{bot.tagline || 'AI Investment Bot'}</p>
                       </div>
-                    </div>
-                    <p className="text-amber-300 text-xs sm:text-sm mb-3">{bot.tagline || 'AI Investment Bot'}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-amber-400 font-bold text-sm sm:text-base">{bot.minInvestmentFormatted}</span>
-                      <span className="text-yellow-500 font-bold text-sm sm:text-base">{bot.returnsFormatted}</span>
-                    </div>
-                  </button>
-                ))}
+
+                      <div className="text-center mb-4 pb-4 border-b border-gray-700/60">
+                        <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wide mb-1">Investment Range</p>
+                        <p className="text-white font-bold text-base sm:text-lg">
+                          {bot.minInvestmentFormatted} – {bot.maxInvestmentFormatted}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 sm:space-y-2.5 mb-5 flex-1">
+                        {(bot.features && bot.features.length > 0
+                          ? bot.features.slice(0, 5)
+                          : ['AI-driven investment technology', 'Real-time performance dashboard', 'Secure account management']
+                        ).map((feature, fIdx) => (
+                          <div key={fIdx} className="flex items-start gap-2">
+                            <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${tier.label}`} />
+                            <span className="text-gray-300 text-xs sm:text-sm leading-snug">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}>
+                        Learn More
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -426,7 +511,7 @@ export default function TrustChainLanding() {
                 </p>
               </div>
               
-              <a  href="/api/download-guide"
+               <a href="/api/download-guide"
                 className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-amber-500/50 flex items-center space-x-2"
               >
                 <Download className="w-5 h-5" />
@@ -457,14 +542,14 @@ export default function TrustChainLanding() {
         </div>
       </div>
 
-      {/* Fixed Bottom Button 
+      {/* Fixed Bottom Button */}
       <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
         <Link href="/sign-up">
           <button className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105">
             Get Started
           </button>
         </Link>
-      </div>*/}
+      </div>
 
       <noscript>
         <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
