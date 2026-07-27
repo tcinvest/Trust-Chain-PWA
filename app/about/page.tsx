@@ -117,7 +117,7 @@ export default function AboutPage() {
               <h4 className="text-white font-bold text-lg sm:text-xl mb-2">Our Vision</h4>
               <p className="text-amber-300 text-sm font-medium mb-3">Leading the Next Generation of Investment Technology</p>
               <p className="text-gray-400 text-sm leading-relaxed">
-                To become one of the world's most trusted financial technology platforms by delivering intelligent investment solutions that combine artificial intelligence, security, transparency, and operational excellence.
+                To become one of the world&apos;s most trusted financial technology platforms by delivering intelligent investment solutions that combine artificial intelligence, security, transparency, and operational excellence.
               </p>
             </div>
           </div>
