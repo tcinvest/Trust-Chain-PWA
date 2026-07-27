@@ -12,6 +12,11 @@ const isPublicRoute = createRouteMatcher([
   '/letterT.png',          
   '/letterT2.png',  
   '/faq',  
+  '/security',       
+  '/trust-card',          
+  '/how-it-works',  
+  '/contact', 
+  '/faq',  
   
 ])
 
