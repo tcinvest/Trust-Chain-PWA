@@ -22,7 +22,7 @@ import {
 import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
 import Navbar from './NavBar';
-import Image from 'next-image'
+import Image from "next/image"
 
 // Type definitions
 interface DbBot {
