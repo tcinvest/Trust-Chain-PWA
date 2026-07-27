@@ -6,13 +6,13 @@ import { Brain, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Investment Plans', href: '#plans' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'TrustCard', href: '#trustcard' },
-  { label: 'Security', href: '#security' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Contact Us', href: '#contact' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Investment Plans', href: '/plans' },
+  { label: 'How It Works', href: '/how-it-works' },
+  { label: 'TrustCard', href: '/trustcard' },
+  { label: 'Security', href: '/security' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Contact Us', href: '/contact' },
 ];
 
 export default function Navbar() {
