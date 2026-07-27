@@ -256,38 +256,75 @@ export default function TrustChainLanding() {
               </div>
             </div>
 
-            {/* Right column — member card mockup (generic, no real data) */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl"></div>
+         {/* Card mockup — closely matches physical card design, generic data only */}
+<div className="relative flex justify-center lg:justify-end">
+  <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"></div>
+  <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl"></div>
 
-              <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30 bg-black">
-                {/* Swirl pattern background */}
-                <div className="absolute inset-0 opacity-90">
-                  <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 sm:w-56 sm:h-56 border-[12px] sm:border-[16px] border-amber-400/80 rounded-full"></div>
-                  <div className="absolute top-1/2 left-8 sm:left-10 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 border-[12px] sm:border-[16px] border-amber-400/60 rounded-full"></div>
-                </div>
+  <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30">
+    {/* Base gradient: black left → cream right */}
+    <div className="absolute inset-0 bg-gradient-to-r from-black via-black to-[#f2ede1]"></div>
 
-                <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7">
-                  <div className="flex items-start justify-between">
-                    <span className="text-amber-400 font-bold tracking-widest text-xs sm:text-sm">TRUST CHAIN</span>
-                    <div className="w-9 h-7 sm:w-10 sm:h-8 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-md"></div>
-                  </div>
+    {/* Red curved divider */}
+    <div className="absolute inset-y-0 right-[26%] w-[3px] bg-gradient-to-b from-red-600 via-red-500 to-red-600 rounded-full"></div>
 
-                  <div>
-                    <p className="text-gray-200 tracking-[0.2em] text-base sm:text-xl font-mono mb-4 sm:mb-5">
-                      •••• •••• •••• ••••
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300 text-[10px] sm:text-xs tracking-wider">MEMBER NAME</span>
-                      <span className="text-gray-300 text-[10px] sm:text-xs">••/••</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    {/* Swirl "S" pattern */}
+    <svg
+      className="absolute left-0 top-0 h-full w-[65%] opacity-95"
+      viewBox="0 0 400 252"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M60 40 C 140 40, 180 40, 180 90 C 180 130, 140 130, 100 130 C 60 130, 20 130, 20 175 C 20 215, 60 215, 130 215"
+        stroke="#D4AF37"
+        strokeWidth="26"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+
+    <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7">
+      <div className="flex items-start justify-between">
+        <span className="text-amber-400 font-bold tracking-[0.15em] text-xs sm:text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+          TRUST CHAIN
+        </span>
+        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black border-2 border-amber-400 flex items-center justify-center">
+          <span className="text-amber-400 font-bold text-lg sm:text-xl">S</span>
         </div>
+      </div>
+
+      <div className="flex items-center gap-4 sm:gap-5">
+        {/* Chip */}
+        <div className="w-9 h-7 sm:w-10 sm:h-8 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-md flex-shrink-0"></div>
+        {/* Contactless icon */}
+        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M7 8a6 6 0 0 1 0 8" strokeLinecap="round" />
+          <path d="M10 5a10 10 0 0 1 0 14" strokeLinecap="round" />
+          <path d="M13 2a14 14 0 0 1 0 20" strokeLinecap="round" />
+        </svg>
+      </div>
+
+      <div>
+        <p className="text-gray-100 tracking-[0.15em] text-base sm:text-xl font-mono mb-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+          •••• •••• •••• ••••
+        </p>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <span className="text-gray-400 text-[9px] sm:text-[10px] tracking-wide">EXPIRES END</span>
+          <span className="text-gray-200 text-xs sm:text-sm font-mono">••/••</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-gray-100 text-[10px] sm:text-xs tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+            MEMBER NAME
+          </span>
+          <span className="text-gray-500 text-[10px] sm:text-xs font-semibold tracking-wide">
+            CLASSIC
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         {/* ============ END HERO ============ */}
 
         {/* Stats Bar */}
