@@ -74,7 +74,7 @@ export default function TrustCardPage() {
                 The TrustChain Card is designed to provide eligible clients with convenient access to their investment accounts through a secure and globally accepted payment experience.
               </p>
               <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
-                Whether you're traveling internationally, making everyday purchases, or accessing available funds, the TrustChain Card offers flexibility wherever your financial journey takes you.
+                Whether you&apos;re traveling internationally, making everyday purchases, or accessing available funds, the TrustChain Card offers flexibility wherever your financial journey takes you.
               </p>
             </div>
 
