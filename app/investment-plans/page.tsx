@@ -239,7 +239,7 @@ export default function InvestmentPlansPage() {
         <div className="max-w-3xl mx-auto text-center">
           <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">A Higher Standard of Investing</h3>
           <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            At TrustChain InvestAI, every investment solution is designed with one objective in mind: delivering a professional, secure, and technology-driven experience that reflects the expectations of today's sophisticated investors. Whether you are building your first portfolio or managing substantial capital, our platform is committed to providing intelligent solutions, exceptional service, and a modern investment environment.
+            At TrustChain InvestAI, every investment solution is designed with one objective in mind: delivering a professional, secure, and technology-driven experience that reflects the expectations of today&apos;s sophisticated investors. Whether you are building your first portfolio or managing substantial capital, our platform is committed to providing intelligent solutions, exceptional service, and a modern investment environment.
           </p>
         </div>
       </div>
