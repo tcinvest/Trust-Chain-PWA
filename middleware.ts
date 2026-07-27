@@ -16,6 +16,7 @@ const isPublicRoute = createRouteMatcher([
   '/trustcard',          
   '/how-it-works',  
   '/contact', 
+  '/about', 
   '/faq',  
   
 ])
