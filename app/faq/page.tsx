@@ -81,7 +81,8 @@ export default function FaqPage() {
 
   return (
     <div className="relative min-h-screen bg-black">
-
+    <Navbar/>
+     
       {/* Animated Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-10 left-4 w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 bg-amber-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
