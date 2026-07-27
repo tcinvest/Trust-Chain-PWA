@@ -11,6 +11,7 @@ import {
   Sparkles,
   Mail,
 } from 'lucide-react';
+import Image from "next/image"
 
 const CARD_BENEFITS = [
   {
@@ -78,35 +79,25 @@ export default function TrustCardPage() {
               </p>
             </div>
 
-            {/* Card mockup — generic, no real data */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl"></div>
+{/* Card Image Container */}
+<div className="relative flex justify-center lg:justify-end">
+  {/* Ambient background glows */}
+  <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl" />
+  <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl" />
 
-              <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30 bg-black">
-                <div className="absolute inset-0 opacity-90">
-                  <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 sm:w-56 sm:h-56 border-[12px] sm:border-[16px] border-amber-400/80 rounded-full"></div>
-                  <div className="absolute top-1/2 left-8 sm:left-10 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 border-[12px] sm:border-[16px] border-amber-400/60 rounded-full"></div>
-                </div>
-
-                <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7">
-                  <div className="flex items-start justify-between">
-                    <span className="text-amber-400 font-bold tracking-widest text-xs sm:text-sm">TRUST CHAIN</span>
-                    <div className="w-9 h-7 sm:w-10 sm:h-8 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-md"></div>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-200 tracking-[0.2em] text-base sm:text-xl font-mono mb-4 sm:mb-5">
-                      •••• •••• •••• ••••
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300 text-[10px] sm:text-xs tracking-wider">MEMBER NAME</span>
-                      <span className="text-gray-300 text-[10px] sm:text-xs">••/••</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+  {/* Card image wrapper */}
+  <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30">
+    <Image
+      src="/cardimage.jpg"
+      alt="Trust Chain Card"
+      fill
+      priority
+      className="object-cover"
+      sizes="(max-width: 768px) 100vw, 448px"
+    />
+  </div>
+</div>
+            
           </div>
         </div>
 
