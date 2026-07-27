@@ -160,9 +160,6 @@ export default function TrustChainLanding() {
     );
   }
 
-  const activeBotsCount = bots.filter(b => b.is_active).length;
-  const topReturn = bots.reduce((max, b) => (b.return_percentage > max ? b.return_percentage : max), 0);
-
   return (
     <div className="relative min-h-screen bg-black">
       <Navbar />
