@@ -81,7 +81,6 @@ export default function FaqPage() {
 
   return (
     <div className="relative min-h-screen bg-black">
-      <NavBar />
 
       {/* Animated Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
