@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, Mail, MessageCircle, HelpCircle } from 'lucide-react';
-import NavBar from '@/components/Navbar';
+import Navbar from '@/components/NavBar';
 
 const FAQ_ITEMS = [
   {
