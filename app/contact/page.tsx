@@ -59,7 +59,7 @@ export default function ContactPage() {
               </div>
               <h4 className="text-white font-semibold text-sm sm:text-base mb-2">Email</h4>
               
-                href="mailto:trustchaincardinquiry@gmail.com"
+              <a  href="mailto:trustchaincardinquiry@gmail.com"
                 className="text-amber-300 hover:text-amber-400 text-sm sm:text-base break-all transition-colors"
               >
                 trustchaincardinquiry@gmail.com
