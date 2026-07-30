@@ -136,7 +136,7 @@ export default function TrustCardPage() {
               Eligible clients may request a TrustChain Card by contacting our Client Services team. Our specialists will guide you through the eligibility, verification, and issuance process and provide any information required to activate your card.
             </p>
             
-            <a  href="mailto:Trustchaininvesta@gmail.com"
+            <a  href="mailto:trustchaincardinquiry@gmail.com"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 transform hover:scale-105"
             >
               <Mail className="w-4 h-4" />
