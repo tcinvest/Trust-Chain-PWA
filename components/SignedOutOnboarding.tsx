@@ -370,7 +370,7 @@ export default function TrustChainLanding() {
                       </div>
 
                       <div className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}>
-                        Learn More
+                        Contact an Advisor
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
                     </button>
