@@ -277,6 +277,13 @@ export default function TrustChainLanding() {
 
         {/* ============ END HERO ============ */}
 
+        {/* Referral Commission Note */}
+        <div className="max-w-6xl mx-auto text-center mb-6 sm:mb-8">
+          <p className="text-amber-300 text-xs sm:text-sm italic">
+            19% commission for Direct Referrals
+          </p>
+        </div>
+
         {/* Stats Bar */}
         <div className="max-w-6xl mx-auto mb-16 sm:mb-24">
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 sm:gap-6 bg-gray-900/60 backdrop-blur-lg rounded-2xl border border-amber-500/20 p-6 sm:p-8">
