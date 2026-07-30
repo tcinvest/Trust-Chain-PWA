@@ -529,14 +529,14 @@ export default function TrustChainLanding() {
         </div>
       </div>
 
-      {/* Fixed Bottom Button */}
+      {/* Fixed Bottom Button 
       <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
         <Link href="/sign-up">
           <button className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105">
             Get Started
           </button>
         </Link>
-      </div>
+      </div>*/}
 
       <noscript>
         <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
