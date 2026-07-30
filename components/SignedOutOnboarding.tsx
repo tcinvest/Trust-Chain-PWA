@@ -9,7 +9,6 @@ import {
   Shield,
   DollarSign,
   Bot,
-  Download,
   Play,
   CheckCircle,
   Lock,
