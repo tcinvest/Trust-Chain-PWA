@@ -153,7 +153,7 @@ export default function FaqPage() {
                 className="flex items-center gap-2 text-amber-300 hover:text-amber-400 text-sm sm:text-base font-medium transition-colors"
               >
                 <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-                Trustchaininvesta@gmail.com
+                trustchaincardinquiry@gmail.com
               </a>
               <div className="flex items-center gap-2 text-gray-400 text-sm sm:text-base">
                 <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
