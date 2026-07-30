@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   LayoutDashboard,
   Sparkles,
-  Mail,
   Send
 } from 'lucide-react';
 import Image from "next/image"
