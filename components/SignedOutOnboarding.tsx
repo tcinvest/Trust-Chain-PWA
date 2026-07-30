@@ -23,7 +23,6 @@ import InstallButton from './InstallButton';
 import Navbar from './NavBar';
 import Image from "next/image"
 
-// Type definitions
 interface DbBot {
   id: number;
   name: string;
@@ -46,7 +45,6 @@ interface BotDisplay extends DbBot {
   periodFormatted: string;
 }
 
-// Visual tier styling — cycles through 4 looks matching the reference design
 const TIER_STYLES = [
   {
     icon: Brain,
@@ -478,35 +476,6 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
-        {/* PDF Download
-        <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
-          <div className="bg-gray-900/60 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-500/20 shadow-2xl shadow-amber-500/10">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="text-center sm:text-left">
-                <div className="flex items-center justify-center sm:justify-start space-x-3 sm:space-x-4 mb-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/50">
-                    <Download className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">Investment Guide</h3>
-                    <p className="text-gray-300 text-sm sm:text-base">Complete AI Investment Strategy PDF</p>
-                  </div>
-                </div>
-                <p className="text-gray-400 text-sm max-w-sm">
-                  Download our comprehensive guide covering all AI bots, investment strategies, and risk management.
-                </p>
-              </div>
-              
-               <a href="/api/download-guide"
-                className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-amber-500/50 flex items-center space-x-2"
-              >
-                <Download className="w-5 h-5" />
-                <span>Download PDF</span>
-              </a>
-            </div>
-          </div>
-        </div> */}
-
         <ReferralRecoverySection />
 
         {/* Trust Indicators */}
@@ -527,15 +496,6 @@ export default function TrustChainLanding() {
           </div>
         </div>
       </div>
-
-      {/* Fixed Bottom Button 
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-        <Link href="/sign-up">
-          <button className="bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105">
-            Get Started
-          </button>
-        </Link>
-      </div>*/}
 
       <noscript>
         <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
