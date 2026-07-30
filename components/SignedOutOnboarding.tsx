@@ -479,7 +479,7 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
-        {/* PDF Download */}
+        {/* PDF Download
         <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
           <div className="bg-gray-900/60 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-500/20 shadow-2xl shadow-amber-500/10">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -506,7 +506,7 @@ export default function TrustChainLanding() {
               </a>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <ReferralRecoverySection />
 
