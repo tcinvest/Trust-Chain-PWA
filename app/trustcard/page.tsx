@@ -88,7 +88,7 @@ export default function TrustCardPage() {
   {/* Card image wrapper */}
   <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30">
     <Image
-      src="/cardimage.jpg"
+      src="/cardimage001.png"
       alt="Trust Chain Card"
       fill
       priority
