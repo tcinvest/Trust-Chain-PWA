@@ -18,7 +18,6 @@ import {
   Gem,
   Infinity as InfinityIcon,
 } from 'lucide-react';
-import ReferralRecoverySection from './ReferralRecoverySection';
 import InstallButton from './InstallButton';
 import Navbar from './NavBar';
 import Image from "next/image"
@@ -482,8 +481,6 @@ export default function TrustChainLanding() {
             </div>
           </div>
         </div>
-
-        <ReferralRecoverySection />
 
         {/* Trust Indicators */}
         <div id="security" className="max-w-6xl mx-auto">
