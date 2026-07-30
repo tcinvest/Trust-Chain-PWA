@@ -104,7 +104,7 @@ const InstallButton = () => {
       <div className="space-y-3">
         <button
           onClick={handleIOSInstallClick}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+          className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg shadow-amber-500/40 hover:shadow-xl hover:shadow-amber-500/60"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -113,36 +113,36 @@ const InstallButton = () => {
         </button>
         
         {showIOSInstructions && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-sm">
+          <div className="bg-gray-900/80 backdrop-blur-lg border border-amber-500/30 rounded-xl p-4 max-w-sm">
             <div className="flex items-center gap-2 mb-3">
-              <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <h3 className="font-semibold text-blue-900">Install Instructions</h3>
+              <h3 className="font-semibold text-white">Install Instructions</h3>
             </div>
-            <p className="text-sm text-blue-800 mb-3">
+            <p className="text-sm text-gray-300 mb-3">
               To install this app on your iPhone/iPad:
             </p>
-            <ol className="text-sm text-blue-800 space-y-2">
+            <ol className="text-sm text-gray-300 space-y-2">
               <li className="flex items-start gap-2">
-                <span className="font-semibold min-w-[16px]">1.</span>
+                <span className="font-semibold min-w-[16px] text-amber-400">1.</span>
                 <span>Tap the Share button 
-                  <svg className="inline w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="inline w-4 h-4 mx-1 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
                   </svg>
                   at the bottom of your screen
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-semibold min-w-[16px]">2.</span>
+                <span className="font-semibold min-w-[16px] text-amber-400">2.</span>
                 <span>Scroll down and tap &quot;Add to Home Screen&quot;</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-semibold min-w-[16px]">3.</span>
+                <span className="font-semibold min-w-[16px] text-amber-400">3.</span>
                 <span>Tap &quot;Add&quot; to confirm</span>
               </li>
             </ol>
-            <p className="text-xs text-blue-700 mt-3 italic">
+            <p className="text-xs text-gray-400 mt-3 italic">
               Note: This only works in Safari browser
             </p>
           </div>
@@ -156,7 +156,7 @@ const InstallButton = () => {
     return (
       <button
         onClick={handleInstallClick}
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+        className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg shadow-amber-500/40 hover:shadow-xl hover:shadow-amber-500/60"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
