@@ -46,7 +46,7 @@ export default function ContactPage() {
             </span>
           </h1>
           <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed">
-            Our Client Services team is available to assist with account inquiries, TrustChain Card requests, technical support, and general platform information. Send us a message and we'll respond as quickly as possible.
+            Our Client Services team is available to assist with account inquiries, TrustChain Card requests, technical support, and general platform information. Send us a message and we will respond as quickly as possible.
           </p>
         </div>
 
