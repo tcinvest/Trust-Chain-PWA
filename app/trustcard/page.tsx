@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Navbar from '@/components/NavBar';
 import {
@@ -10,8 +11,10 @@ import {
   LayoutDashboard,
   Sparkles,
   Mail,
+  Send
 } from 'lucide-react';
 import Image from "next/image"
+import React, { useState } from 'react';
 
 const CARD_BENEFITS = [
   {
@@ -47,6 +50,19 @@ const CARD_BENEFITS = [
 ];
 
 export default function TrustCardPage() {
+const [name, setName] = useState('');
+const [email, setEmail] = useState('');
+const [message, setMessage] = useState('');
+
+const handleCardRequest = (e: React.FormEvent) => {
+  e.preventDefault();
+  const to = 'trustchaincardinquiry@gmail.com';
+  const subject = 'TrustChain Card Request';
+  const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(gmailUrl, '_blank');
+};
+  
   return (
     <div className="relative min-h-screen bg-black">
       <Navbar />
@@ -128,20 +144,67 @@ export default function TrustCardPage() {
           </p>
         </div>
 
-        {/* Request Your Card */}
+       {/* Request Your Card */}
         <div className="max-w-3xl mx-auto mb-16 sm:mb-20">
           <div className="bg-gray-900/60 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-500/20 shadow-2xl shadow-amber-500/10 text-center">
             <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Request Your TrustChain Card</h3>
             <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 max-w-xl mx-auto">
               Eligible clients may request a TrustChain Card by contacting our Client Services team. Our specialists will guide you through the eligibility, verification, and issuance process and provide any information required to activate your card.
             </p>
-            
-            <a  href="mailto:trustchaincardinquiry@gmail.com"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 transform hover:scale-105"
-            >
-              <Mail className="w-4 h-4" />
-              Contact Client Services
-            </a>
+
+            <form onSubmit={handleCardRequest} className="max-w-md mx-auto text-left space-y-4">
+              <div>
+                <label htmlFor="card-name" className="block text-gray-300 text-sm font-medium mb-1.5">
+                  Full Name
+                </label>
+                <input
+                  id="card-name"
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors"
+                  placeholder="John Smith"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="card-email" className="block text-gray-300 text-sm font-medium mb-1.5">
+                  Email Address
+                </label>
+                <input
+                  id="card-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="card-message" className="block text-gray-300 text-sm font-medium mb-1.5">
+                  Message (optional)
+                </label>
+                <textarea
+                  id="card-message"
+                  rows={4}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors resize-none"
+                  placeholder="Anything you'd like our team to know"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-amber-500/50 transform hover:scale-105"
+              >
+                <Send className="w-4 h-4" />
+                Contact Client Services
+              </button>
+            </form>
           </div>
         </div>
 
