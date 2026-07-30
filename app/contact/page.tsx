@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/NavBar';
 import { Mail, MapPin, Send, Building2 } from 'lucide-react';
 
 export default function ContactPage() {
