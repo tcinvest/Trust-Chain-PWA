@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Brain,
   TrendingUp,
@@ -85,6 +86,7 @@ const TIER_STYLES = [
 ];
 
 export default function TrustChainLanding() {
+  const router = useRouter();
   const [activeBot, setActiveBot] = useState<number | null>(null);
   const [bots, setBots] = useState<BotDisplay[]>([]);
   const [loading, setLoading] = useState(true);
@@ -253,27 +255,26 @@ export default function TrustChainLanding() {
               </div>
             </div>
 
-{/* Card Image Container */}
-<div className="relative flex justify-center lg:justify-end">
-  {/* Ambient background glows */}
-  <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl" />
-  <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl" />
+            {/* Card Image Container */}
+            <div className="relative flex justify-center lg:justify-end">
+              {/* Ambient background glows */}
+              <div className="absolute -top-6 -right-6 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-yellow-600/20 rounded-full blur-3xl" />
 
-  {/* Card image wrapper */}
-  <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30">
-    <Image
-      src="/cardimage001.png"
-      alt="Trust Chain Card"
-      fill
-      priority
-      className="object-cover"
-      sizes="(max-width: 768px) 100vw, 448px"
-    />
-  </div>
-</div>
-               </div>
+              {/* Card image wrapper */}
+              <div className="relative w-full max-w-md aspect-[1.586/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/30 border border-amber-500/30">
+                <Image
+                  src="/cardimage001.png"
+                  alt="Trust Chain Card"
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 448px"
+                />
+              </div>
             </div>
-
+          </div>
+        </div>
         {/* ============ END HERO ============ */}
 
         {/* Referral Commission Note */}
@@ -369,7 +370,13 @@ export default function TrustChainLanding() {
                         ))}
                       </div>
 
-                      <div className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push('/contact');
+                        }}
+                        className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}
+                      >
                         Contact an Advisor
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
