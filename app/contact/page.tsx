@@ -62,7 +62,7 @@ export default function ContactPage() {
               <a  href="mailto:trustchaincardinquiry@gmail.com"
                 className="text-amber-300 hover:text-amber-400 text-sm sm:text-base break-all transition-colors"
               >
-                trustchaincardinquiry@gmail.com
+                trustchaininvesta@gmail.com
               </a>
             </div>
 
