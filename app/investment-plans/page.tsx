@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/NavBar';
@@ -207,12 +209,23 @@ export default function InvestmentPlansPage() {
                     <p className="text-gray-300 text-xs sm:text-sm leading-snug">{plan.recommended}</p>
                   </div>
 
-                  <Link href="/sign-up" className="mt-auto">
-                    <div className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${plan.style.button}`}>
-                      {plan.cta}
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </div>
-                  </Link>
+                  <div
+                    onClick={() => {
+                      if (plan.premium) {
+                        window.open(
+                          'https://mail.google.com/mail/?view=cm&fs=1&to=trustchaincardinquiry@gmail.com',
+                          '_blank',
+                          'noopener,noreferrer'
+                        );
+                      } else {
+                        window.location.href = '/sign-up';
+                      }
+                    }}
+                    className={`mt-auto w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${plan.style.button}`}
+                  >
+                    {plan.cta}
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
                 </div>
               );
             })}
