@@ -372,16 +372,24 @@ export default function TrustChainLanding() {
                         ))}
                       </div>
 
-                      <div
-                        onClick={(e) => {
+                     <div onClick={(e) => {
                           e.stopPropagation();
-                          router.push('/contact');
+                          if (tier.premium) {
+                            window.open(
+                              'https://mail.google.com/mail/?view=cm&fs=1&to=trustchaincardinquiry@gmail.com',
+                              '_blank',
+                              'noopener,noreferrer'
+                            );
+                          } else {
+                            router.push('/sign-up');
+                          }
                         }}
                         className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}
                       >
-                        Contact an Advisor
+                        {tier.premium ? 'Email Us' : 'Get Started'}
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
+                      
                     </button>
                   );
                 })}
