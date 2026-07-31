@@ -463,7 +463,7 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
-        {/* Tutorial Videos */}
+      {/* Tutorial Videos */}
         <div id="how-it-works" className="max-w-4xl mx-auto mb-12 sm:mb-16">
           <div className="bg-gray-900/60 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-500/20 shadow-2xl shadow-amber-500/10">
             <div className="text-center mb-6 sm:mb-8">
@@ -473,7 +473,6 @@ export default function TrustChainLanding() {
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">Watch Our Tutorial</h3>
               <p className="text-gray-300 text-sm sm:text-base lg:text-lg">Learn how to maximize your AI investment strategy</p>
             </div>
-
             <div className="space-y-6">
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-amber-500/20">
                 <iframe
@@ -484,7 +483,6 @@ export default function TrustChainLanding() {
                   allowFullScreen
                 />
               </div>
-            </div>
             </div>
           </div>
         </div>
