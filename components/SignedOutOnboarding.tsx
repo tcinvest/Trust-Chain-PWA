@@ -485,18 +485,17 @@ export default function TrustChainLanding() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {['OHP86kxF3xY', 'JbcfSXZ8H3Q'].map((videoId) => (
-                  <iframe
-                    key={videoId}
-                    className="w-full aspect-video rounded-lg border border-amber-500/20"
-                    src={`https://www.youtube.com/embed/${videoId}?controls=1&modestbranding=1&rel=0`}
-                    title="Tutorial Video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ))}
+            <div className="space-y-6">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-amber-500/20">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/0mGhVUIU2b0?controls=1&modestbranding=1&rel=0"
+                  title="Tutorial Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
+            </div>
             </div>
           </div>
         </div>
