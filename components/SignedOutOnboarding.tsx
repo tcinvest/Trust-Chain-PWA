@@ -312,6 +312,8 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
+         <InfoGrid />
+
         {/* Bot Selection — Tiered Investment Solutions */}
         <div id="plans" className="max-w-7xl mx-auto mb-12 sm:mb-16">
           <div className="flex flex-col gap-6 sm:gap-8 mb-8 sm:mb-12">
@@ -517,7 +519,6 @@ export default function TrustChainLanding() {
           </div>
         </div>
 
-           <InfoGrid />
       <SecurityBar />
       </div>
 
