@@ -156,7 +156,7 @@ export default function ContactPage() {
                 className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 hover:from-amber-500 hover:to-yellow-700 text-black font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/50 hover:shadow-xl hover:shadow-amber-500/70 transform hover:scale-105"
               >
                 <Send className="w-4 h-4" />
-                Send via Gmail
+                Send Email
               </button>
             </form>
           </div>
