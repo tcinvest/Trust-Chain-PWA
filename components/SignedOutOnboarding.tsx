@@ -386,7 +386,7 @@ export default function TrustChainLanding() {
                         }}
                         className={`w-full text-center font-semibold text-sm py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${tier.button}`}
                       >
-                        {tier.premium ? 'Email Us' : 'Get Started'}
+                        {tier.premium ? 'Contact an Advisor' : 'Get Started'}
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
                       
