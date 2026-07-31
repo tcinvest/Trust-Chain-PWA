@@ -508,10 +508,10 @@ export default function TrustChainLanding() {
             ))}
           </div>
         </div>
-      </div>
 
-      <InfoGrid />
+           <InfoGrid />
       <SecurityBar />
+      </div>
 
       <noscript>
         <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
