@@ -280,7 +280,7 @@ export default function TrustChainLanding() {
         {/* Referral Commission Note */}
         <div className="max-w-6xl mx-auto text-center mb-6 sm:mb-8">
           <p className="text-amber-300 text-2xl italic">
-            19% commission for Direct Referrals
+            10% commission for Direct Referrals
           </p>
         </div>
 
