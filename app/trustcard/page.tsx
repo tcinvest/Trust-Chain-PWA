@@ -172,9 +172,8 @@ const handleCardRequest = (e: React.FormEvent) => {
                 </label>
                 <input
                   id="card-email"
-                  type="email"
                   required
-                  value={email}
+                  value={message}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors"
                   placeholder="778 AdresAve Illinois USA"
