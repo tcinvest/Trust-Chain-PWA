@@ -109,7 +109,7 @@ export default function ContactPage() {
 
               <div>
                 <label htmlFor="email" className="block text-gray-300 text-sm font-medium mb-1.5">
-                  Email Address
+                  Home Address
                 </label>
                 <input
                   id="email"
@@ -118,7 +118,7 @@ export default function ContactPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors"
-                  placeholder="you@example.com"
+                  placeholder="123 st ReedAve Illinois"
                 />
               </div>
 
