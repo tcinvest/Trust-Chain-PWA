@@ -22,6 +22,8 @@ import {
 import InstallButton from './InstallButton';
 import Navbar from './NavBar';
 import Image from "next/image"
+import InfoGrid from './InfoGrid';
+import SecurityBar from './SecurityBar';
 
 interface DbBot {
   id: number;
@@ -507,6 +509,9 @@ export default function TrustChainLanding() {
           </div>
         </div>
       </div>
+
+      <InfoGrid />
+      <SecurityBar />
 
       <noscript>
         <div style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999}}>
