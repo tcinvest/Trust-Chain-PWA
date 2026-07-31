@@ -478,17 +478,6 @@ export default function TrustChainLanding() {
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-amber-500/20">
                 <iframe
                   className="absolute top-0 left-0 w-full h-full"
-                  src="https://www.youtube.com/embed/fFKcpmBDKVM?controls=1&modestbranding=1&rel=0"
-                  title="Tutorial Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-
-            <div className="space-y-6">
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-amber-500/20">
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full"
                   src="https://www.youtube.com/embed/0mGhVUIU2b0?controls=1&modestbranding=1&rel=0"
                   title="Tutorial Video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
