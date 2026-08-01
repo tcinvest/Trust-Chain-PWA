@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { formatDateTime } from '@/lib/utils';
 import { copyToClipboard } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import QRCode from 'qrcode';
 
 export default function ReferralsScreen() {
   const { user } = useUser();
@@ -17,6 +18,7 @@ export default function ReferralsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'referrals' | 'earnings'>('referrals');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
 
   const getDefaultReferralData = (): ReferralData => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trustchaininvestai.com';
@@ -56,6 +58,35 @@ export default function ReferralsScreen() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+  const generateQr = async () => {
+    if (
+      !currentData.referralLink ||
+      currentData.referralLink.includes('loading') ||
+      currentData.referralLink.includes('NOCODE')
+    ) {
+      setQrCodeUrl(null);
+      return;
+    }
+    try {
+      const url = await QRCode.toDataURL(currentData.referralLink, {
+        width: 240,
+        margin: 1,
+        color: {
+          dark: '#ffffff',
+          light: '#00000000', // transparent background, fits your dark theme
+        },
+      });
+      setQrCodeUrl(url);
+    } catch (err) {
+      console.error('QR generation error:', err);
+      setQrCodeUrl(null);
+    }
+  };
+
+  generateQr();
+}, [currentData.referralLink]);
 
   useEffect(() => {
     if (!user) return;
@@ -253,6 +284,19 @@ export default function ReferralsScreen() {
                 </button>
               </div>
             </div>
+
+            {qrCodeUrl && !showGenerateButton() && (
+              <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center">
+                <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
+                <img
+                  src={qrCodeUrl}
+                  alt="Referral QR code"
+                  width={200}
+                  height={200}
+                  className="rounded-lg bg-white p-2"
+                />
+              </div>
+            )}
 
             <button
               onClick={handleShare}
