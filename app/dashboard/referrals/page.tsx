@@ -1,14 +1,14 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
-import { Users, DollarSign, Share2, Copy, Loader2, Receipt, CheckCircle, Plus } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Users, DollarSign, Share2, Copy, Loader2, Receipt, CheckCircle, Plus, Download } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { ReferralData} from '@/types/type';
+import { QRCodeSVG } from 'qrcode.react';
+import { ReferralData } from '@/types/type';
 import { formatCurrency } from '@/lib/utils';
 import { formatDateTime } from '@/lib/utils';
 import { copyToClipboard } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { QRCodeSVG } from 'qrcode.react';
 
 export default function ReferralsScreen() {
   const { user } = useUser();
@@ -18,10 +18,11 @@ export default function ReferralsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'referrals' | 'earnings'>('referrals');
   const [isGenerating, setIsGenerating] = useState(false);
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const getDefaultReferralData = (): ReferralData => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trustchaininvestai.com';
-    
+
     return {
       totalEarned: 0,
       totalReferrals: 0,
@@ -38,13 +39,13 @@ export default function ReferralsScreen() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/referral/stats`, {
         method: 'POST',
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         setReferralData(result.data);
       } else {
@@ -57,7 +58,7 @@ export default function ReferralsScreen() {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (!user) return;
     fetchReferralStats();
@@ -69,9 +70,9 @@ export default function ReferralsScreen() {
       const response = await fetch('/api/referral/generate', {
         method: 'POST',
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         await fetchReferralStats();
         alert('Referral code generated successfully!');
@@ -109,7 +110,7 @@ export default function ReferralsScreen() {
       alert('Referral data not ready yet');
       return;
     }
-    
+
     try {
       if (navigator.share) {
         await navigator.share({
@@ -126,13 +127,43 @@ export default function ReferralsScreen() {
     }
   };
 
+  const handleDownloadQr = () => {
+    const svg = qrRef.current?.querySelector('svg');
+    if (!svg) return;
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+
+      const pngUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = pngUrl;
+      link.download = 'referral-qr-code.png';
+      link.click();
+    };
+    img.src = url;
+  };
+
   const handleViewAll = () => {
     router.push('/dashboard/all-screen');
   };
 
   const showGenerateButton = () => {
-    return !isLoading && 
-           (currentData.referralCode === 'No referral code found' || 
+    return !isLoading &&
+           (currentData.referralCode === 'No referral code found' ||
             currentData.referralCode === 'NOCODE' ||
             currentData.referralLink.includes('NOCODE'));
   };
@@ -229,8 +260,8 @@ export default function ReferralsScreen() {
                     currentData.referralCode
                   )}
                 </p>
-                <button 
-                  onClick={handleCopyCode} 
+                <button
+                  onClick={handleCopyCode}
                   disabled={isLoading || currentData.referralCode === 'Loading...' || currentData.referralCode === 'No referral code found'}
                   className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -245,8 +276,8 @@ export default function ReferralsScreen() {
                 <p className="text-sm truncate mr-2">
                   {isLoading ? 'Loading referral link...' : currentData.referralLink}
                 </p>
-                <button 
-                  onClick={handleCopyLink} 
+                <button
+                  onClick={handleCopyLink}
                   disabled={isLoading || currentData.referralLink.includes('loading') || currentData.referralLink.includes('NOCODE')}
                   className="bg-blue-500 p-2 rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -255,10 +286,11 @@ export default function ReferralsScreen() {
               </div>
             </div>
 
-            {!showGenerateButton() && !isLoading && (
+            {/* QR Code */}
+            {!isLoading && (
               <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center">
                 <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
-                <div className="bg-white p-3 rounded-lg">
+                <div className="bg-white p-3 rounded-lg" ref={qrRef}>
                   <QRCodeSVG
                     value={currentData.referralLink}
                     size={200}
@@ -267,6 +299,13 @@ export default function ReferralsScreen() {
                     level="M"
                   />
                 </div>
+                <button
+                  onClick={handleDownloadQr}
+                  className="mt-3 flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  <Download size={14} className="mr-1" />
+                  Download QR Code
+                </button>
               </div>
             )}
 
@@ -306,7 +345,7 @@ export default function ReferralsScreen() {
                 </button>
               )}
             </button>
-            
+
             <button
               onClick={() => setActiveTab('earnings')}
               className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
