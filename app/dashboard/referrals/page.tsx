@@ -9,6 +9,7 @@ import { formatCurrency } from '@/lib/utils';
 import { formatDateTime } from '@/lib/utils';
 import { copyToClipboard } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { toPng } from 'html-to-image';
 
 export default function ReferralsScreen() {
   const { user } = useUser();
@@ -127,21 +128,24 @@ export default function ReferralsScreen() {
     }
   };
 
-const handleDownloadQr = () => {
-    const svg = qrRef.current?.querySelector('svg');
-    if (!svg) return;
+const handleDownloadQr = async () => {
+  if (!qrRef.current) return;
 
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
+  try {
+    const dataUrl = await toPng(qrRef.current, {
+      backgroundColor: '#1f2937', // matches your bg-gray-800 card
+      pixelRatio: 2, // sharper output
+    });
 
     const link = document.createElement('a');
-    link.href = url;
-    link.download = 'referral-qr-code.svg';
+    link.href = dataUrl;
+    link.download = 'referral-qr-code.png';
     link.click();
-
-    URL.revokeObjectURL(url);
-  };
+  } catch (err) {
+    console.error('QR download error:', err);
+    alert('Failed to download QR code. Please try again.');
+  }
+};
 
   const handleViewAll = () => {
     router.push('/dashboard/all-screen');
@@ -274,16 +278,17 @@ const handleDownloadQr = () => {
 
             {/* QR Code */}
             {!isLoading && (
-              <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center">
-                <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
-                <div className="bg-white p-3 rounded-lg" ref={qrRef}>
-                  <QRCodeSVG
-                    value={currentData.referralLink}
-                    size={200}
-                    bgColor="#ffffff"
-                    fgColor="#000000"
-                    level="M"
-                  />
+               <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center" ref={qrRef}>
+                  <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
+                  <div className="bg-white p-3 rounded-lg">
+                    <QRCodeSVG
+                      value={currentData.referralLink}
+                      size={200}
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                      level="M"
+                    />
+                  </div>
                 </div>
                 <button
                   onClick={handleDownloadQr}
