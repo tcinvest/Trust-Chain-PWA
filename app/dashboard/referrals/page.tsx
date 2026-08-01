@@ -58,36 +58,7 @@ export default function ReferralsScreen() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-  const generateQr = async () => {
-    if (
-      !currentData.referralLink ||
-      currentData.referralLink.includes('loading') ||
-      currentData.referralLink.includes('NOCODE')
-    ) {
-      setQrCodeUrl(null);
-      return;
-    }
-    try {
-          const url = await QRCode.toDataURL(currentData.referralLink, {
-        width: 240,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#ffffff',
-        },
-      });
-      setQrCodeUrl(url);
-    } catch (err) {
-      console.error('QR generation error:', err);
-      setQrCodeUrl(null);
-    }
-  };
-
-  generateQr();
-}, [currentData.referralLink]);
-
+  
   useEffect(() => {
     if (!user) return;
     fetchReferralStats();
@@ -285,16 +256,18 @@ export default function ReferralsScreen() {
               </div>
             </div>
 
-            {qrCodeUrl && !showGenerateButton() && (
+            {!showGenerateButton() && !isLoading && (
               <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center">
                 <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
-                <img
-                  src={qrCodeUrl}
-                  alt="Referral QR code"
-                  width={200}
-                  height={200}
-                  className="rounded-lg bg-white p-2"
-                />
+                <div className="bg-white p-3 rounded-lg">
+                  <QRCodeSVG
+                    value={currentData.referralLink}
+                    size={200}
+                    bgColor="#ffffff"
+                    fgColor="#000000"
+                    level="M"
+                  />
+                </div>
               </div>
             )}
 
