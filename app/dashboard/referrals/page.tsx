@@ -70,12 +70,12 @@ export default function ReferralsScreen() {
       return;
     }
     try {
-      const url = await QRCode.toDataURL(currentData.referralLink, {
+          const url = await QRCode.toDataURL(currentData.referralLink, {
         width: 240,
-        margin: 1,
+        margin: 2,
         color: {
-          dark: '#ffffff',
-          light: '#00000000', // transparent background, fits your dark theme
+          dark: '#000000',
+          light: '#ffffff',
         },
       });
       setQrCodeUrl(url);
