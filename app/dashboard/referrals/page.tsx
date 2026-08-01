@@ -18,7 +18,6 @@ export default function ReferralsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'referrals' | 'earnings'>('referrals');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
 
   const getDefaultReferralData = (): ReferralData => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trustchaininvestai.com';
