@@ -127,7 +127,7 @@ export default function ReferralsScreen() {
     }
   };
 
-  const handleDownloadQr = () => {
+const handleDownloadQr = () => {
     const svg = qrRef.current?.querySelector('svg');
     if (!svg) return;
 
@@ -135,26 +135,12 @@ export default function ReferralsScreen() {
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
 
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 400;
-      canvas.height = 400;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'referral-qr-code.svg';
+    link.click();
 
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-
-      const pngUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = pngUrl;
-      link.download = 'referral-qr-code.png';
-      link.click();
-    };
-    img.src = url;
+    URL.revokeObjectURL(url);
   };
 
   const handleViewAll = () => {
