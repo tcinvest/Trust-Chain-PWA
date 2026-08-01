@@ -9,6 +9,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
+const REFERRAL_BONUS_RATE = 0.10; // 10%
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -51,14 +53,14 @@ export async function POST(req: NextRequest) {
     const maxInvest = bot.max_invest?.toNumber();
 
     if (minInvest && investAmount < minInvest) {
-      return Response.json({ 
-        error: `Minimum investment for ${bot.name} is ${minInvest}` 
+      return Response.json({
+        error: `Minimum investment for ${bot.name} is ${minInvest}`
       }, { status: 400 });
     }
 
     if (maxInvest && investAmount > maxInvest) {
-      return Response.json({ 
-        error: `Maximum investment for ${bot.name} is ${maxInvest}` 
+      return Response.json({
+        error: `Maximum investment for ${bot.name} is ${maxInvest}`
       }, { status: 400 });
     }
 
@@ -92,6 +94,32 @@ export async function POST(req: NextRequest) {
       if (wallet === "main" && balanceNum < investAmount) {
         throw new Error("Insufficient balance");
       }
+
+      // --- Referral bonus eligibility check (BEFORE creating this investment,
+      // so the count reflects prior investments only) ---
+      const priorInvestmentsCount = await tx.invests.count({
+        where: { user_id: user.id }
+      });
+      const isFirstInvestment = priorInvestmentsCount === 0;
+
+      let referralLinkOwnerId: number | null = null;
+
+      if (isFirstInvestment) {
+        const referralRelationship = await tx.referral_relationships.findFirst({
+          where: { user_id: user.id }
+        });
+
+        if (referralRelationship?.referral_link_id) {
+          const referralLink = await tx.referral_links.findUnique({
+            where: { id: referralRelationship.referral_link_id }
+          });
+
+          if (referralLink && referralLink.user_id !== user.id) {
+            referralLinkOwnerId = referralLink.user_id;
+          }
+        }
+      }
+      // --- end eligibility check ---
 
       const transaction = await tx.transactions.create({
         data: {
@@ -147,6 +175,39 @@ export async function POST(req: NextRequest) {
           }
         });
       }
+
+      // --- Pay referral bonus (only reached if this was genuinely
+      // the referred user's first investment, and a valid referrer was found) ---
+      if (referralLinkOwnerId !== null) {
+        const bonusAmount = investAmount * REFERRAL_BONUS_RATE;
+
+        await tx.transactions.create({
+          data: {
+            user_id: referralLinkOwnerId,
+            description: `Referral bonus (10%) from ${bot.name} investment`,
+            amount: bonusAmount,
+            type: "referral",
+            status: "completed",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
+        });
+
+        const referrer = await tx.users.findUnique({
+          where: { id: referralLinkOwnerId },
+          select: { balance: true }
+        });
+        const referrerBalance = referrer?.balance?.toNumber() ?? 0;
+
+        await tx.users.update({
+          where: { id: referralLinkOwnerId },
+          data: {
+            balance: referrerBalance + bonusAmount,
+            updated_at: new Date().toISOString(),
+          }
+        });
+      }
+      // --- end referral bonus payout ---
 
       return investment;
     });
