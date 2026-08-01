@@ -277,8 +277,10 @@ const handleDownloadQr = async () => {
             </div>
 
             {/* QR Code */}
+{/* QR Code */}
             {!isLoading && (
-               <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center" ref={qrRef}>
+              <div className="bg-gray-800 p-4 rounded-2xl flex flex-col items-center">
+                <div ref={qrRef} className="flex flex-col items-center bg-gray-800 p-2 rounded-xl">
                   <p className="text-sm text-gray-400 mb-3">Scan to sign up</p>
                   <div className="bg-white p-3 rounded-lg">
                     <QRCodeSVG
