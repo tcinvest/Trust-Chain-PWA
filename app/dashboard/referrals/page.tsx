@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { formatDateTime } from '@/lib/utils';
 import { copyToClipboard } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import QRCode from 'qrcode';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function ReferralsScreen() {
   const { user } = useUser();
