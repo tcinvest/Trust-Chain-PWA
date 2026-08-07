@@ -5,10 +5,11 @@ import prisma from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   try {
     // Verify cron secret for security
-    const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+ const authHeader = req.headers.get("authorization");
+const urlSecret = req.nextUrl.searchParams.get("secret");
+if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && urlSecret !== process.env.CRON_SECRET) {
+  return Response.json({ error: "Unauthorized" }, { status: 401 });
+}
 
     const now = new Date();
     
