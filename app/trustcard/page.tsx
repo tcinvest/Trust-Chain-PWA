@@ -166,14 +166,14 @@ const handleCardRequest = (e: React.FormEvent) => {
                 />
               </div>
 
-              <div>
-                <label htmlFor="card-email" className="block text-gray-300 text-sm font-medium mb-1.5">
+            <div>
+                <label htmlFor="card-address" className="block text-gray-300 text-sm font-medium mb-1.5">
                   Home Address
                 </label>
                 <input
-                  id="card-email"
+                  id="card-address"
                   required
-                  value={message}
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-black/40 border border-gray-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-white text-sm sm:text-base outline-none transition-colors"
                   placeholder="778 AdresAve Illinois USA"
