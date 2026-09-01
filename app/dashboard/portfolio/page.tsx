@@ -202,9 +202,6 @@ export default function PortfolioScreen() {
                     <p className="text-black dark:text-white text-2xl font-bold">
                       {formatCurrency(referralProfit)}
                     </p>
-                    <p className="text-amber-600/70 dark:text-amber-400/70 text-xs mt-1">
-                      Contact support to withdraw
-                    </p>
                   </div>
                   <Gift className="text-amber-500" size={24} />
                 </div>
