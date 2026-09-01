@@ -98,6 +98,7 @@ export interface ReferralData {
 export type DashboardData = {
   totalBalance: number;
   profitBalance: number;
+  referralProfit: number;
   activeInvestments: {
     amount: number;
     bot: string;
