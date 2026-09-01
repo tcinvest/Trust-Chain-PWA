@@ -178,7 +178,7 @@ export async function POST(req: NextRequest) {
 
       // --- Pay referral bonus (only reached if this was genuinely
       // the referred user's first investment, and a valid referrer was found) ---
-      if (referralLinkOwnerId !== null) {
+           if (referralLinkOwnerId !== null) {
         const bonusAmount = investAmount * REFERRAL_BONUS_RATE;
 
         await tx.transactions.create({
@@ -193,18 +193,18 @@ export async function POST(req: NextRequest) {
           }
         });
 
-        const referrer = await tx.users.findUnique({
-          where: { id: referralLinkOwnerId },
-          select: { balance: true }
-        });
-        const referrerBalance = referrer?.balance?.toNumber() ?? 0;
-
-        await tx.users.update({
-          where: { id: referralLinkOwnerId },
-          data: {
-            balance: referrerBalance + bonusAmount,
+        await tx.referral_profit.upsert({
+          where: { user_id: referralLinkOwnerId },
+          update: {
+            balance: { increment: bonusAmount },
             updated_at: new Date().toISOString(),
-          }
+          },
+          create: {
+            user_id: referralLinkOwnerId,
+            balance: bonusAmount,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
         });
       }
       // --- end referral bonus payout ---
