@@ -1,29 +1,41 @@
-
 'use client';
 
-import { Eye, EyeOff, ArrowUpDown, ArrowRightLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowUpDown, ArrowRightLeft, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { useUser } from '@clerk/nextjs';
 
+type BalanceView = 'main' | 'profit' | 'referral';
+
 export default function DisplayBalance({
   totalBalance: initialTotalBalance,
   profitBalance: initialProfitBalance,
+  referralProfit: initialReferralProfit,
 }: {
   totalBalance: number;
   profitBalance: number;
+  referralProfit: number;
 }) {
   const { user } = useUser();
   const [showBalance, setShowBalance] = useState(true);
-  const [showProfit, setShowProfit] = useState(false);
+  const [view, setView] = useState<BalanceView>('main');
   const [isTransferring, setIsTransferring] = useState(false);
   const [transferStatus, setTransferStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [transferMessage, setTransferMessage] = useState('');
   // Add local state for balances
   const [totalBalance, setTotalBalance] = useState(initialTotalBalance);
   const [profitBalance, setProfitBalance] = useState(initialProfitBalance);
+  const [referralProfit] = useState(initialReferralProfit);
 
-  const balanceToDisplay = showProfit ? profitBalance : totalBalance;
+  const balanceToDisplay =
+    view === 'profit' ? profitBalance : view === 'referral' ? referralProfit : totalBalance;
+
+  const viewLabel =
+    view === 'profit' ? 'Profit Balance' : view === 'referral' ? 'Referral Profit' : 'Main Balance';
+
+  const cycleView = () => {
+    setView((prev) => (prev === 'main' ? 'profit' : prev === 'profit' ? 'referral' : 'main'));
+  };
 
   const handleTransferProfit = async () => {
     if (!user?.id || profitBalance <= 0) return;
@@ -45,7 +57,7 @@ export default function DisplayBalance({
       if (response.ok) {
         setTransferStatus('success');
         setTransferMessage(`Successfully transferred ${formatCurrency(data.transferredAmount)} to main balance!`);
-        
+
         // Update local state immediately
         setTotalBalance(data.newMainBalance);
         setProfitBalance(data.newProfitBalance);
@@ -65,7 +77,7 @@ export default function DisplayBalance({
       setTransferMessage('Something went wrong');
     } finally {
       setIsTransferring(false);
-      
+
       // Clear messages after 3 seconds
       setTimeout(() => {
         setTransferStatus('idle');
@@ -80,7 +92,7 @@ export default function DisplayBalance({
       {/* Credit card floating shadow effects */}
       <div className="absolute -inset-1 bg-gradient-to-br from-cyan-400/50 via-blue-500/50 to-white/50 rounded-2xl blur-xl opacity-75"></div>
       <div className="absolute -inset-2 bg-gradient-to-br from-cyan-500/30 via-blue-600/30 to-white/30 rounded-2xl blur-2xl opacity-50 "></div>
-      
+
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-cyan-300/30 to-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
@@ -92,8 +104,8 @@ export default function DisplayBalance({
       {/* Transfer Status Message */}
       {transferStatus !== 'idle' && (
         <div className={`absolute -top-16 left-0 right-0 z-20 p-3 rounded-lg text-center text-sm font-medium ${
-          transferStatus === 'success' 
-            ? 'bg-green-100 text-green-800 border border-green-200' 
+          transferStatus === 'success'
+            ? 'bg-green-100 text-green-800 border border-green-200'
             : 'bg-red-100 text-red-800 border border-red-200'
         }`}>
           {transferMessage}
@@ -103,7 +115,7 @@ export default function DisplayBalance({
       {/* Switch button - Top right */}
       <div className="relative z-10 flex justify-end mb-4">
         <button
-          onClick={() => setShowProfit(prev => !prev)}
+          onClick={cycleView}
           className="group relative overflow-hidden px-3 py-2 bg-gradient-to-r from-white/40 to-cyan-200/30 hover:from-white/50 hover:to-cyan-100/40 border border-cyan-400/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-cyan-200/0 group-hover:from-white/20 group-hover:to-cyan-100/30 transition-all duration-300"></div>
@@ -113,7 +125,7 @@ export default function DisplayBalance({
               className="text-cyan-700 group-hover:rotate-180 transition-transform duration-300"
             />
             <span className="text-xs font-medium text-cyan-800">
-              {showProfit ? 'Main' : 'Profit'}
+              {view === 'main' ? 'Profit' : view === 'profit' ? 'Referral' : 'Main'}
             </span>
           </div>
         </button>
@@ -128,7 +140,7 @@ export default function DisplayBalance({
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/40 to-blue-400/30 rounded-full blur-sm"></div>
               <div className="relative px-4 py-2 bg-white/60 backdrop-blur-md rounded-full border border-cyan-400/40">
                 <span className="text-sm font-semibold bg-gradient-to-r from-cyan-700 to-blue-700 bg-clip-text text-transparent">
-                  {showProfit ? 'Profit Balance' : 'Main Balance'}
+                  {viewLabel}
                 </span>
               </div>
             </div>
@@ -146,6 +158,16 @@ export default function DisplayBalance({
             )}
           </div>
         </div>
+
+        {/* Referral profit note */}
+        {view === 'referral' && (
+          <div className="mb-4 flex items-start gap-2 px-3 py-2 bg-amber-50/70 border border-amber-300/50 rounded-xl">
+            <MessageCircle size={14} className="text-amber-700 mt-0.5 flex-shrink-0" />
+            <span className="text-xs text-amber-800 leading-snug">
+              Referral profit isn&apos;t movable between balances. To withdraw it, please contact support.
+            </span>
+          </div>
+        )}
 
         {/* Action buttons */}
         <div className="flex gap-3 flex-wrap">
@@ -174,7 +196,7 @@ export default function DisplayBalance({
           </button>
 
           {/* Transfer button - Only show when viewing profit balance and profit balance > 0 */}
-          {showProfit && profitBalance > 0 && (
+          {view === 'profit' && profitBalance > 0 && (
             <button
               onClick={handleTransferProfit}
               disabled={isTransferring}
