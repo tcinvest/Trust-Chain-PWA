@@ -2,9 +2,10 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs'
 import React, { useState, useEffect } from 'react';
-import { HelpCircle, ChevronRight, Wallet, TrendingUp, Users, PencilIcon, ArrowDownLeft } from 'lucide-react';
+import { HelpCircle, ChevronRight, Wallet, TrendingUp, Users, PencilIcon, ArrowDownLeft, Gift } from 'lucide-react';
 
 import { getUserData } from '@/lib/actions/GetUserData';
+import { getReferralProfit } from '@/lib/actions/getReferralProfit';
 import { UserData } from '@/types/type';
 import { updateUserAvatar } from '@/lib/actions/UpdateAvatar';
 import AvatarUploadForm from '@/components/AvatarUploadForm'; 
@@ -15,6 +16,7 @@ import HeaderWithLocation from '@/components/dashboard/HeaderWithLocation';
 export default function PortfolioScreen() {
   const { isLoaded, user } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [referralProfit, setReferralProfit] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showKycNotice, setShowKycNotice] = useState(true);
 
@@ -25,6 +27,11 @@ export default function PortfolioScreen() {
       try {
         const data = await getUserData(user.id);
         setUserData(data);
+
+        if (data?.id) {
+          const refProfit = await getReferralProfit(data.id);
+          setReferralProfit(refProfit);
+        }
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
@@ -184,6 +191,22 @@ export default function PortfolioScreen() {
                     </p>
                   </div>
                   <ArrowDownLeft className="text-orange-500" size={24} />
+                </div>
+              </div>
+
+              {/* Referral Profit Card */}
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-amber-600 dark:text-amber-400 text-sm font-medium">Referral Profit</p>
+                    <p className="text-black dark:text-white text-2xl font-bold">
+                      {formatCurrency(referralProfit)}
+                    </p>
+                    <p className="text-amber-600/70 dark:text-amber-400/70 text-xs mt-1">
+                      Contact support to withdraw
+                    </p>
+                  </div>
+                  <Gift className="text-amber-500" size={24} />
                 </div>
               </div>
             </div>
