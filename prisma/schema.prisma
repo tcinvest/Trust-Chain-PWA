@@ -218,3 +218,11 @@ model crypto_currencies {
 
   @@index([name], map: "idx_crypto_name")
 }
+
+model referral_profit {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?     @unique
+  balance    Decimal? @default(0.00) @db.Decimal
+  created_at String?
+  updated_at String?
+}
