@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, EyeOff, ArrowUpDown, ArrowRightLeft, MessageCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowUpDown, ArrowRightLeft } from 'lucide-react';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { useUser } from '@clerk/nextjs';
