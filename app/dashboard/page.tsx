@@ -7,6 +7,7 @@ import { getUserInvestments } from '@/lib/actions/getUserInvestments';
 import { getUserTransactions } from '@/lib/actions/getUserTransactions';
 import { getBotById } from '@/lib/actions/getBotById';
 import { processCompletedInvestments } from '@/lib/actions/processCompletedInvestments';
+import { getReferralProfit } from '@/lib/actions/getReferralProfit';
 
 import BalanceDisplay from '@/components/dashboard/DisplayBalance';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -35,11 +36,11 @@ export default function Home() {
       // Process any completed investments first
       await processCompletedInvestments(userData.id);
 
-      const [investments, transactions] = await Promise.all([
+       const [investments, transactions, referralProfit] = await Promise.all([
         getUserInvestments(userData.id),
         getUserTransactions(userData.id),
+        getReferralProfit(userData.id),
       ]);
-
       // Get ALL ongoing investments instead of just the first one
       const ongoingInvestments = investments.filter(
         inv => inv.status === 'ongoing'
@@ -94,6 +95,7 @@ export default function Home() {
       setDashboardData({
         totalBalance: userData.balance,
         profitBalance: userData.profit_balance || 0,
+        referralProfit: referralProfit || 0,
         activeInvestments: investmentsWithBotData, // Changed to array
         recentEarnings,
         kycStatus: userData.kyc === 1 ? 'verified' : 'pending',
@@ -141,10 +143,10 @@ export default function Home() {
             username={dashboardData.username ?? 'User'}
             onRefresh={onRefresh}
           />
-
           <BalanceDisplay
             totalBalance={dashboardData.totalBalance}
             profitBalance={dashboardData.profitBalance}
+            referralProfit={dashboardData.referralProfit}
           />
 
           <QuickActionButtons />
