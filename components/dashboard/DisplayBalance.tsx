@@ -159,16 +159,6 @@ export default function DisplayBalance({
           </div>
         </div>
 
-        {/* Referral profit note */}
-        {view === 'referral' && (
-          <div className="mb-4 flex items-start gap-2 px-3 py-2 bg-amber-50/70 border border-amber-300/50 rounded-xl">
-            <MessageCircle size={14} className="text-amber-700 mt-0.5 flex-shrink-0" />
-            <span className="text-xs text-amber-800 leading-snug">
-              Referral profit isn&apos;t movable between balances. To withdraw it, please contact support.
-            </span>
-          </div>
-        )}
-
         {/* Action buttons */}
         <div className="flex gap-3 flex-wrap">
           {/* Show/Hide button */}
